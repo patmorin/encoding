@@ -1,5 +1,7 @@
 \documentclass[lotsofwhite]{patmorin}
 \usepackage{pat}
+\usepackage[utf8]{inputenc}
+
 
 %\newcommand{\keywords}[1]{\vspace{2em}\noindent\textbf{Keywords:} #1}
 %\newcommand{\from}{\colon}
@@ -29,20 +31,83 @@ fewer than $\log N$ bits on average.
 
 \section{Introduction}
 
+There is no doubt that probabilistic analysis plays a fundamental role in
+computer science: Some of the fastest and simplest fundamental algorithms
+and data structures are randomized; average-case analysis of algorithms
+relies entirely on tools from probability theory; and many combinatorial
+questions are most easily resolved using probabilistic arguments.  
 
-A \emph{code}, $C\from S\to \{0,1\}^*$ is a one-to-function from
-a set $S$ to the set of binary strings.  The elements of the range of
+Unfortunately, many of these beautiful results are inaccessible to most
+computer scientists because of a view that ``the math is too hard.''
+For instance, ACM's CS2013 Final Report does not require a full course
+in probability theory \cite[Page~50]{acm2013}. Indeed, the report
+recommends a total of 6 Tier-1 hours and 2 Tier-2 hours spent on discrete
+probability, as part of the discrete structures curriculum.
+
+In this expository paper, we survey applications of ``encoding arguments''
+that tranforms the problem of upper-bounding the probability of a
+specific event, $\mathcal{E}$, into the problem of devising a code that
+is particularly short whenever $\mathcal{E}$ occurs.  Encoding arguments
+have several advantages over traditional probabilistic analysis:
+
+\begin{enumerate}
+  \item Except for applying a simple Encoding Lemma, there is no probability
+  involved.  In particular, there is no chance to make common mistakes such
+  as multiplying probabilities of non-independent events or (equivalently)
+  multiplying expectations.
+  
+  \item In their most common form, these arguments usually yield very
+  strong results; the $\Pr\{\mathcal{E}\}$ typically decreases at least
+  exponentially in the parameter of interest. Traditionally, these strong
+  concentration results require (at least) careful on independent events
+  and/or the application of concentration inequalities.
+  
+  \item Encoding arguments are natural for computer scientists. They
+  turn a probabilistic analysis problem into the problem of designing an
+  efficient encoding---an algorithmic problem. Consider the following 
+  two problems:
+    \begin{enumerate}
+
+    \item Prove an upper-bound of $1/n^{\log n}$ on the probability that
+       a random graph on $n$ vertices contains a clique of size $k=\lceil
+       4\log n\rceil$.
+
+    \item Design a encoding for graphs on $n$ vertices so that a graph,
+       $G$, that contains a clique of size $k=\lceil 4\log n\rceil$
+       is encoded using at most $\binom{n}{2}-\log^2 n$ bits. (Note:
+       Your encoding and decoding algoritms don't have to be efficient,
+       just correct.)
+    \end{enumerate}
+  Most computer science undergraduates would not know where to start
+  on the first problem.  Even a good student who realizes that
+  they can use Boole's Inequality will still be stuck
+  wrestling with the formula $\binom{n}{4\log n}2^{-\binom{k}{2}}$.  
+\end{enumerate}
+
+
+
+\section{The Uniform Encoding Lemma}
+
+A \emph{code}, $C\from X\to \{0,1\}^*$ is a one-to-function from
+a set $X$ to the set of binary strings.  The elements of the range of
 $C$ are called $C$'s \emph{codewords}.  It is clear that, for
 any code $C$, the number of codewords (binary strings) of length $k$
 is at most $2^k$.
 
-A code, $C$, is \emph{prefix-free} if, for every $x,y\in S$ the binary
-string $C(x)$ is not a prefix of $C(y)$.  If $C$ is prefix-free, then
-the number of $C$'s codewords that have length \emph{at most} $k$ is
-not more than $2^k$. To see this why this is so, note that $C$ can be
-modified into a code $C'$, in which every codeword of length less than $k$
-is extended so that it has length exactly $k$. The prefix-freeness of $C$
-guarantees that $C'$ remains one-to-one, so it is indeed a code.
+A code, $C$, is \emph{prefix-free} if, for every $x,y\in X$ the binary
+string $C(x)$ is not a prefix of $C(y)$.  It can be helpful to think of
+prefix-free codes as binary trees whose leaves are labelled with the
+elements in $S$.  The codeword for a particular $x\in X$ is obtained
+by tracing the root-to-leaf path leading to $x$ and outputting a 0
+(respectively, 1) each time this path goes from a parent to its left
+(respectively, right) child. (See \figref{bintree}.)
+
+If $C$ is prefix-free, then the number of $C$'s codewords that have
+length \emph{at most} $k$ is not more than $2^k$. To see this why this
+is so, note that $C$ can be modified into a code $\hat C$, in which
+every codeword of length less than $k$ is extended so that it has length
+exactly $k$. The prefix-freeness of $C$ guarantees that $\hat C$ remains
+one-to-one, so it is indeed a code.
 
 
 \begin{lem}[Uniform Encoding Lemma]
@@ -126,7 +191,7 @@ by the edges or non-edges in $S$.
 
 In the second case, this encoding requires 
 \begin{align*}
-   b & = 2 + t\log n + \binom{n}{2}-\binom{k}{2} \\
+   b & = 2 + t\log n + \binom{n}{2}-\binom{t}{2} \\
      & \le \binom{n}{2} - s 
 \end{align*}
 bits (because of our choice of $t$).   Applying the Uniform Encoding
@@ -136,9 +201,11 @@ Lemma completes the proof.
 \begin{rem}
 The bound in \thmref{erdos-renyi-i} can be strengthened a little, since
 the elements of $S$ can be encoded with fewer than $t\log n$ bits; in
-particular $\log\binom{n}{t}=t\log n - t\log t + t\log e - O(\log t)$
-bits suffice.  This gives something very close to Erdős' original result,
-which was at the threshold $2\log n - 2\log\log n + O(1)$.
+particular $\lceil\log\binom{n}{t}\rceil=t\log n - t\log t + t\log e -
+O(\log t)$ bits suffice.  With a careful calculation, the proof then
+works with $t=2\log n +O(\log\log n) + \sqrt{s}$. This comes closer to
+Erdős' original result, which was at the threshold $2\log n - 2\log\log
+n + O(1)$.
 \end{rem}
 
 
