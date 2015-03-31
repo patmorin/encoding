@@ -1,0 +1,146 @@
+\documentclass[lotsofwhite]{patmorin}
+\usepackage{pat}
+
+%\newcommand{\keywords}[1]{\vspace{2em}\noindent\textbf{Keywords:} #1}
+%\newcommand{\from}{\colon}
+
+\title{Encoding Arguments}
+\author{Pat Morin}
+\date{}
+
+\begin{document}
+\begin{titlepage}
+\maketitle
+
+\begin{abstract}
+This expository article surveys a number of applications of ``encoding
+arguments,'' in which probabilistic statements are proven using the fact
+a uniformly random choice from a set of size $N$ can not be encoded with
+fewer than $\log N$ bits on average.
+\end{abstract}
+
+\keywords{Encoding arguments, entropy, Kolmogorov complexity, incompressibility, random graphs, expanders, \ldots}
+
+\end{titlepage}
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+
+\section{Introduction}
+
+
+A \emph{code}, $C\from S\to \{0,1\}^*$ is a one-to-function from
+a set $S$ to the set of binary strings.  The elements of the range of
+$C$ are called $C$'s \emph{codewords}.  It is clear that, for
+any code $C$, the number of codewords (binary strings) of length $k$
+is at most $2^k$.
+
+A code, $C$, is \emph{prefix-free} if, for every $x,y\in S$ the binary
+string $C(x)$ is not a prefix of $C(y)$.  If $C$ is prefix-free, then
+the number of $C$'s codewords that have length \emph{at most} $k$ is
+not more than $2^k$. To see this why this is so, note that $C$ can be
+modified into a code $C'$, in which every codeword of length less than $k$
+is extended so that it has length exactly $k$. The prefix-freeness of $C$
+guarantees that $C'$ remains one-to-one, so it is indeed a code.
+
+
+\begin{lem}[Uniform Encoding Lemma]
+Let $C\from S\to \{0,1\}^*$ be a prefix-free code. When an element $x$ is chosen uniformly at random from $S$, $\Pr\{|C(x)|\le \log|S|-s\}\le 2^{-s}$.
+\end{lem}
+
+\begin{proof}
+Since $C$ is a one-to-one function, choosing $x$ uniformly from $S$
+means that $C(x)$ is chosen uniformly form $C$'s $|S|$ codewords. Since
+$C$ has at most $q=2^{\log|S|-s}=|S|/2^s$ codewords of length at most
+$\log|S|-s$, the probability that we choose one of these codewords is
+at most $q/|S|=2^{-s}$.
+\end{proof}
+
+\subsection{Runs in a Random Binary String}
+
+As a warm-up exercise, we show how the Uniform Encoding Lemma can be
+used to show that a random $n$-bit string is unlikely to contain a run
+of significantly more than $\log n$ one bits.
+
+\begin{thm}\thmlabel{one-runs}
+  Let $x=\langle x_1,\ldots,x_n\rangle\in\{0,1\}^n$ be chosen uniformly
+  at random and let $t=1+\lceil\log n\rceil + s$. Then, the probability
+  that there exists an $i$ such that $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$
+  is at most $2^{-s}$.
+\end{thm}
+
+\begin{proof}
+  Consider the following prefix-free code, $C\from\{0,1\}^n\to\{0,1\}^*$.
+  If there is no index $i$ such that $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$,
+  then $C(x)$ is a zero bit followed by the $n$ bits of $x$.
+  However, if there is such an index $i$, then $C(x)$ is a one bit,
+  followed by (the binary encoding of) $i$, followed by the $n-k$ bits
+  $x_1,\ldots,x_{i-1},x_{i+t},\ldots,x_n$.
+
+  Observe that, in the latter case, $C(x)$ has length 
+  \[
+      1 + \lceil\log n\rceil + n - k = n-s \enspace .
+  \]
+
+  It is easy to check that, for any $x$, we can reconstruct
+  $x_1,\ldots,x_n$ from $C(x)$, so $C$ is indeed a code for $\{0,1\}^n$.
+  It is also easy to check that $C$ is prefix free, since the first bit
+  of $C(x)$ determines the length of $C(x)$.
+
+  Now, $x$ was chosen uniformly at random from a set of size $2^{n}$.
+  Therefore, by the Uniform Encoding Lemma, the probability of the latter
+  case is at most $2^{-s}$.
+\end{proof}
+
+\subsection{Graphs with no Large Clique or Stable Set}
+
+
+A \emph{Erd\H{o}s-R\'enyi random graph}, $G_{n,p}$ is a graph with vertex
+set $V=\{1,\ldots,n\}$ and in which each edge $uw\in \binom{V}{2}$
+is present with probability $p$ and absent with probability $1-p$,
+independently of the other edges.  Erd\H{o}s \cite{X} used the random
+graph $G_{n,\frac{1}{2}}$ to prove the existence of graphs having no
+large clique and no large independent set. Here we show how this can be
+done using an encoding argument.
+
+\begin{thm}\thmlabel{erdos-renyi-i}
+For any $\epsilon>0$ and for all sufficiently large $n$, the probability
+that the random graph, $G_{n,\frac{1}{2}}$ contains a clique or an
+independent set of size $t = \lceil(2+\epsilon)\log n + \sqrt{s}\rceil$
+is at most $2^{-s}$.
+\end{thm}
+
+\begin{proof}
+This is an encoding argument that compresses the $r=\binom{n}{2}$ bits
+of $G$'s adjacency matrix, as they appear in row-major order.  If $G$
+has no clique or independent set of size $t$, then the code consists of
+a 0 bit followed by the $\binom{n}{2}$ bits of $G$'s adjacency matrix
+in row-major order.
+
+Otherwise, $G$ contains a clique or independent set, $S$, of size $t$.
+Then the code consists of a 1; another bit indicating whether $S$ is a
+clique or IS; the vertices of $S$; then the adjacency matrix of $G$ in
+row major-order but leaving out all of the $\binom{t}{2}$ bits implied
+by the edges or non-edges in $S$.
+
+In the second case, this encoding requires 
+\begin{align*}
+   b & = 2 + t\log n + \binom{n}{2}-\binom{k}{2} \\
+     & \le \binom{n}{2} - s 
+\end{align*}
+bits (because of our choice of $t$).   Applying the Uniform Encoding
+Lemma completes the proof.
+\end{proof}
+
+\begin{rem}
+The bound in \thmref{erdos-renyi-i} can be strengthened a little, since
+the elements of $S$ can be encoded with fewer than $t\log n$ bits; in
+particular $\log\binom{n}{t}=t\log n - t\log t + t\log e - O(\log t)$
+bits suffice.  This gives something very close to Erdős' original result,
+which was at the threshold $2\log n - 2\log\log n + O(1)$.
+\end{rem}
+
+
+
+\end{document}
