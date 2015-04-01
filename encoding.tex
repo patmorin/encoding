@@ -1,6 +1,7 @@
 \documentclass[lotsofwhite]{patmorin}
 \usepackage{pat}
 \usepackage[utf8]{inputenc}
+\usepackage[noend]{algorithmic}
 
 
 %\newcommand{\keywords}[1]{\vspace{2em}\noindent\textbf{Keywords:} #1}
@@ -15,6 +16,7 @@
 \maketitle
 
 \begin{abstract}
+\setlength{\baselineskip}{15.84pt}
 This expository article surveys a number of applications of ``encoding
 arguments,'' in which probabilistic statements are proven using the fact
 a uniformly random choice from a set of size $N$ can not be encoded with
@@ -31,11 +33,12 @@ fewer than $\log N$ bits on average.
 
 \section{Introduction}
 
-There is no doubt that probabilistic analysis plays a fundamental role in
-computer science: Some of the fastest and simplest fundamental algorithms
-and data structures are randomized; average-case analysis of algorithms
-relies entirely on tools from probability theory; and many combinatorial
-questions are most easily resolved using probabilistic arguments.  
+There is no doubt that probability theory plays a fundamental role
+in computer science: Some of the fastest and simplest fundamental
+algorithms and data structures are randomized; average-case analysis of
+algorithms relies entirely on tools from probability theory; and many
+difficult combinatorial questions have strikingly simple solutions using
+probabilistic arguments.
 
 Unfortunately, many of these beautiful results are inaccessible to most
 computer scientists because of a view that ``the math is too hard.''
@@ -51,16 +54,17 @@ is particularly short whenever $\mathcal{E}$ occurs.  Encoding arguments
 have several advantages over traditional probabilistic analysis:
 
 \begin{enumerate}
-  \item Except for applying a simple Encoding Lemma, there is no probability
-  involved.  In particular, there is no chance to make common mistakes such
-  as multiplying probabilities of non-independent events or (equivalently)
+  \item Encoding arguments are almost ``probability-free.''  Except for
+  applying a simple Encoding Lemma, there is no probability involved.
+  In particular, there is no chance to make common mistakes such as
+  multiplying probabilities of non-independent events or (equivalently)
   multiplying expectations.
-  
-  \item In their most common form, these arguments usually yield very
-  strong results; the $\Pr\{\mathcal{E}\}$ typically decreases at least
-  exponentially in the parameter of interest. Traditionally, these strong
-  concentration results require (at least) careful on independent events
-  and/or the application of concentration inequalities.
+
+  \item Encoding arguments usually yield strong results;
+  $\Pr\{\mathcal{E}\}$ typically decreases at least exponentially in
+  the parameter of interest. Traditionally, these strong concentration
+  results require (at least) careful on independent events and/or the
+  application of concentration inequalities.
   
   \item Encoding arguments are natural for computer scientists. They
   turn a probabilistic analysis problem into the problem of designing an
@@ -84,43 +88,73 @@ have several advantages over traditional probabilistic analysis:
   wrestling with the formula $\binom{n}{4\log n}2^{-\binom{k}{2}}$.  
 \end{enumerate}
 
+Our motivation for doing this is that encoding arguments are an easily
+accessible, yet versatile tool for answering many questions.  Most of
+these arguments can be applied after learning almost no probability
+theory beyond the fact that, if a finite set $X$ contains $r$ special
+elements and we pick an element uniformly at random from $X$, then the
+probability of picking a special element is $r/|X|$.
+
+In \secref{uel}, we present the \emph{Uniform Encoding Lemma}, which is
+the basis of most of our encoding arguments.  \Secref{applications-i}
+presents  applications of the Uniform Encoding Lemma to a variety of
+problems.  \Secref{nuel} presents a more general Non-Uniform Encoding
+Lemma that can handle a larger variety of applications, some of which are
+presented in \secref{applications-ii}.  \Secref{summary} summarizes
+and concludes with some directions for future research.
+
 
 
 \section{The Uniform Encoding Lemma}
+\seclabel{uel}
 
-A \emph{code}, $C\from X\to \{0,1\}^*$ is a one-to-function from
-a set $X$ to the set of binary strings.  The elements of the range of
-$C$ are called $C$'s \emph{codewords}.  It is clear that, for
-any code $C$, the number of codewords (binary strings) of length $k$
-is at most $2^k$.
+A \emph{code}, $C\from X\to \{0,1\}^*$ is a one-to-function from a set
+$X$ to the set of binary strings.  The elements of the range of $C$ are
+called $C$'s \emph{codewords}.
 
 A code, $C$, is \emph{prefix-free} if, for every $x,y\in X$ the binary
-string $C(x)$ is not a prefix of $C(y)$.  It can be helpful to think of
-prefix-free codes as binary trees whose leaves are labelled with the
-elements in $S$.  The codeword for a particular $x\in X$ is obtained
-by tracing the root-to-leaf path leading to $x$ and outputting a 0
-(respectively, 1) each time this path goes from a parent to its left
-(respectively, right) child. (See \figref{bintree}.)
+string $C(x)$ is not a prefix of $C(y)$.  It can be helpful to think
+of prefix-free codes as (rooted ordered) binary trees whose leaves
+are labelled with the elements in $S$.  The codeword for a particular
+$x\in X$ is obtained by tracing the root-to-leaf path leading to $x$
+and outputting a 0 (respectively, 1) each time this path goes from a
+parent to its left (respectively, right) child. (See \figref{bintree}.)
+
+\begin{figure}
+  \centering{\includegraphics{bintree}}
+  \caption{A prefix-free code for the set
+    $S=\{\mathtt{a},\mathtt{b},\mathtt{c},\mathtt{d},\mathtt{e},\mathtt{f}\}$
+    and the corresponding leaf-labelled binary tree.}
+  \figlabel{bintree}
+\end{figure}
 
 If $C$ is prefix-free, then the number of $C$'s codewords that have
 length \emph{at most} $k$ is not more than $2^k$. To see this why this
 is so, note that $C$ can be modified into a code $\hat C$, in which
 every codeword of length less than $k$ is extended so that it has length
-exactly $k$. The prefix-freeness of $C$ guarantees that $\hat C$ remains
-one-to-one, so it is indeed a code.
-
+exactly $k$ (the prefix-freeness of $C$ ensures that $\hat C$ is also a
+prefix-free code). The number of $\hat C$'s codewords of length $k$ is
+equal to the the number of $C$'s codewords of length at most $k$; since
+codewords are just binary strings, there are not more than $2^k$ of these.
 
 \begin{lem}[Uniform Encoding Lemma]
-Let $C\from S\to \{0,1\}^*$ be a prefix-free code. When an element $x$ is chosen uniformly at random from $S$, $\Pr\{|C(x)|\le \log|S|-s\}\le 2^{-s}$.
+  Let $C\from S\to \{0,1\}^*$ be a prefix-free code. When an element $x$
+  is chosen uniformly at random from $S$, $\Pr\{|C(x)|\le \log|S|-s\}\le
+  2^{-s}$.
 \end{lem}
 
 \begin{proof}
-Since $C$ is a one-to-one function, choosing $x$ uniformly from $S$
-means that $C(x)$ is chosen uniformly form $C$'s $|S|$ codewords. Since
-$C$ has at most $q=2^{\log|S|-s}=|S|/2^s$ codewords of length at most
-$\log|S|-s$, the probability that we choose one of these codewords is
-at most $q/|S|=2^{-s}$.
+  Since $C$ is a one-to-one function, choosing $x$ uniformly from $S$
+  implies that $C(x)$ is chosen uniformly from $C$'s codewords. Let
+  $k=\log|S|-s$. Since $C$ has $|S|$ codewords and at most $2^{k}$ of these
+  have length at most $k$, the probability that we choose one of these 
+  codewords is at most
+  \[   \frac{2^k}{|S|} = \frac{2^{\log|S|-s}}{|S|} = 2^{-s} \enspace . \qedhere \]
 \end{proof}
+
+\section{Applications of the Uniform Encoding Lemma}
+\seclabel{applications-i}
+
 
 \subsection{Runs in a Random Binary String}
 
@@ -129,36 +163,39 @@ used to show that a random $n$-bit string is unlikely to contain a run
 of significantly more than $\log n$ one bits.
 
 \begin{thm}\thmlabel{one-runs}
-  Let $x=\langle x_1,\ldots,x_n\rangle\in\{0,1\}^n$ be chosen uniformly
-  at random and let $t=1+\lceil\log n\rceil + s$. Then, the probability
-  that there exists an $i$ such that $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$
-  is at most $2^{-s}$.
+  Let $x=\langle x_1,\ldots,x_n\rangle\in\{0,1\}^n$ be chosen
+  uniformly at random and let $t=1+\lceil\log n\rceil + s$. Then, the
+  probability that there exists an $i\in\{1,\ldots,n-k-1\}$ such that
+  $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$ is at most $2^{-s}$.
 \end{thm}
 
 \begin{proof}
-  Consider the following prefix-free code, $C\from\{0,1\}^n\to\{0,1\}^*$.
-  If there is no index $i$ such that $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$,
-  then $C(x)$ is a zero bit followed by the $n$ bits of $x$.
-  However, if there is such an index $i$, then $C(x)$ is a one bit,
-  followed by (the binary encoding of) $i$, followed by the $n-k$ bits
+  Let $\mathcal{E}_i$ be the event ``$x_i=x_{i+1}=\cdots=x_{i+t-1}=1$'',
+  so that the theorem asks us to show that $\Pr \bigcup_{i=1}^{n-k-1}
+  \mathcal{E}_i \le 2^{-s}$.  We show this by constructing a prefix-free
+  code $C\from\{0,1\}^n\to\{0,1\}^*$.  If $\mathcal{E}_i$ does not
+  occur for any index $i\in\{1,\ldots,n-k-1\}$, then $C(x)$ is a zero
+  bit followed by the $n$ bits of $x$.  However, if $\mathcal{E}_i$
+  does occur for some index $i$, then $C(x)$ is a one bit, followed
+  by (the binary encoding of) $i$, followed by the $n-k$ bits
   $x_1,\ldots,x_{i-1},x_{i+t},\ldots,x_n$.
 
   Observe that, in the latter case, $C(x)$ has length 
   \[
       1 + \lceil\log n\rceil + n - k = n-s \enspace .
   \]
-
   It is easy to check that, for any $x$, we can reconstruct
   $x_1,\ldots,x_n$ from $C(x)$, so $C$ is indeed a code for $\{0,1\}^n$.
   It is also easy to check that $C$ is prefix free, since the first bit
   of $C(x)$ determines the length of $C(x)$.
 
   Now, $x$ was chosen uniformly at random from a set of size $2^{n}$.
-  Therefore, by the Uniform Encoding Lemma, the probability of the latter
-  case is at most $2^{-s}$.
+  Therefore, by the Uniform Encoding Lemma, 
+  \[
+      \Pr\{|C(x)|\le n-s\} = \Pr \bigcup_{i=1}^{n-k-1} \mathcal{E}_i \le 2^{-s} \enspace . \qedhere \]
 \end{proof}
 
-\subsection{Graphs with no Large Clique or Stable Set}
+\subsection{Graphs with no Large Clique or Independent Set}
 
 
 A \emph{Erd\H{o}s-R\'enyi random graph}, $G_{n,p}$ is a graph with vertex
@@ -170,32 +207,32 @@ large clique and no large independent set. Here we show how this can be
 done using an encoding argument.
 
 \begin{thm}\thmlabel{erdos-renyi-i}
-For any $\epsilon>0$ and for all sufficiently large $n$, the probability
-that the random graph, $G_{n,\frac{1}{2}}$ contains a clique or an
-independent set of size $t = \lceil(2+\epsilon)\log n + \sqrt{s}\rceil$
-is at most $2^{-s}$.
+  For any $\epsilon>0$ and for all sufficiently large $n$, the probability
+  that the random graph, $G_{n,\frac{1}{2}}$ contains a clique or an
+  independent set of size $t = \lceil(2+\epsilon)\log n + \sqrt{s}\rceil$
+  is at most $2^{-s}$.
 \end{thm}
 
 \begin{proof}
-This is an encoding argument that compresses the $r=\binom{n}{2}$ bits
-of $G$'s adjacency matrix, as they appear in row-major order.  If $G$
-has no clique or independent set of size $t$, then the code consists of
-a 0 bit followed by the $\binom{n}{2}$ bits of $G$'s adjacency matrix
-in row-major order.
-
-Otherwise, $G$ contains a clique or independent set, $S$, of size $t$.
-Then the code consists of a 1; another bit indicating whether $S$ is a
-clique or IS; the vertices of $S$; then the adjacency matrix of $G$ in
-row major-order but leaving out all of the $\binom{t}{2}$ bits implied
-by the edges or non-edges in $S$.
-
-In the second case, this encoding requires 
-\begin{align*}
-   b & = 2 + t\log n + \binom{n}{2}-\binom{t}{2} \\
-     & \le \binom{n}{2} - s 
-\end{align*}
-bits (because of our choice of $t$).   Applying the Uniform Encoding
-Lemma completes the proof.
+  This is an encoding argument that compresses the $r=\binom{n}{2}$ bits
+  of $G$'s adjacency matrix, as they appear in row-major order.  If $G$
+  has no clique or independent set of size $t$, then the code consists of
+  a 0 bit followed by the $\binom{n}{2}$ bits of $G$'s adjacency matrix
+  in row-major order.
+  
+  Otherwise, $G$ contains a clique or independent set, $S$, of size $t$.
+  Then the code consists of a 1; another bit indicating whether $S$ is a
+  clique or IS; the vertices of $S$; then the adjacency matrix of $G$ in
+  row major-order but leaving out all of the $\binom{t}{2}$ bits implied
+  by the edges or non-edges in $S$.
+  
+  In the second case, this encoding requires 
+  \begin{align*}
+     b & = 2 + t\log n + \binom{n}{2}-\binom{t}{2} \\
+       & \le \binom{n}{2} - s 
+  \end{align*}
+  bits (because of our choice of $t$).   Applying the Uniform Encoding
+  Lemma completes the proof.
 \end{proof}
 
 \begin{rem}
@@ -208,6 +245,115 @@ Erdős' original result, which was at the threshold $2\log n - 2\log\log
 n + O(1)$.
 \end{rem}
 
+\subsection{Analysis of Insertion Sort}
+
+Recall the insertion-sort algorithm for sorting a list, $A_1,\ldots,A_n$
+of $n$ elements:
+
+\noindent{$\textsc{InsertionSort}(A_1,\ldots,A_n)$}
+\begin{algorithmic}[1]
+  \FOR{$i\gets 2$ \TO $n$}
+     \STATE{$j \gets i$}
+     \WHILE{$j>1$ \AND $A_{j-1} > A_j$}
+         \STATE{$A_j \leftrightarrow A_{j-1}$
+            \COMMENT{ swap }}
+         \STATE{$j\gets j-1$}
+     \ENDWHILE
+  \ENDFOR
+\end{algorithmic}
+
+A typical question asks the expected number of times Line~4 executes
+if $A_1,\ldots,A_n$ is a uniformly random permutation of $n$ distinct
+elements.  The answer $\binom{n}{2}/2$ is an easy application of
+linearity of expectation.\footnote{For every one of the $\binom{n}{2}$
+pairs $p,q\in\{1,\ldots,n\}$ with $p<q$, the values initially stored at
+positions $A_p$ and $A_q$ will eventually be swapped if and only if $A_p >
+A_q$, which happens with probability $1/2$ in a random permutation.}
+
+A more advanced question is to ask for a concentration result on the
+number of executions of Line~4. This is a harder question to tackle;
+because $>$ is transitive, the $\binom{n}{2}$ events being studied have
+a lot of interdependence. To resolve this, one has to partition these
+events into independent sets; apply Chernoff's Bounds within each set,
+and then apply the union bound.  (Alternatively, one can pretend that
+$A_1,\ldots,A_n$ are random real numbers and use the method of bounded
+differences, a.k.a. McDiarmid's Inequality \cite{X}.)
+
+\begin{thm}
+For a random permutation, $A_1,\ldots,A_n$ of $n$ distinct elements, the probability that Line~4 of \textsc{InsertionSort} executes fewer than $\binom{n}{2}-t$ times is at most $2^{-s}$.
+\end{thm}
+
+\begin{proof}
+Let $\pi$ be the permutation of $\{1,\ldots,n\}$ that defines the
+sorted order of $A_1,\ldots,A_n$, so that $A_{\pi_j}$ is the element
+that appears at position $j$ after sorting.
+
+We encode the permutation $\pi$ by recording the execution of
+InsertionSort on this permutation. In particular, we record, for each
+$i\in\{2,\ldots,n\}$, the number of times, $m_i$, that Line~4 executes
+during the $i$th iteration of \textsc{InsertionSort}. With this information,
+one can run the following version of \textsc{InsertionSort} to recover $\pi$:
+
+\noindent{$\textsc{InsertionSortReconstruct}(m_2,\ldots,m_n)$}:
+\begin{algorithmic}[1]
+  \STATE{$\pi \gets \langle 1,\ldots,n\rangle$}
+  \FOR{$i\gets 2$ \TO $n$}
+     \FOR{$j\gets i \textbf{ down to } i-m_i+1$}
+         \STATE{$\pi_j \leftrightarrow \pi_{j-1}$
+            \COMMENT{ swap }}
+     \ENDFOR
+  \ENDFOR
+\end{algorithmic}
+ 
+To make this work, we have to be slightly clever with this
+encoding. Rather than encode $m_2,m_3,\ldots,m_n$ directly, we first
+encode $m=\sum_{i=2}^{n} m_i$ using $\lceil 2\log n\rceil$ bits (since $m < n^2$). Given $m$, what
+remains is to describe the partition of $m$ into $n-1$ non-negative
+integers $m_2,\ldots,m_n$; there are $\binom{m+n-2}{n-2}$ such
+partitions.\footnote{To see this, draw $m+n-2$ white dots on a line,
+then choose $n-2$ dots to colour black. This splits the remaining $m$ white dots
+up into $n-1$ groups, which determine the values of $m_2,\ldots,m_n$.}
+
+Therefore, the values of $m_2,\ldots,m_n$ can be encoded using
+\[
+    b = 2\log m + \log\binom{m+n-2}{n-2}
+\]
+bits and this is sufficient to recover the permutation that defines
+$A_1,\ldots,A_n$.  Looking more closely at $b$, we find
+\begin{align*}
+     b & \le \lceil 2\log n\rceil + n\log\left(\frac{m+n-2}{n-2}\right)
+                  + (n-2)\log e
+                  - O(\log n) \text{ Missing $O(m\log (m/n)$ term here } \\
+     & \le n\log\left(\frac{m+n-2}{n-2}\right)
+                  + n\log e + O(\log n) \\
+     & \le n\log(\alpha n) 
+                  + (n-2)\log e
+                  + O(\log n) & \text{( for $m\le \alpha n^2 - n$ )} \\
+     & = n\log n + n\log\alpha
+                  + n\log e
+                  + O(\log n) \\
+     & \le \log n! + n\log\alpha
+\end{align*}
+
+
+
+
+
+
+
+\end{proof}
+
+
+
+\section{The Non-Uniform Encoding Lemma}
+\seclabel{nuel}
+
+\section{Applications of the Non-Uniform Encoding Lemma}
+\seclabel{applications-ii}
+
+
+\section{Summary and Conclusions}
+\seclabel{summary}
 
 
 \end{document}
