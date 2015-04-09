@@ -3,6 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[noend]{algorithmic}
 
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
 
 %\newcommand{\keywords}[1]{\vspace{2em}\noindent\textbf{Keywords:} #1}
 %\newcommand{\from}{\colon}
@@ -239,11 +240,86 @@ done using an encoding argument.
 The bound in \thmref{erdos-renyi-i} can be strengthened a little, since
 the elements of $S$ can be encoded with fewer than $t\log n$ bits; in
 particular $\lceil\log\binom{n}{t}\rceil=t\log n - t\log t + t\log e -
-O(\log t)$ bits suffice.  With a careful calculation, the proof then
+O(\log t)$ bits suffice.  With a careful calculation, using the approximations
+described in the next section, the proof then
 works with $t=2\log n +O(\log\log n) + \sqrt{s}$. This comes closer to
 Erdős' original result, which was at the threshold $2\log n - 2\log\log
 n + O(1)$.
 \end{rem}
+
+\subsection{Some Binomial Approximations}
+
+For some of our encoding arguments we use Stirling's approximation for $n!$, 
+which tells us that we can encode any one of $n!$ possibilities using
+
+\begin{align}
+  \lceil \log n!\rceil 
+      & \le n\log n - n\log e + (1/2)\log(2\pi n) + O(1)  
+             \eqlabel{stirling-tight} \\
+      & \le n\log n - n\log e + O(\log n)  
+             \eqlabel{stirling-loose}
+\end{align}
+bits.
+
+Similarly, we can encode any $k$-subset of a set of size $n$ using
+
+\begin{align*}
+  \left\lceil\log \binom{n}{k}\right\rceil 
+     & = \log n! - \log k! - \log (n-k)! \\
+     & = n\log n - k\log k - (n-k)\log(n-k) + \log(2\pi n) - \log (2\pi k) - \log (2\pi (n-k)) + O(1) \\
+     & = n\log n - k\log k - (n-k)\log(n-k) - \log(2\pi n) + O(1)  \\
+     & = n\log n - k\log k - (n-k)\log n + (n-k)(\log n-\log(n-k)) - \log(2\pi n) + O(1) \\
+     & = k\log n - k\log k + \underbrace{(n-k)(\log n-\log(n-k))}_\text{yuck!}  - \log(2\pi n) + O(1) \\
+         \numberthis \eqlabel{hassle} \\ 
+\end{align*}
+
+The subexpression $(n-k)(\log n-\log(n-k))$ is awkward here. We can
+simplify it as follows:
+\begin{align*}
+   (n-k)(\log n-\log(n-k))
+      & = (n-k)\log \left(\frac{n}{n-k}\right) \\
+      & = (n-k)\log\left(\frac{t+k}{t}\right) & \text{(substituting $t=n-k$)} \\
+      & = (n-k)\log(1+k/t) \\
+      & \le (n-k)(k/t)\log e & \text{(since $1+x \le e^x$)} \\
+      & = (n-k)(k/(n-k))\log e \\
+      & = k\log e 
+\end{align*}
+
+Using this, \eqref{hassle} becomes
+\begin{equation}
+  \left\lceil\log \binom{n}{k}\right\rceil 
+    \le k\log n - k\log k + k\log e - \log (2\pi n) + O(1) \eqlabel{log-n-choose-k}
+\end{equation} 
+
+\subsection{Balls in Urns}
+
+\begin{thm}
+   Suppose we throw $n$ balls indepedently and uniformly at random
+   into $n$ urns. Then, the probability that any urn contains more than
+   $t=blah$ balls is at most $2^{-s}$.
+\end{thm}
+
+\begin{proof}
+Let $b_i$, $i\in\{1,\ldots,n\}$, denote the index of the urn in which
+the $i$th ball lands. Notice that the sequence $b_1,\ldots,b_n$ is chosen
+uniformly at random from a set of size $n^n$, and it is this choice 
+that will be used in our encoding argument.
+
+If no urn contains $t$ or more balls, then our code is a 0 bit followed by the obvious encoding. If some urn, $i$, contains $t$ or more balls, then our code is a 1 bit followed by the value $i$ ($\lceil \log n\rceil$ bits) followed by a code for $t$ of the balls in urn $i$ ($\log\binom{n}{t}$) bits, followed by the remaining $n-t$ values of $b_1,\ldots,b_n$ that cannot be deduced from the preceding information.  In total, this is
+\begin{align*}
+  b &\le 1+\lceil\log n\rceil + \log\binom{n}{t} + \lceil(n-t)\log n\rceil \\
+   & = 1+\lceil\log n\rceil + t\log n - t\log t + t\log e  + (n-t)\log n - \log(2\pi n) + O(1)
+           & \text{(by applying \eqref{log-n-choose-k})} \\
+   & = n\log n - t\log t + t\log e + O(1)
+\end{align*}
+
+
+
+
+
+If some urn, $u_i$ contains $t$ or more balls, then we encode this 
+
+\end{proof}
 
 \subsection{Analysis of Insertion Sort}
 
@@ -273,14 +349,15 @@ A_q$, which happens with probability $1/2$ in a random permutation.}
 A more advanced question is to ask for a concentration result on the
 number of executions of Line~4. This is a harder question to tackle;
 because $>$ is transitive, the $\binom{n}{2}$ events being studied have
-a lot of interdependence. To resolve this, one has to partition these
-events into independent sets; apply Chernoff's Bounds within each set,
-and then apply the union bound.  (Alternatively, one can pretend that
-$A_1,\ldots,A_n$ are random real numbers and use the method of bounded
-differences, a.k.a. McDiarmid's Inequality \cite{X}.)
+a lot of interdependence.  With some intutition about independence, and
+the use of the right concentration inequality, one can obtain a fairly
+tight bound with a fairly short proof.  In the following, we show how
+this can be done with an encoding argument:
 
-\begin{thm}
-For a random permutation, $A_1,\ldots,A_n$ of $n$ distinct elements, the probability that Line~4 of \textsc{InsertionSort} executes fewer than $\binom{n}{2}-t$ times is at most $2^{-s}$.
+\begin{thm}\thmlabel{insertion-sort}
+For a random permutation, $A_1,\ldots,A_n$ of $n$ distinct elements,
+the probability that Line~4 of \textsc{InsertionSort} executes fewer than
+$\alpha n^2 - n + 2$ times is at most $2^{n\log(\alpha e^2)+O(\log n)}$.
 \end{thm}
 
 \begin{proof}
@@ -316,32 +393,30 @@ up into $n-1$ groups, which determine the values of $m_2,\ldots,m_n$.}
 
 Therefore, the values of $m_2,\ldots,m_n$ can be encoded using
 \[
-    b = 2\log m + \log\binom{m+n-2}{n-2}
+    b = \lceil 2\log n\rceil + \log\binom{m+n-2}{n-2}
 \]
 bits and this is sufficient to recover the permutation that defines
-$A_1,\ldots,A_n$.  Looking more closely at $b$, we find
+$A_1,\ldots,A_n$.  By applying \eqref{log-n-choose-k} to $b$, we obtain
 \begin{align*}
-     b & \le \lceil 2\log n\rceil + n\log\left(\frac{m+n-2}{n-2}\right)
-                  + (n-2)\log e
-                  - O(\log n) \text{ Missing $O(m\log (m/n)$ term here } \\
-     & \le n\log\left(\frac{m+n-2}{n-2}\right)
-                  + n\log e + O(\log n) \\
-     & \le n\log(\alpha n) 
-                  + (n-2)\log e
-                  + O(\log n) & \text{( for $m\le \alpha n^2 - n$ )} \\
-     & = n\log n + n\log\alpha
-                  + n\log e
-                  + O(\log n) \\
-     & \le \log n! + n\log\alpha
+  b & \le (n-2)\log(m+n-2) - (n-2)\log(n-2)  + (n-2)\log e + O(\log n) \\
+    & \le n\log(m+n-2) - n\log(n-2)  + n\log e + O(\log n) \\
+    & \le n\log(\alpha n^2) - n\log(n-2)  + n\log e + O(\log n) \\
+    & \le n\log(\alpha n^2) - n\log n  + n\log e + O(\log n) \\
+    & = 2n\log n + n\log\alpha - n\log n  + n\log e + O(\log n) \\
+    & = n\log n + n\log\alpha + n\log e + O(\log n) \\
+    & = \log n! + n\log\alpha + 2n\log e + O(\log n) \\
+    & = \log n! + n(\log \alpha e^2) + O(\log n)  \qedhere
 \end{align*}
-
-
-
-
-
-
-
 \end{proof}
+
+\begin{rem}
+Although it doesn't require any advanced probability,
+\thmref{insertion-sort} is not sharp; it only gives a non-trivial
+probability when $\alpha < 1/e^2$.  To obtain a sharp bound, one can use
+the fact that $m_2,\ldots,m_n$ are independent and $m_i$ is uniform over
+$\{0,\ldots,i-1\}$ and then use the method of bounded differences \cite{S}
+to show that $m$ is concentrated in an interval of size $O(n^{3/2})$.
+\end{rem}
 
 
 
