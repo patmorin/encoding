@@ -106,7 +106,7 @@ and concludes with some directions for future research.
 
 
 
-\section{The Uniform Encoding Lemma}
+\section{Background}
 \seclabel{uel}
 
 A \emph{code}, $C\from X\to \{0,1\}^*$ is a one-to-function from a set
@@ -153,17 +153,12 @@ codewords are just binary strings, there are not more than $2^k$ of these.
   \[   \frac{2^k}{|S|} = \frac{2^{\log|S|-s}}{|S|} = 2^{-s} \enspace . \qedhere \]
 \end{proof}
 
-\section{Applications of the Uniform Encoding Lemma}
-\seclabel{applications-i}
-
-
-\subsection{Runs in a Random Binary String}
 
 As a warm-up exercise, we show how the Uniform Encoding Lemma can be
 used to show that a random $n$-bit string is unlikely to contain a run
 of significantly more than $\log n$ one bits.
 
-\begin{thm}\thmlabel{one-runs}
+\begin{thm}\thmlabel{runs-i}
   Let $x=\langle x_1,\ldots,x_n\rangle\in\{0,1\}^n$ be chosen
   uniformly at random and let $t=1+\lceil\log n\rceil + s$. Then, the
   probability that there exists an $i\in\{1,\ldots,n-k-1\}$ such that
@@ -171,15 +166,12 @@ of significantly more than $\log n$ one bits.
 \end{thm}
 
 \begin{proof}
-  Let $\mathcal{E}_i$ be the event ``$x_i=x_{i+1}=\cdots=x_{i+t-1}=1$'',
-  so that the theorem asks us to show that $\Pr \bigcup_{i=1}^{n-k-1}
-  \mathcal{E}_i \le 2^{-s}$.  We show this by constructing a prefix-free
-  code $C\from\{0,1\}^n\to\{0,1\}^*$.  If $\mathcal{E}_i$ does not
-  occur for any index $i\in\{1,\ldots,n-k-1\}$, then $C(x)$ is a zero
-  bit followed by the $n$ bits of $x$.  However, if $\mathcal{E}_i$
-  does occur for some index $i$, then $C(x)$ is a one bit, followed
-  by (the binary encoding of) $i$, followed by the $n-k$ bits
-  $x_1,\ldots,x_{i-1},x_{i+t},\ldots,x_n$.
+  We will prove this theorem by constructing a prefix-free code
+  for $x$. If there is no $i\in\{1,\ldots,n-k-1\}$ such that
+  $x_i=x_{i+1}=\cdots=x_{i+k-1}=1$, then $C(x)$ is a zero bit followed
+  by the $n$ bits $x_1,\ldots,x_n$.  However, if there is such an index,
+  $i$, then $C(x)$ is a one bit, followed by (the binary encoding of)
+  $i$, followed by the $n-k$ bits $x_1,\ldots,x_{i-1},x_{i+t},\ldots,x_n$.
 
   Observe that, in the latter case, $C(x)$ has length 
   \[
@@ -187,14 +179,71 @@ of significantly more than $\log n$ one bits.
   \]
   It is easy to check that, for any $x$, we can reconstruct
   $x_1,\ldots,x_n$ from $C(x)$, so $C$ is indeed a code for $\{0,1\}^n$.
-  It is also easy to check that $C$ is prefix free, since the first bit
-  of $C(x)$ determines the length of $C(x)$.
+  It is also easy to check that $C$ is prefix free, since the first bit of
+  $C(x)$ determines the length of $C(x)$ (which is either $n+1$ or $n-s$).
 
   Now, $x$ was chosen uniformly at random from a set of size $2^{n}$.
-  Therefore, by the Uniform Encoding Lemma, 
+  Therefore, by the Uniform Encoding Lemma, the probability
+  that there exists any index $i\in\{1,\ldots,n-k-1\}$ such that
+  $x_i=x_{i+1}=\cdots=x_{i+k-1}=1$ is at most
   \[
-      \Pr\{|C(x)|\le n-s\} = \Pr \bigcup_{i=1}^{n-k-1} \mathcal{E}_i \le 2^{-s} \enspace . \qedhere \]
+      \Pr\{\|C(x)|\le n-s\} \le 2^{-s} \enspace . \qedhere 
+  \]
 \end{proof}
+
+\subsection{Stirling Inequalities}
+
+Before moving on to some more advanced applications, it will be helpful
+to remind the reader of a few inequalities that can be derived from
+Stirling's Approximation of $n!$.  Recall that Stirling's Approximation
+states that
+\begin{equation}
+  n! = \left(\frac{n}{e}\right)^n\sqrt{2\pi n}\left(1+O\left(\frac{1}{n}\right)\right) 
+   \label{stirling}
+\end{equation}
+
+Stirling's Inequality immediately implies that there is a code for sets
+of size $n!$ in which every codeword has length
+\begin{align}
+  \lceil \log n!\rceil 
+      & \le n\log n - n\log e + (1/2)\log(2\pi n) + O(1)  
+             \eqlabel{stirling-tight} \\
+      & \le n\log n - n\log e + O(\log n)  
+             \eqlabel{stirling-loose} \enspace .
+\end{align}
+
+Similarly, for any $k\in\{1,\ldots,n-1\}$, there is a code for sets of 
+size $\binom{n}{k}$ in which every codeword has length
+\begin{align*}
+  \left\lceil\log \binom{n}{k}\right\rceil 
+     & \le \log n! - \log k! - \log (n-k)! + 1 \\
+     & = n\log n - k\log k - (n-k)\log(n-k) + \log\left(\frac{n}{k(n-k)}\right) + O(1) \\
+     & = n\log n - k\log k - (n-k)\log(n-k) + O(1) \\
+     & = n\log n - k\log k - (n-k)\log n + (n-k)(\log n-\log(n-k)) + O(1) \\
+     & = k\log n - k\log k + \underbrace{(n-k)(\log n-\log(n-k))}_\text{yuck!}  - \log(2\pi n) + O(1) 
+         \numberthis \eqlabel{hassle} \\ 
+\end{align*}
+
+The subexpression $(n-k)(\log n-\log(n-k))$ is awkward here. We can
+simplify it as follows:
+\begin{align*}
+   (n-k)(\log n-\log(n-k))
+      & = (n-k)\log \left(\frac{n}{n-k}\right) \\
+      & = (n-k)\log \left(1+\frac{k}{n-k}\right) \\
+      & \le (n-k)(k/(n-k))\log e & \text{(since $1+x \le e^x$)} \\
+      & = k\log e 
+\end{align*}
+
+Using this, \eqref{hassle} becomes
+\begin{equation}
+  \left\lceil\log \binom{n}{k}\right\rceil 
+    \le k\log n - k\log k + k\log e - \log (2\pi n) + O(1) \eqlabel{log-n-choose-k}
+\end{equation} 
+
+
+\section{Applications of the Uniform Encoding Lemma}
+\seclabel{applications-i}
+
 
 \subsection{Graphs with no Large Clique or Independent Set}
 
@@ -247,49 +296,7 @@ Erdős' original result, which was at the threshold $2\log n - 2\log\log
 n + O(1)$.
 \end{rem}
 
-\subsection{Some Binomial Approximations}
 
-For some of our encoding arguments we use Stirling's approximation for $n!$, 
-which tells us that we can encode any one of $n!$ possibilities using
-
-\begin{align}
-  \lceil \log n!\rceil 
-      & \le n\log n - n\log e + (1/2)\log(2\pi n) + O(1)  
-             \eqlabel{stirling-tight} \\
-      & \le n\log n - n\log e + O(\log n)  
-             \eqlabel{stirling-loose}
-\end{align}
-bits.
-
-Similarly, we can encode any $k$-subset of a set of size $n$ using
-
-\begin{align*}
-  \left\lceil\log \binom{n}{k}\right\rceil 
-     & = \log n! - \log k! - \log (n-k)! \\
-     & = n\log n - k\log k - (n-k)\log(n-k) + \log(2\pi n) - \log (2\pi k) - \log (2\pi (n-k)) + O(1) \\
-     & = n\log n - k\log k - (n-k)\log(n-k) - \log(2\pi n) + O(1)  \\
-     & = n\log n - k\log k - (n-k)\log n + (n-k)(\log n-\log(n-k)) - \log(2\pi n) + O(1) \\
-     & = k\log n - k\log k + \underbrace{(n-k)(\log n-\log(n-k))}_\text{yuck!}  - \log(2\pi n) + O(1) 
-         \numberthis \eqlabel{hassle} \\ 
-\end{align*}
-
-The subexpression $(n-k)(\log n-\log(n-k))$ is awkward here. We can
-simplify it as follows:
-\begin{align*}
-   (n-k)(\log n-\log(n-k))
-      & = (n-k)\log \left(\frac{n}{n-k}\right) \\
-      & = (n-k)\log\left(\frac{t+k}{t}\right) & \text{(substituting $t=n-k$)} \\
-      & = (n-k)\log(1+k/t) \\
-      & \le (n-k)(k/t)\log e & \text{(since $1+x \le e^x$)} \\
-      & = (n-k)(k/(n-k))\log e \\
-      & = k\log e 
-\end{align*}
-
-Using this, \eqref{hassle} becomes
-\begin{equation}
-  \left\lceil\log \binom{n}{k}\right\rceil 
-    \le k\log n - k\log k + k\log e - \log (2\pi n) + O(1) \eqlabel{log-n-choose-k}
-\end{equation} 
 
 \subsection{Balls in Urns}
 
@@ -350,10 +357,8 @@ A_q$, which happens with probability $1/2$ in a random permutation.}
 A more advanced question is to ask for a concentration result on the
 number of executions of Line~4. This is a harder question to tackle;
 because $>$ is transitive, the $\binom{n}{2}$ events being studied have
-a lot of interdependence.  With some intutition about independence, and
-the use of the right concentration inequality, one can obtain a fairly
-tight bound with a fairly short proof.  In the following, we show how
-this can be done with an encoding argument:
+a lot of interdependence. In the following, we show how to obtain some
+concentration result with an encoding argument:
 
 \begin{thm}\thmlabel{insertion-sort}
 For a random permutation, $A_1,\ldots,A_n$ of $n$ distinct elements,
