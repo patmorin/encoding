@@ -49,27 +49,35 @@ recommends a total of 6 Tier-1 hours and 2 Tier-2 hours spent on discrete
 probability, as part of the discrete structures curriculum.
 
 In this expository paper, we survey applications of ``encoding arguments''
-that tranforms the problem of upper-bounding the probability of a
-specific event, $\mathcal{E}$, into the problem of devising a code that
-is particularly short whenever $\mathcal{E}$ occurs.  Encoding arguments
-have several advantages over traditional probabilistic analysis:
+that tranforms the problem of upper-bounding the probability of a specific
+event, $\mathcal{E}$, into the problem of devising a code for the set
+of elementary events that happens to be particularly short whenever
+$\mathcal{E}$ occurs.  Encoding arguments have several advantages over
+traditional probabilistic analysis:
 
 \begin{enumerate}
   \item Encoding arguments are almost ``probability-free.''  Except for
   applying a simple Encoding Lemma, there is no probability involved.
   In particular, there is no chance to make common mistakes such as
   multiplying probabilities of non-independent events or (equivalently)
-  multiplying expectations.
+  multiplying expectations.  
+
+  The proof of the encoding lemma itself is trivial and the only
+  probability it uses is that the fact, if a finite set $X$ contains $r$
+  special elements and we pick an element uniformly at random from $X$,
+  then the probability of picking a special element is $r/|X|$.
 
   \item Encoding arguments usually yield strong results;
   $\Pr\{\mathcal{E}\}$ typically decreases at least exponentially in
   the parameter of interest. Traditionally, these strong concentration
-  results require (at least) careful on independent events and/or the
-  application of concentration inequalities.
+  results require (at least) carefuly calculations on probabilities of
+  independent events and/or the application of concentration inequalities.
+  The subject of concentration inequalities is advanced enough to be
+  the topic of entire textbooks \cite{A,B}.
   
   \item Encoding arguments are natural for computer scientists. They
   turn a probabilistic analysis problem into the problem of designing an
-  efficient encoding---an algorithmic problem. Consider the following 
+  efficient code---an algorithmic problem. Consider the following 
   two problems:
     \begin{enumerate}
 
@@ -80,34 +88,38 @@ have several advantages over traditional probabilistic analysis:
     \item Design a encoding for graphs on $n$ vertices so that a graph,
        $G$, that contains a clique of size $k=\lceil 4\log n\rceil$
        is encoded using at most $\binom{n}{2}-\log^2 n$ bits. (Note:
-       Your encoding and decoding algoritms don't have to be efficient,
+       Your encoding and decoding algorithms don't have to be efficient,
        just correct.)
     \end{enumerate}
-  Most computer science undergraduates would not know where to start
+  Many computer science undergraduates would not know where to start
   on the first problem.  Even a good student who realizes that
   they can use Boole's Inequality will still be stuck
   wrestling with the formula $\binom{n}{4\log n}2^{-\binom{k}{2}}$.  
 \end{enumerate}
 
-Our motivation for doing this is that encoding arguments are an easily
+Our motivation for this work is that encoding arguments are an easily
 accessible, yet versatile tool for answering many questions.  Most of
 these arguments can be applied after learning almost no probability
-theory beyond the fact that, if a finite set $X$ contains $r$ special
-elements and we pick an element uniformly at random from $X$, then the
-probability of picking a special element is $r/|X|$.
+theory beyond the Encoding Lemma mentioned above.
 
-In \secref{uel}, we present the \emph{Uniform Encoding Lemma}, which is
-the basis of most of our encoding arguments.  \Secref{applications-i}
-presents  applications of the Uniform Encoding Lemma to a variety of
-problems.  \Secref{nuel} presents a more general Non-Uniform Encoding
-Lemma that can handle a larger variety of applications, some of which are
-presented in \secref{applications-ii}.  \Secref{summary} summarizes
-and concludes with some directions for future research.
+The remainder of this article is organized as follows: In \secref{uel},
+we present necessary background, including the \emph{Uniform
+Encoding Lemma}, which is the basis of most of our encoding arguments.
+\Secref{applications-i} presents  applications of the Uniform Encoding
+Lemma to a variety of problems.  \Secref{nuel} presents a more
+general Non-Uniform Encoding Lemma that can handle a larger variety of
+applications, some of which are presented in \secref{applications-ii}.
+\Secref{summary} summarizes and concludes with some directions for
+future research.
 
 
 
 \section{Background}
 \seclabel{uel}
+
+This section presents the necessary background on prefix-free codes and binomial coefficients.
+
+\subsection{Prefix-free Codes}
 
 A \emph{code}, $C\from X\to \{0,1\}^*$ is a one-to-function from a set
 $X$ to the set of binary strings.  The elements of the range of $C$ are
@@ -129,34 +141,39 @@ parent to its left (respectively, right) child. (See \figref{bintree}.)
   \figlabel{bintree}
 \end{figure}
 
-If $C$ is prefix-free, then the number of $C$'s codewords that have
-length \emph{at most} $k$ is not more than $2^k$. To see this why this
-is so, note that $C$ can be modified into a code $\hat C$, in which
-every codeword of length less than $k$ is extended so that it has length
-exactly $k$ (the prefix-freeness of $C$ ensures that $\hat C$ is also a
-prefix-free code). The number of $\hat C$'s codewords of length $k$ is
-equal to the the number of $C$'s codewords of length at most $k$; since
-codewords are just binary strings, there are not more than $2^k$ of these.
+If $C$ is prefix-free, then the number of $C$'s codewords that have length
+\emph{at most} $k$ is not more than $2^k$. To see this why this is so,
+observe that $C$ can be modified into a code $\hat C$, in which every
+codeword of length $\ell <k$ is extended---by appending $k-\ell$ zeros---so that
+it has length exactly $k$. The prefix-freeness of $C$ ensures that $\hat
+C$ is also a prefix-free code). The number of $\hat C$'s codewords of
+length $k$ is equal to the the number of $C$'s codewords of length at
+most $k$; since codewords are just binary strings, there are not more
+than $2^k$ of these.
 
-\begin{lem}[Uniform Encoding Lemma]
-  Let $C\from S\to \{0,1\}^*$ be a prefix-free code. When an element $x$
-  is chosen uniformly at random from $S$, $\Pr\{|C(x)|\le \log|S|-s\}\le
+As we will see, the following lemma is surprisingly versatile:
+\begin{lem}[Uniform Encoding Lemma]\lemlabel{uel}
+  Let $C\from X\to \{0,1\}^*$ be a prefix-free code. When an element $x\in X$
+  is chosen uniformly at random $\Pr\{|C(x)|\le \log|S|-s\}\le
   2^{-s}$.
 \end{lem}
 
 \begin{proof}
   Since $C$ is a one-to-one function, choosing $x$ uniformly from $S$
   implies that $C(x)$ is chosen uniformly from $C$'s codewords. Let
-  $k=\log|S|-s$. Since $C$ has $|S|$ codewords and at most $2^{k}$ of these
-  have length at most $k$, the probability that we choose one of these 
+  $k=\log|X|-s$. Since $C$ has $|X|$ codewords and at most $2^{k}$ of these
+  have length at most $k$, the probability that $x$ is one of these 
   codewords is at most
-  \[   \frac{2^k}{|S|} = \frac{2^{\log|S|-s}}{|S|} = 2^{-s} \enspace . \qedhere \]
+  \[
+     \frac{2^k}{|X|} = \frac{2^{\log|S|-s}}{|X|} = 2^{-s} \enspace . \qedhere 
+  \]
 \end{proof}
 
+\subsection{Runs in Binary Strings}
 
-As a warm-up exercise, we show how the Uniform Encoding Lemma can be
-used to show that a random $n$-bit string is unlikely to contain a run
-of significantly more than $\log n$ one bits.
+As a warm-up exercise to illustrate the use of the Uniform Encoding
+Lemma we will show that a random $n$-bit string is unlikely to contain
+a run of significantly more than $\log n$ one bits.
 
 \begin{thm}\thmlabel{runs-i}
   Let $x=\langle x_1,\ldots,x_n\rangle\in\{0,1\}^n$ be chosen
@@ -171,11 +188,11 @@ of significantly more than $\log n$ one bits.
   $x_i=x_{i+1}=\cdots=x_{i+k-1}=1$, then $C(x)$ is a zero bit followed
   by the $n$ bits $x_1,\ldots,x_n$.  However, if there is such an index,
   $i$, then $C(x)$ is a one bit, followed by (the binary encoding of)
-  $i$, followed by the $n-k$ bits $x_1,\ldots,x_{i-1},x_{i+t},\ldots,x_n$.
+  $i$, followed by the $n-t$ bits $x_1,\ldots,x_{i-1},x_{i+t},\ldots,x_n$.
 
   Observe that, in the latter case, $C(x)$ has length 
   \[
-      1 + \lceil\log n\rceil + n - k = n-s \enspace .
+      1 + \lceil\log n\rceil + n - t = n-s \enspace .
   \]
   It is easy to check that, for any $x$, we can reconstruct
   $x_1,\ldots,x_n$ from $C(x)$, so $C$ is indeed a code for $\{0,1\}^n$.
@@ -187,11 +204,12 @@ of significantly more than $\log n$ one bits.
   that there exists any index $i\in\{1,\ldots,n-k-1\}$ such that
   $x_i=x_{i+1}=\cdots=x_{i+k-1}=1$ is at most
   \[
-      \Pr\{\|C(x)|\le n-s\} \le 2^{-s} \enspace . \qedhere 
+      \Pr\{|C(x)|\le n-s\} \le 2^{-s} \enspace . \qedhere 
   \]
 \end{proof}
 
-\subsection{Stirling Inequalities}
+\subsection{Stirling Approximations}
+\seclabel{stirling}
 
 Before moving on to some more advanced applications, it will be helpful
 to remind the reader of a few inequalities that can be derived from
@@ -199,14 +217,14 @@ Stirling's Approximation of $n!$.  Recall that Stirling's Approximation
 states that
 \begin{equation}
   n! = \left(\frac{n}{e}\right)^n\sqrt{2\pi n}\left(1+O\left(\frac{1}{n}\right)\right) 
-   \label{stirling}
+   \eqlabel{stirling}
 \end{equation}
 
-Stirling's Inequality immediately implies that there is a code for sets
+\Eqref{stirling} immediately implies that there is a code for sets
 of size $n!$ in which every codeword has length
 \begin{align}
   \lceil \log n!\rceil 
-      & \le n\log n - n\log e + (1/2)\log(2\pi n) + O(1)  
+      & \le n\log n - n\log e + (1/2)\log n + O(1)  
              \eqlabel{stirling-tight} \\
       & \le n\log n - n\log e + O(\log n)  
              \eqlabel{stirling-loose} \enspace .
@@ -217,10 +235,10 @@ size $\binom{n}{k}$ in which every codeword has length
 \begin{align*}
   \left\lceil\log \binom{n}{k}\right\rceil 
      & \le \log n! - \log k! - \log (n-k)! + 1 \\
-     & = n\log n - k\log k - (n-k)\log(n-k) + \log\left(\frac{n}{k(n-k)}\right) + O(1) \\
+     & = n\log n - k\log k - (n-k)\log(n-k) + (1/2)\log\left(\frac{n}{k(n-k)}\right) + O(1) \\
      & = n\log n - k\log k - (n-k)\log(n-k) + O(1) \\
      & = n\log n - k\log k - (n-k)\log n + (n-k)(\log n-\log(n-k)) + O(1) \\
-     & = k\log n - k\log k + \underbrace{(n-k)(\log n-\log(n-k))}_\text{yuck!}  - \log(2\pi n) + O(1) 
+     & = k\log n - k\log k + \underbrace{(n-k)(\log n-\log(n-k))}_\text{yuck!}  + O(1) 
          \numberthis \eqlabel{hassle} \\ 
 \end{align*}
 
@@ -233,17 +251,18 @@ simplify it as follows:
       & \le (n-k)(k/(n-k))\log e & \text{(since $1+x \le e^x$)} \\
       & = k\log e 
 \end{align*}
-
-Using this, \eqref{hassle} becomes
+Using this simplification, \eqref{hassle} becomes
 \begin{equation}
   \left\lceil\log \binom{n}{k}\right\rceil 
-    \le k\log n - k\log k + k\log e - \log (2\pi n) + O(1) \eqlabel{log-n-choose-k}
+    \le k\log n - k\log k + k\log e + O(1) \eqlabel{log-n-choose-k}
+     \enspace .
 \end{equation} 
 
 
 \section{Applications of the Uniform Encoding Lemma}
 \seclabel{applications-i}
 
+We now start with some applications of the Uniform Encoding Lemma.
 
 \subsection{Graphs with no Large Clique or Independent Set}
 
@@ -257,10 +276,9 @@ large clique and no large independent set. Here we show how this can be
 done using an encoding argument.
 
 \begin{thm}\thmlabel{erdos-renyi-i}
-  For any $\epsilon>0$ and for all sufficiently large $n$, the probability
-  that the random graph, $G_{n,\frac{1}{2}}$ contains a clique or an
-  independent set of size $t = \lceil(2+\epsilon)\log n + \sqrt{s}\rceil$
-  is at most $2^{-s}$.
+  For all $n\ge 4$ and $s\ge 1$, the probability that the random graph,
+  $G_{n,\frac{1}{2}}$ contains a clique or an independent set of size $t =
+  \lceil 3\log n + \sqrt{2s}\rceil$ is at most $2^{-s}$.
 \end{thm}
 
 \begin{proof}
@@ -270,30 +288,39 @@ done using an encoding argument.
   a 0 bit followed by the $\binom{n}{2}$ bits of $G$'s adjacency matrix
   in row-major order.
   
-  Otherwise, $G$ contains a clique or independent set, $S$, of size $t$.
-  Then the code consists of a 1; another bit indicating whether $S$ is a
-  clique or IS; the vertices of $S$; then the adjacency matrix of $G$ in
-  row major-order but leaving out all of the $\binom{t}{2}$ bits implied
-  by the edges or non-edges in $S$.
+  Otherwise, $G$ contains a clique or independent set, $S$, of size
+  $t$.  Then the code consists of a 1; another bit indicating whether
+  $S$ is a clique or independent set; the vertices of $S$; then the
+  adjacency matrix of $G$ in row major-order but leaving out all of the
+  $\binom{t}{2}$ bits implied by the edges or non-edges in $S$.
   
   In the second case, this encoding requires 
   \begin{align*}
      b & = 2 + t\log n + \binom{n}{2}-\binom{t}{2} \\
+       & = \binom{n}{2} + 2 + t\log n - (1/2)(t^2 - t) \\
+       & = \binom{n}{2} + 2 + t\log n 
+            - (1/2)\left(9\log^2 n +3\sqrt{2s}\log n + 2s - t\right) \\
+       & = \binom{n}{2} + 2 
+            - (1/2)\left(3\log^2 n + \sqrt{2s}\log n + 2s - t\right) \\
+       & = \binom{n}{2} + 2 
+            - (1/2)\left(t\log n + 2s - t\right) \\
+       & = \binom{n}{2} + 2 
+            - (1/2)\left(t(\log n-1)\right) - s \\
        & \le \binom{n}{2} - s 
   \end{align*}
-  bits (because of our choice of $t$).   Applying the Uniform Encoding
+  bits.   Applying the Uniform Encoding
   Lemma completes the proof.
 \end{proof}
 
 \begin{rem}
-The bound in \thmref{erdos-renyi-i} can be strengthened a little, since
-the elements of $S$ can be encoded with fewer than $t\log n$ bits; in
-particular $\lceil\log\binom{n}{t}\rceil=t\log n - t\log t + t\log e -
-O(\log t)$ bits suffice.  With a careful calculation, using the approximations
-described in the next section, the proof then
-works with $t=2\log n +O(\log\log n) + \sqrt{s}$. This comes closer to
-Erdős' original result, which was at the threshold $2\log n - 2\log\log
-n + O(1)$.
+The bound in \thmref{erdos-renyi-i} can be strengthened a little,
+since the elements of $S$ can be encoded with fewer than $t\log n$
+bits; in particular $\lceil\log\binom{n}{t}\rceil=t\log n - t\log t +
+t\log e - O(\log t)$ bits suffice.  With a careful calculation, using
+the approximations described in \secref{stirling}, the
+proof then works with $t=2\log n +O(\log\log n) + \sqrt{s}$. This comes
+closer to Erdős' original result, which was at the threshold $2\log n -
+2\log\log n + O(1)$.
 \end{rem}
 
 
@@ -322,10 +349,11 @@ n + O(1)$.
   \begin{align*}
     b &\le 1 + \lceil\log n\rceil + \log\binom{n}{t} 
            + \lceil(n-t)\log n\rceil \\
-     & = 1 + \lceil\log n\rceil + t\log n - t\log t + t\log e  
-           + (n-t)\log n - \log(2\pi n) + O(1)
+     & = \log n + t\log n - t\log t + t\log e  
+           + (n-t)\log n + O(1)
              & \text{(by applying \eqref{log-n-choose-k})} \\
-     & = n\log n - t\log t + t\log e + O(1)
+     & = n\log n - t\log t + t\log e + O(1) \\
+     & \le  n\log n - s
   \end{align*}
 \end{proof}
 
