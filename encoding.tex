@@ -8,7 +8,7 @@
 %\newcommand{\keywords}[1]{\vspace{2em}\noindent\textbf{Keywords:} #1}
 %\newcommand{\from}{\colon}
 
-\title{Encoding Arguments}
+\title{\MakeUppercase{Encoding Arguments}}
 \author{Pat Morin}
 \date{}
 
@@ -269,7 +269,7 @@ Similarly, we can encode any $k$-subset of a set of size $n$ using
      & = n\log n - k\log k - (n-k)\log(n-k) + \log(2\pi n) - \log (2\pi k) - \log (2\pi (n-k)) + O(1) \\
      & = n\log n - k\log k - (n-k)\log(n-k) - \log(2\pi n) + O(1)  \\
      & = n\log n - k\log k - (n-k)\log n + (n-k)(\log n-\log(n-k)) - \log(2\pi n) + O(1) \\
-     & = k\log n - k\log k + \underbrace{(n-k)(\log n-\log(n-k))}_\text{yuck!}  - \log(2\pi n) + O(1) \\
+     & = k\log n - k\log k + \underbrace{(n-k)(\log n-\log(n-k))}_\text{yuck!}  - \log(2\pi n) + O(1) 
          \numberthis \eqlabel{hassle} \\ 
 \end{align*}
 
@@ -294,31 +294,32 @@ Using this, \eqref{hassle} becomes
 \subsection{Balls in Urns}
 
 \begin{thm}
-   Suppose we throw $n$ balls indepedently and uniformly at random
-   into $n$ urns. Then, the probability that any urn contains more than
-   $t=blah$ balls is at most $2^{-s}$.
+  Suppose we throw $n$ balls indepedently and uniformly at random into $n$
+  urns. Then, the probability that any urn contains more than $t=blah$
+  balls is at most $2^{-s}$.
 \end{thm}
 
 \begin{proof}
-Let $b_i$, $i\in\{1,\ldots,n\}$, denote the index of the urn in which
-the $i$th ball lands. Notice that the sequence $b_1,\ldots,b_n$ is chosen
-uniformly at random from a set of size $n^n$, and it is this choice 
-that will be used in our encoding argument.
+  For each $i\in\{1,\ldots,n\}$, let $b_i$ denote the index of the urn in
+  which the $i$th ball lands. Notice that the sequence $b_1,\ldots,b_n$
+  is chosen uniformly at random from a set of size $n^n$, and it is this
+  choice that will be used in our encoding argument.
 
-If no urn contains $t$ or more balls, then our code is a 0 bit followed by the obvious encoding. If some urn, $i$, contains $t$ or more balls, then our code is a 1 bit followed by the value $i$ ($\lceil \log n\rceil$ bits) followed by a code for $t$ of the balls in urn $i$ ($\log\binom{n}{t}$) bits, followed by the remaining $n-t$ values of $b_1,\ldots,b_n$ that cannot be deduced from the preceding information.  In total, this is
-\begin{align*}
-  b &\le 1+\lceil\log n\rceil + \log\binom{n}{t} + \lceil(n-t)\log n\rceil \\
-   & = 1+\lceil\log n\rceil + t\log n - t\log t + t\log e  + (n-t)\log n - \log(2\pi n) + O(1)
-           & \text{(by applying \eqref{log-n-choose-k})} \\
-   & = n\log n - t\log t + t\log e + O(1)
-\end{align*}
-
-
-
-
-
-If some urn, $u_i$ contains $t$ or more balls, then we encode this 
-
+  If no urn contains $t$ or more balls, then our code is a 0 bit followed
+  by the obvious encoding. If some urn, $i$, contains $t$ or more balls,
+  then our code is a 1 bit followed by the value $i$ ($\lceil \log
+  n\rceil$ bits) followed by a code for $t$ of the balls in urn $i$
+  ($\log\binom{n}{t}$) bits, followed by the remaining $n-t$ values of
+  $b_1,\ldots,b_n$ that cannot be deduced from the preceding information.
+  In total, this is
+  \begin{align*}
+    b &\le 1 + \lceil\log n\rceil + \log\binom{n}{t} 
+           + \lceil(n-t)\log n\rceil \\
+     & = 1 + \lceil\log n\rceil + t\log n - t\log t + t\log e  
+           + (n-t)\log n - \log(2\pi n) + O(1)
+             & \text{(by applying \eqref{log-n-choose-k})} \\
+     & = n\log n - t\log t + t\log e + O(1)
+  \end{align*}
 \end{proof}
 
 \subsection{Analysis of Insertion Sort}
