@@ -216,21 +216,28 @@ a run of significantly more than $\log n$ one bits.
   \]
 \end{proof}
 
-Simple as it is, \thmref{runs} contains the main ideas used in most encoding arguments:
+Simple as it is, the proof of \thmref{runs-i} contains the main ideas
+used in most encoding arguments:
 
 \begin{enumerate}
   \item The arguments usually show that a particular \emph{bad event}
   is unlikely.  In \thmref{runs-i} the bad event is the occurrence of a long
   string of consecutive 1's.
 
-  \item The length of the codeword is irrelevant if the bad event under
-  consideration does not occur.  In \thmref{runs-i} the codeword has length
-  $n+1$.
+  \item The length of the codeword is irrelevant to the argument if
+  the bad event does not occur.  In \thmref{runs-i}
+  the codeword has length $n+1$ in this case.
+ 
+  \item The code often starts with a 1 or 0 to flag the occurrence or
+  non-occurrence of the bad event.
 
-  \item The code often starts with a 1 or 0 to flag the occurrence or non-occurrence of the bad event.
-  
-  \item When the bad event does occur, the code usually begins with a description of the bad event, and is then followed by a description that 
-  
+  \item When the bad event does occur, the code usually begins with
+  a concise description of the bad event, and is then followed by a
+  straightforward encoding of the information that is not implied by the
+  bad event. In \thmref{runs-i}, the bad event is completely described
+  by the index $i$ at which the run of 1 bits begins, and this implies
+  that the bits $x_i,\ldots,x_{i+t-1}$ are all equal to 1, so these
+  bits do not need to be specified in the second part of the codeword. 
 \end{enumerate}
 
 \subsection{Stirling Approximations}
@@ -353,6 +360,11 @@ closer to Erdős' original result, which was at the threshold $2\log n -
 
 
 \subsection{Balls in Urns}
+\seclabel{urns}
+
+The question of what happens when one throws $n$ balls, randomly and
+indepently into $n$ urns is a useful abstraction of many algorithmic,
+data structures and load-balancing problems.
 
 \begin{thm}\thmlabel{urns}
   Let $t$ be such that $t\log(t/e)-\log n-4 \ge s$ and suppose we throw
@@ -393,20 +405,78 @@ of \thmref{urns}.
   \end{align*}
 \end{proof}
 
+\subsection{Linear Probing}
+
+While balls in urns is a valid abstraction of hashing with chaining, a more practically efficient form of a hashing is \emph{linear probing}.  
+In a linear-probing hash table, we hash $n$ items $x_1,\ldots,x_n$ into
+a linear probing hash table of size $m=cn$, $c\ge 1$. When we insert
+$x_i$ we try and place it at table position $j=h(x_i)$ unless it is
+already occupied by one of $x_1,\ldots,x_{i-1}$ in which case we try
+table location $(j+1)\bmod m$, $(j+2)\bmod m$, and so on until we find
+an empty spot for $x_i$.  We want to study the expected search time for
+some item $x_i$ in this hash table.
+
+We call a maximal consecutive (the table locations $m-1$ and
+$0$ are considered consecutive) sequence of occupied table locations
+a \emph{block}.
+
+\begin{thm}
+  Fix some $x\in\{x_1,\ldots,x_n\}$. Then the probability that the block
+  containing $x$ has size $t\ge 1+(s+\log t + O(1))/\log(c/e)$ is at most $2^{-s}$.
+\end{thm}
+
+\begin{proof}
+  This is an encoding argument that encodes the vector 
+  \[
+     R = h(x_1),h(x_2),\ldots,h(x_n)
+  \]
+  which is drawn uniformly at random from a set $X$ of size $n^{m}=n^{cn}$.
+  
+  If the block containing $x$ does not have size $t$ then we encode $R$
+  as a 0 bit followed by the obvious encoding of $h(x_1),\ldots,h(x_n)$.
+  
+  Otherwise, we encode $R$ as a 1 bit followed by the first index,
+  $b$, of the block containing $x$; followed by the $t-1$ elements,
+  $y_1,\ldots,y_{t-1}$, of this block (excluding $x$); followed
+  by enough information to decode the hash values of $h(x)$ and
+  $h(y_1),\ldots,h(y_{t-1})$; followed by $h(x_1),\ldots,h(x_n)$ excluding
+  the $t$ hash values we can compute from the preceding information.
+
+  Notice that $h(x),h(y_1),h(y_2),\ldots,h(y_{t-1})$ are in the range
+  $b,\ldots,b+t-1$ (modulo $m$) so these can be encoded using $\lceil
+  t\log t\rceil$ bits.  Therefore, if the block containing $x$ has size $t$,
+  then we obtain a codeword whose length is
+  \begin{align*}
+    b & = \log m + \log\binom{n}{t-1} + t\log t + (n-t)\log m + O(1) \\
+       & \le \log m + (t-1)\log n - 
+           {\color{red}(t-1)\log(t-1)} + (t-1)\log e + {\color{red}t\log t} + (n-t)\log m + {\color{red}O(1)}\\
+       & \le {\color{blue}\log m} + {\color{blue}(t-1)\log n} + (t-1)\log e + {\color{blue}(n-t)\log m} + {\color{red}\log t}+ {\color{red} O(1)}\\
+       & = {\color{blue}n\log m} - {\color{blue}(t-1)\log c} + (t-1)\log e + \log t + O(1) \\
+       & = n\log m - (t-1)\log(c/e) + \log t + O(1) \\
+       & \le n\log m - s \enspace ,
+  \end{align*}
+  for $t\ge (s+\log t+O(1))/\log (c/e) + 1$.
+\end{proof}
+
+
+
 \subsection{Bipartite Expanders}
 
 Consider a random bipartite multigraph $G=(A,B,E)$ where $|A|=|B|=n$
-and the $3n$ edges in $E$ are obtained as follows:  Each vertex $u\in
-A$ chooses 3 random neighbours, $x(u)$, $y(u)$, and $z(u)$, in $B$,
-with replacement.  All choices of edges are independent.
+and the $3n$ edges in $E$ are obtained as follows:  Each vertex $u\in A$
+chooses 3 random neighbours, $x(u)$, $y(u)$, and $z(u)$, in $B$, with
+replacement.  All choices of edges are independent. For a set $A'\subseteq
+A$, the \emph{neighbourhood} of $A'$, denoted $N(A')$, is the subset of
+vertices in $B$ that are adjacent to at least one element of $A'$.
 
 The following theorem shows that $G$ is an expander.  The proof of this
 theorem usually involves a messy sum that contains binomial coefficients
 and probabilities.  See, e.g., So and So \cite{S}.
 
 \begin{thm}
-  There exists a constant $\alpha >0$ such that, for all $A'\subset A$
-  with $|A'|\le \alpha n$, $|N(A')| \ge 1.5 |A'|$.
+  There exists a constant $\alpha >0$ such that, with probability at
+  least $1-2^{-\Omega(n^{1/2})}$, for all $A'\subset A$ with $|A'|\le
+  \alpha n$, $|N(A')| \ge 3|A'|/2$.
 \end{thm}
 
 \begin{proof}
@@ -416,27 +486,40 @@ Without loss of generality, let $A=\{1,\ldots,n\}$.  We use an encoding argument
 \]
 which is chosen uniformly from a set $X$ of size $n^{3n}$.
 
-Suppose that some set $A'$ violates the conditions of the lemma and $|A'|=k\le \alpha n$.  Then we encode $k$, $A'$, $N(A')$ and then the edges between $A'$ and $N(A')$.  Then we encode the rest of $R$, skipping the $3k\log n$ bits devoted to elements in $A'$.
+If no set $A'$ violates the conditions of the lemma, then the code for
+$R$ is a zero bit followed by the obvious $3n\log n$ bit encoding of $R$.
 
-The total size of the first part of our encoding is
+If some set $A'$, $|A'|=k\le \alpha n$, violates the conditions of the
+lemma, then we encode a one bit, followed by $k$, $A'$, $N(A')$ and
+then the edges between $A'$ and $N(A')$.  Then we encode the rest of
+$R$, skipping the $3k\log n$ bits devoted to elements in $A'$.  The key
+savings here comes because $N(A')$ should take $3k\log n$ bits to encode,
+but can actually be encoded in roughly $3k\log(3k/2)$ bits.
+
+The total size of the first part of our encoding is, which includes $k$,
+$A'$ and $N(A')$ is
 \begin{align*}
-    h & =  O(\log k) + \log\binom{n}{k} + \log\binom{n}{1.5k} + 3k\log (1.5k) \\
-       & \le k\log n - k\log k + 1.5k\log n - 1.5k\log k + 3k\log k + O(k) \\
-      & = 2.5k\log n + .5k\log k + O(k)  \enspace .
+    h & = 2\log k + \log\binom{n}{k} + \log\binom{n}{3k/2} + 3k\log (3k/2) \\
+       & \le k\log n - k\log k + (3/2)k\log n - (3/2)k\log k + 3k\log k + k\log(3/2) \\
+      & = (5/2)k\log n + (1/2)k\log k + k\log(3/2)  \enspace .
 \end{align*}
-The size of the second part of our encoding is $3n\log n - 3k\log n$.  The savings, $s$, we obtain is therefore
+The size of the second part of our encoding is $3n\log n - 3k\log n$.  The savings, $s=s(k)$, we obtain is therefore
 \begin{align*}
-     s & = 3k\log n - 2.5k\log n - .5k\log k - O(k) \\
-       & = .5k\log n - .5k\log k - O(k) \\
-       & \ge .5k\log n - .5k\log(\alpha n) - O(k) \\
-       & \ge .5k\log n - .5k\log(n) - O(k) + .5k\log(1/\alpha) \\
-       & \ge \Omega(k\log(1/\alpha)) \enspace .
+     s(k) & = 3k\log n - (5/2)k\log n - (1/2)k\log k - k\log(3/2) \\
+       & = (1/2)k(\log n - \log(2k/3)) \\
+       & = (1/2)k(\log n - \log k - \log(3/2)) \\
+       & = (1/2)k\log(2n/(3k)) \enspace .
 \end{align*}
-for sufficiently small $\alpha > 0$.  Therefore, $G$ has the property stated with probability at least $1-2^{-\Omega(k\log(1/\alpha))}$.
+The function $s(k)$ is concave and is therefore minimized when $k$ is extremal. For $k=1$, we have 
+\[
+    s(1)=(1/2)\log n - \log(2/3)
+\]
+and $2^{-s(1)} = O(n^{-1/2})$.  For $k=\alpha n$ we have
+\[
+   s(\alpha n) = (\alpha n/2)\log(2/(3\alpha))
+\]
+and $2^{-s(\alpha n)} = 2^{-\Omega(n)}$ for $\alpha < 2/3$.
 \end{proof}
-
-Note that there's nothing special about the constant 1.5 here; $2-\epsilon$ works, but the final probability becomes $1-2^{-\Omega(\epsilon k\log(1/\alpha))}$.
-
 
 
 \subsection{Analysis of Insertion Sort}
