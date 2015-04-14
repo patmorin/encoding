@@ -192,7 +192,7 @@ of significantly more than $\log n$ one bits.
   Now, $x$ was chosen uniformly at random from a set of size $2^{n}$.
   Therefore, by the Uniform Encoding Lemma, 
   \[
-      \Pr\{|C(x)|\le n-s\} = \Pr \bigcup_{i=1}^{n-k-1} \mathcal{E}_i \le 2^{-s} \enspace . \qedhere \]
+      \Pr\{|C(x)|\le n-s\} = \Pr\left(\bigcup_{i=1}^{n-k-1} \mathcal{E}_i\right) \le 2^{-s} \enspace . \qedhere \]
 \end{proof}
 
 \subsection{Graphs with no Large Clique or Independent Set}
@@ -323,7 +323,7 @@ $A_1,\ldots,A_n$.  Looking more closely at $b$, we find
 \begin{align*}
      b & \le \lceil 2\log n\rceil + n\log\left(\frac{m+n-2}{n-2}\right)
                   + (n-2)\log e
-                  - O(\log n) \text{ Missing $O(m\log (m/n)$ term here } \\
+                  - O(\log n) \\
      & \le n\log\left(\frac{m+n-2}{n-2}\right)
                   + n\log e + O(\log n) \\
      & \le n\log(\alpha n) 
