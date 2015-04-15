@@ -44,7 +44,7 @@ probabilistic arguments.
 Unfortunately, many of these beautiful results are inaccessible to most
 computer scientists because of a view that ``the math is too hard.''
 For instance, ACM's CS2013 Final Report does not require a full course
-in probability theory \cite[Page~50]{acm2013}. Indeed, the report
+in probability theory \cite[Page~50]{computing-curricula:computer}. Indeed, the report
 recommends a total of 6 Tier-1 hours and 2 Tier-2 hours spent on discrete
 probability, as part of the discrete structures curriculum.
 
@@ -57,12 +57,12 @@ traditional probabilistic analysis:
 
 \begin{enumerate}
   \item Encoding arguments are almost ``probability-free.''  Except for
-  applying a simple Encoding Lemma, there is no probability involved.
-  In particular, there is no chance to make common mistakes such as
-  multiplying probabilities of non-independent events or (equivalently)
-  multiplying expectations.  
+  applying a simple \emph{Uniform Encoding Lemma}, there is no probability
+  involved.  In particular, there is no chance to make common mistakes
+  such as multiplying probabilities of non-independent events or
+  (equivalently) multiplying expectations.
 
-  The proof of the encoding lemma itself is trivial and the only
+  The proof of the Uniform Encoding Lemma itself is trivial and the only
   probability it uses is that the fact, if a finite set $X$ contains $r$
   special elements and we pick an element uniformly at random from $X$,
   then the probability of picking a special element is $r/|X|$.
@@ -73,7 +73,7 @@ traditional probabilistic analysis:
   results require (at least) carefuly calculations on probabilities of
   independent events and/or the application of concentration inequalities.
   The subject of concentration inequalities is advanced enough to be
-  the topic of entire textbooks \cite{A,B}.
+  the topic of entire textbooks \cite{boucheron.lugosi.ea:concentration,dubhashi.panconesi:concentration}.
   
   \item Encoding arguments are natural for computer scientists. They
   turn a probabilistic analysis problem into the problem of designing an
@@ -119,7 +119,7 @@ future research.
 
 This section presents the necessary background on prefix-free codes and binomial coefficients.
 
-\subsection{Prefix-free Codes}
+\subsection{Prefix-free Codes and the Uniform Encoding Lemma}
 
 A \emph{code}, $C\from X\to \{0,1\}^*$ is a one-to-function from a set
 $X$ to the set of binary strings.  The elements of the range of $C$ are
@@ -156,12 +156,13 @@ codeword has length $\lceil\log |X|\rceil$. We simply enumerate the
 elements of $X$ in some order $x_0,x_1,\ldots,x_{|X|-1}$ and assign to
 each $x_i$ the binary representation of $i$ (padded with leading zeros),
 which has length $\lceil\log |X|\rceil$, since $i\in\{0,\ldots,|X|-1\}$.
-We will use this type of fixed-length code implicitly in many arguments.
+We will use this type of \emph{fixed-length code} implicitly in many arguments.
 
-As we will see, the following lemma is surprisingly versatile:
+As we will see, the following lemma, which is folklore, is surprisingly
+versatile:
 \begin{lem}[Uniform Encoding Lemma]\lemlabel{uel}
   Let $C\from X\to \{0,1\}^*$ be a prefix-free code. If an element $x\in
-  X$ is chosen uniformly at random, then $\Pr\{|C(x)|\le \log|S|-s\}\le
+  X$ is chosen uniformly at random, then $\Pr\{|C(x)|\le \log|X|-s\}\le
   2^{-s}$.
 \end{lem}
 
@@ -169,8 +170,8 @@ As we will see, the following lemma is surprisingly versatile:
   Since $C$ is a one-to-one function, choosing $x$ uniformly from $S$
   implies that $C(x)$ is chosen uniformly from $C$'s codewords. Let
   $k=\log|X|-s$. Since $C$ has $|X|$ codewords and at most $2^{k}$ of these
-  have length at most $k$, the probability that $x$ is one of these 
-  codewords is at most
+  have length at most $k$, the probability that $C(x)$ is one of these 
+  short codewords is at most
   \[
      \frac{2^k}{|X|} = \frac{2^{\log|S|-s}}{|X|} = 2^{-s} \enspace . \qedhere 
   \]
@@ -222,20 +223,20 @@ used in most encoding arguments:
 \begin{enumerate}
   \item The arguments usually show that a particular \emph{bad event}
   is unlikely.  In \thmref{runs-i} the bad event is the occurrence of a long
-  string of consecutive 1's.
+  substring of consecutive 1's.
 
   \item The length of the codeword is irrelevant to the argument if
   the bad event does not occur.  In \thmref{runs-i}
   the codeword has length $n+1$ in this case.
  
-  \item The code often starts with a 1 or 0 to flag the occurrence or
+  \item Codewords often start with a 1 or 0 to flag the occurrence or
   non-occurrence of the bad event.
 
   \item When the bad event does occur, the code usually begins with
   a concise description of the bad event, and is then followed by a
   straightforward encoding of the information that is not implied by the
   bad event. In \thmref{runs-i}, the bad event is completely described
-  by the index $i$ at which the run of 1 bits begins, and this implies
+  by the index $i$ at which the run of $t$ 1 bits begins, and this implies
   that the bits $x_i,\ldots,x_{i+t-1}$ are all equal to 1, so these
   bits do not need to be specified in the second part of the codeword. 
 \end{enumerate}
@@ -243,17 +244,18 @@ used in most encoding arguments:
 \subsection{Stirling Approximations}
 \seclabel{stirling}
 
-Before moving on to some more advanced applications, it will be helpful
-to remind the reader of a few inequalities that can be derived from
-Stirling's Approximation of $n!$.  Recall that Stirling's Approximation
-states that
+Before moving on to some more advanced encoding arguments, it will
+be helpful to remind the reader of a few inequalities that can be
+derived from Stirling's Approximation of $n!$.  Recall that Stirling's
+Approximation states that
 \begin{equation}
   n! = \left(\frac{n}{e}\right)^n\sqrt{2\pi n}\left(1+O\left(\frac{1}{n}\right)\right) 
    \eqlabel{stirling}
 \end{equation}
 
-\Eqref{stirling} immediately implies that there is a code for sets
-of size $n!$ in which every codeword has length
+In many cases, we are interested in representing a set of size $n!$
+using a fixed-length code.  The length of the codewords in such a code
+is given by the ceiling of
 \begin{align}
   \log n!
       & \le n\log n - n\log e + (1/2)\log n + \log(1+O(1/n)) \notag \\
@@ -265,12 +267,12 @@ of size $n!$ in which every codeword has length
 \end{align}
 
 Similarly, for any $k\in\{1,\ldots,n-1\}$, there is a code for sets of 
-size $\binom{n}{k}$ in which every codeword has length
+size $\binom{n}{k}$ in which every codeword has length given by the ceiling of
 \begin{align*}
   \log \binom{n}{k}
      & = \log n! - \log k! - \log (n-k)! \\
      & \le n\log n - k\log k - (n-k)\log(n-k) + (1/2)\log\left(\frac{n}{k(n-k)}\right) + O(1/n) \\
-     & = n\log n - k\log k - (n-k)\log(n-k) + O(1/n) \\
+     & \le n\log n - k\log k - (n-k)\log(n-k) + O(1/n) \\
      & = n\log n - k\log k - (n-k)\log n + (n-k)(\log n-\log(n-k)) + O(1/n) \\
      & = k\log n - k\log k + \underbrace{(n-k)(\log n-\log(n-k))}_\text{yuck!}  + O(1/n) 
          \numberthis \eqlabel{hassle} \\ 
@@ -304,7 +306,7 @@ We now start with some applications of the Uniform Encoding Lemma.
 A \emph{Erd\H{o}s-R\'enyi random graph}, $G_{n,p}$ is a graph with vertex
 set $V=\{1,\ldots,n\}$ and in which each edge $uw\in \binom{V}{2}$
 is present with probability $p$ and absent with probability $1-p$,
-independently of the other edges.  Erd\H{o}s \cite{X} used the random
+independently of the other edges.  Erd\H{o}s \cite{erdos:some} used the random
 graph $G_{n,\frac{1}{2}}$ to prove the existence of graphs having no
 large clique and no large independent set. Here we show how this can be
 done using an encoding argument.
@@ -367,15 +369,18 @@ indepently into $n$ urns is a useful abstraction of many algorithmic,
 data structures and load-balancing problems.
 
 \begin{thm}\thmlabel{urns}
-  Let $t$ be such that $t\log(t/e)-\log n-4 \ge s$ and suppose we throw
+  Let $t$ be such that $t\log(t/e) \ge 4+s+\log n$ and suppose we throw
   $n$ balls independently and uniformly at random into $n$ urns. Then,
   for sufficiently large $n$, the probability that any urn contains more 
   than $t$ balls is at most $2^{-s}$.
 \end{thm}
 
 Note that, for any constant $\epsilon >0$ and all sufficiently large
-$n$, taking $t = (1+\epsilon)\log n/\log\log n$ satisfies the requirements
-of \thmref{urns}.
+$n$, taking 
+\[
+   t = \frac{(1+\epsilon)\log n}{\log\log n}
+\] 
+satisfies the requirements of \thmref{urns}.
 
 \begin{proof}
   For each $i\in\{1,\ldots,n\}$, let $b_i$ denote the index of the urn in
@@ -385,11 +390,10 @@ of \thmref{urns}.
 
   If no urn contains $t$ or more balls, then our code is a 0 bit followed
   by the obvious encoding. If some urn, $i$, contains $t$ or more balls,
-  then our code is a 1 bit followed by the $\lceil \log n\rceil$-bit
-  encoding of $i$, followed by a $\lceil\log\binom{n}{t}\rceil$-bit
-  code that describes $t$ of the balls in urn $i$, followed by the
-  remaining $n-t$ values of $b_1,\ldots,b_n$ that cannot be deduced from
-  the preceding information.  In total, this is
+  then our code is a 1 bit followed by $i$, followed by a code that
+  describes $t$ of the balls in urn $i$, followed by the remaining $n-t$
+  values of $b_1,\ldots,b_n$ that cannot be deduced from the preceding
+  information.  In total, this is
   \begin{align*}
     b &\le \log n + \log\binom{n}{t} 
            + (n-t)\log n + 3 \\
@@ -469,9 +473,12 @@ replacement.  All choices of edges are independent. For a set $A'\subseteq
 A$, the \emph{neighbourhood} of $A'$, denoted $N(A')$, is the subset of
 vertices in $B$ that are adjacent to at least one element of $A'$.
 
-The following theorem shows that $G$ is an expander.  The proof of this
-theorem usually involves a messy sum that contains binomial coefficients
-and probabilities.  See, e.g., So and So \cite{S}.
+The following theorem shows that $G$ is an expander.  The proof of
+this theorem usually involves a messy sum that contains binomial
+coefficients and probabilities.  See, for example, Motwani and
+Raghavan \cite[Theorem~5.3]{motwani.raghavan:randomized}, Pinsker
+\cite[Lemma 1]{pinsker:on}, or Hoory, Linial, and Wigderson
+\cite[Lemma~1.9]{hoory.linial.ea:expander}.
 
 \begin{thm}
   There exists a constant $\alpha >0$ such that, with probability at
@@ -510,7 +517,9 @@ The size of the second part of our encoding is $3n\log n - 3k\log n$.  The savin
        & = (1/2)k(\log n - \log k - \log(3/2)) \\
        & = (1/2)k\log(2n/(3k)) \enspace .
 \end{align*}
-The function $s(k)$ is concave and is therefore minimized when $k$ is extremal. For $k=1$, we have 
+The function $s(k)$ is concave and is therefore minimized when $k$
+is extremal, with the extremes being $k=1$ and $k=\alpha
+n$. For $k=1$, we have
 \[
     s(1)=(1/2)\log n - \log(2/3)
 \]
@@ -519,6 +528,88 @@ and $2^{-s(1)} = O(n^{-1/2})$.  For $k=\alpha n$ we have
    s(\alpha n) = (\alpha n/2)\log(2/(3\alpha))
 \]
 and $2^{-s(\alpha n)} = 2^{-\Omega(n)}$ for $\alpha < 2/3$.
+\end{proof}
+
+\subsection{Analysis of Cuckoo Hashing}
+
+Cuckoo hashing is relatively new kind of hash table that offers an
+alternative to classic perfect hashing.  Mihai Pătraşcu is responsible
+for the following incredibly beautiful proof that cuckoo hashing succeeds
+with probability $1-O(1/n)$ \cite{patrascu:cuckoo}.
+
+The main object of study in cuckoo hashing is a random bipartite
+multigraph $G=(A,B,E)$ where $|A|=|B|=2n$ and $|E|=n$.  For each
+$i\in\{1,\ldots,n\}$, each edge $e_i$ of $E$ is obtained by randomly
+choosing (with replacement) and an endpoint in $a_i\in A$ and an endpoint
+in $b_i\in B$.  Cuckoo hashing has problems if this graph contains a
+long edge-simple path or if it contains a component with more edges
+than vertices.  (An edge-simple path is a path that uses each edge of
+the multiset $E$ at most once.)
+
+\begin{thm}
+  Fix some vertex $x\in A$, then the probability that $x$ is the endpoint
+  of an edge-simple path of length $t=s+1$ is at most $2^{-s}$.
+\end{thm}
+
+\begin{proof}
+  We use an encoding argument on the sequence
+  \[
+     R=a_1,b_1,a_2,b_2,\ldots,a_n,b_n
+  \]
+  which is drawn uniformly from a set $X$ of size $m^{2n}$.
+  
+  If $x$ is not the endpoints of a (edge-simple) path of length $t$,
+  then we encode $R$ as a 0 bit followed by the obvious encoding of $R$.
+
+  Otherwise the code starts with a 1 bit, followed by the encoding of
+  $t$ edges and vertices (excluding $x$) on a path, $P$, of length $t$ that
+  starts at $x$, followed by the $2n-2t$ entries in $R$ that we can are
+  not edges of this path.  
+
+  The path $P$ consists of $t+1$ vertices (the first of which is $x$) and
+  $t$ edges. The encoding of $P$ specifies the vertices (excluding $x$)
+  as well as the indices of the edges. The former requires $t\log m$ bits
+  and the latter requires $t\log n$ bits, for a total of $2t\log n$ bits.
+
+
+This encoding requires
+  \[
+    b = 1 + t\log m + t\log n + (2n-2t)\log m < 2n\log m - s
+  \]
+  bits, for $t=s+1$. The proof finishes, as usual, by applying the
+  Uniform Encoding Lemma.
+\end{proof}
+
+That was the long path part of the proof.  The overly-dense subgraph part works as follows:
+
+\begin{thm}
+  Fix a vertex $x\in A$.  Then the probability that $x$ is part of a
+  minimal subgraph that has more edges than vertices is $O(1/n^2)$.
+\end{thm}
+
+\begin{proof}
+  We encode the same bitstring $R$ as in the previous proof, which still
+  has length $2n\log m$.
+
+  If $x$ is not part of such a minimal subgraph, then we output a 0 bit
+  followed by the obvious encoding of $R$.
+
+  Otherwise, assume that $x$ is a part of a minimal subgraph having
+  $t$ vertices and $t+1$ edges. Note that, after removing two edges,
+  this subgraph consists of two paths, of length $t_1$ and $t_2$,
+  (with $t_1+t_2=t-1$) that have $x$ as an endpoint.  In this case,
+  we encode $R$ as a 1 bit; $t_1$ and $t_2$; the vertices and edges
+  of each of these two paths, excluding $x$; and enough information to
+  determine the two edges we removed (this takes $2\log n + O(\log t)$
+  bits); finally, the code includes all the $2n-2(t+1)$ entries in $R$
+  that cannot be derived from the previous stuff. This gives a total of
+  \begin{align*}
+     b &= 1 + (t-1)(\log n+\log m) + (2n-2(t+1))\log m + 2\log n + O(\log t) \\
+        &= 2n\log m + O(\log t) - (t-1) - 2\log m \\
+       & \le 2n\log m - 2\log m + O(1) \enspace .
+  \end{align*}
+  Applying the Uniform Encoding Lemma with $s=2\log m+O(1)$ completes
+  the proof.
 \end{proof}
 
 
@@ -553,72 +644,72 @@ because $>$ is transitive, the $\binom{n}{2}$ events being studied have
 a lot of interdependence. In the following, we show how to obtain a
 concentration result with an encoding argument.  The argument presented
 here follows the same outline as Vitanyi's analysis of bubble sort
-\cite{vXX}, though without all the trappings of Kolmogorov complexity.
+\cite{vitanyi:analysis}, though without all the trappings of Kolmogorov complexity.
 
 \begin{thm}\thmlabel{insertion-sort}
-For a random permutation, $A_1,\ldots,A_n$ of $n$ distinct elements,
-the probability that Line~4 of \textsc{InsertionSort} executes fewer
-than $\alpha n^2 - n + 2$ times is at most $2^{n\log(\alpha e^2)+O(\log
-n)}$.  In particular, for a fixed $\alpha < 1/e^2$, this probability
-is $2^{-\Omega(n)}$.
+  For a random permutation, $A_1,\ldots,A_n$ of $n$ distinct elements,
+  the probability that Line~4 of \textsc{InsertionSort} executes fewer
+  than $\alpha n^2 - n + 2$ times is at most $2^{n\log(\alpha e^2)+O(\log
+  n)}$.  In particular, for a fixed $\alpha < 1/e^2$, this probability
+  is $2^{-\Omega(n)}$.
 \end{thm}
 
 \begin{proof}
-Let $\pi$ be the permutation of $\{1,\ldots,n\}$ that defines the sorted
-order of $A_1,\ldots,A_n$, so that $A_{\pi_j}$ is the element that appears
-at position $j$ after sorting. Notice that $\pi$ is chosen uniformly at
-random among all $n!$ permutations of of $\{1,\ldots,n\}$.
-
-We encode the permutation $\pi$ by recording the execution of
-InsertionSort on this permutation. In particular, we record, for each
-$i\in\{2,\ldots,n\}$, the number of times, $m_i$, that Line~4 executes
-during the $i$th iteration of \textsc{InsertionSort}. With this information,
-one can run the following version of \textsc{InsertionSort} to recover $\pi$:
-
-\noindent{$\textsc{InsertionSortReconstruct}(m_2,\ldots,m_n)$}:
-\begin{algorithmic}[1]
-  \STATE{$\pi \gets \langle 1,\ldots,n\rangle$}
-  \FOR{$i\gets 2$ \TO $n$}
-     \FOR{$j\gets i \textbf{ down to } i-m_i+1$}
-         \STATE{$\pi_j \leftrightarrow \pi_{j-1}$
-            \COMMENT{ swap }}
-     \ENDFOR
-  \ENDFOR
-\end{algorithmic}
- 
-To make this work, we have to be slightly clever with this
-encoding. Rather than encode $m_2,m_3,\ldots,m_n$ directly, we first
-encode $m=\sum_{i=2}^{n} m_i$ using $\lceil 2\log n\rceil$ bits (since $m < n^2$). Given $m$, what
-remains is to describe the partition of $m$ into $n-1$ non-negative
-integers $m_2,\ldots,m_n$; there are $\binom{m+n-2}{n-2}$ such
-partitions.\footnote{To see this, draw $m+n-2$ white dots on a line,
-then choose $n-2$ dots to colour black. This splits the remaining $m$ white dots
-up into $n-1$ groups, which determine the values of $m_2,\ldots,m_n$.}
-
-Therefore, the values of $m_2,\ldots,m_n$ can be encoded using
-\[
-    b = \lceil 2\log n\rceil + \log\binom{m+n-2}{n-2}
-\]
-bits and this is sufficient to recover the permutation that defines
-$A_1,\ldots,A_n$.  By applying \eqref{log-n-choose-k} to $b$, we obtain
-\begin{align*}
-  b & \le (n-2)\log(m+n-2) - (n-2)\log(n-2)  + (n-2)\log e + O(\log n) \\
-    & \le n\log(m+n-2) - n\log n   + n\log e + O(\log n) \\
-    & \le n\log(\alpha n^2) - n\log n  + n\log e + O(\log n) \\
-    & = 2n\log n + n\log\alpha - n\log n  + n\log e + O(\log n) \\
-    & = n\log n + n\log\alpha + n\log e + O(\log n) \\
-    & = \log n! + n\log\alpha + 2n\log e + O(\log n) \\
-    & = \log n! + n(\log \alpha e^2) + O(\log n)  \qedhere
-\end{align*}
+  Let $\pi$ be the permutation of $\{1,\ldots,n\}$ that defines the sorted
+  order of $A_1,\ldots,A_n$, so that $A_{\pi_j}$ is the element that appears
+  at position $j$ after sorting. Notice that $\pi$ is chosen uniformly at
+  random among all $n!$ permutations of of $\{1,\ldots,n\}$.
+  
+  We encode the permutation $\pi$ by recording the execution of
+  InsertionSort on this permutation. In particular, we record, for each
+  $i\in\{2,\ldots,n\}$, the number of times, $m_i$, that Line~4 executes
+  during the $i$th iteration of \textsc{InsertionSort}. With this information,
+  one can run the following version of \textsc{InsertionSort} to recover $\pi$:
+  
+  \noindent{$\textsc{InsertionSortReconstruct}(m_2,\ldots,m_n)$}:
+  \begin{algorithmic}[1]
+    \STATE{$\pi \gets \langle 1,\ldots,n\rangle$}
+    \FOR{$i\gets 2$ \TO $n$}
+       \FOR{$j\gets i \textbf{ down to } i-m_i+1$}
+           \STATE{$\pi_j \leftrightarrow \pi_{j-1}$
+              \COMMENT{ swap }}
+       \ENDFOR
+    \ENDFOR
+  \end{algorithmic}
+   
+  To make this work, we have to be slightly clever with this
+  encoding. Rather than encode $m_2,m_3,\ldots,m_n$ directly, we first
+  encode $m=\sum_{i=2}^{n} m_i$ using $\lceil 2\log n\rceil$ bits (since $m < n^2$). Given $m$, what
+  remains is to describe the partition of $m$ into $n-1$ non-negative
+  integers $m_2,\ldots,m_n$; there are $\binom{m+n-2}{n-2}$ such
+  partitions.\footnote{To see this, draw $m+n-2$ white dots on a line,
+  then choose $n-2$ dots to colour black. This splits the remaining $m$ white dots
+  up into $n-1$ groups, which determine the values of $m_2,\ldots,m_n$.}
+  
+  Therefore, the values of $m_2,\ldots,m_n$ can be encoded using
+  \[
+      b = \lceil 2\log n\rceil + \log\binom{m+n-2}{n-2}
+  \]
+  bits and this is sufficient to recover the permutation that defines
+  $A_1,\ldots,A_n$.  By applying \eqref{log-n-choose-k} to $b$, we obtain
+  \begin{align*}
+    b & \le (n-2)\log(m+n-2) - (n-2)\log(n-2)  + (n-2)\log e + O(\log n) \\
+      & \le n\log(m+n-2) - n\log n   + n\log e + O(\log n) \\
+      & \le n\log(\alpha n^2) - n\log n  + n\log e + O(\log n) \\
+      & = 2n\log n + n\log\alpha - n\log n  + n\log e + O(\log n) \\
+      & = n\log n + n\log\alpha + n\log e + O(\log n) \\
+      & = \log n! + n\log\alpha + 2n\log e + O(\log n) \\
+      & = \log n! + n(\log \alpha e^2) + O(\log n)  \qedhere
+  \end{align*}
 \end{proof}
 
 \begin{rem}
   Although it doesn't require any advanced probability,
   \thmref{insertion-sort} is not sharp; it only gives a non-trivial
-  probability when $\alpha < 1/e^2$.  To obtain a sharp bound, one
-  can use the fact that $m_2,\ldots,m_n$ are independent and $m_i$ is
-  uniform over $\{0,\ldots,i-1\}$ and then use the method of bounded
-  differences \cite{S} to show that $m$ is concentrated in an interval
+  probability when $\alpha < 1/e^2$.  To obtain a sharp bound, one can
+  use the fact that $m_2,\ldots,m_n$ are independent and $m_i$ is uniform
+  over $\{0,\ldots,i-1\}$ and then use the method of bounded differences
+  \cite{mcdiarmid:on} to show that $m$ is concentrated in an interval
   of size $O(n^{3/2})$.
 \end{rem}
 
@@ -627,6 +718,38 @@ $A_1,\ldots,A_n$.  By applying \eqref{log-n-choose-k} to $b$, we obtain
 
 \section{The Non-Uniform Encoding Lemma}
 \seclabel{nuel}
+
+Thus far, we have been lucky to study applications that could always
+be modelled as choosing some element $x$ uniformly at random from a
+set $X$. To encompass even more applications, it is helpful to have
+an Encoding Lemma that deals with non-uniform distributions over $X$.
+The following generalization of the Uniform Encoding Lemma fills this
+need:
+
+\begin{lem}[Non-Uniform Encoding Lemma]\lemlabel{nuel}  
+  Let $C\from X\to\{0,1\}^*$ be a prefix code and let $x\in X$ be
+  drawn randomly where $p_x$ denotes the probability of drawing $x$.
+  Then $\Pr\{ |C(x)| \le \log(1/p_x)-s\} \le 2^{-s}$.
+\end{lem}
+
+\begin{proof}
+  We use Chernoff's trick, Markov's Inequality, and Kraft's Inequality,
+  as follows: 
+  \begin{align*}
+     \Pr\{ |C(x)| \le\log(1/p_x)-s \} 
+      & = \Pr\{|C(x)| -\log(1/p_x) \le -s \} \\
+      & = \Pr\{\log(1/p_x)-|C(x)| \ge s \} \\
+      & = \Pr\left\{2^{\log(1/p_x)-|C(x)|} \ge 2^s \right\} & \text{(Chernoff's trick)} \\
+      & \le \frac{\E\left[2^{\log(1/p_x)-|C(x)|}\right]}{2^s} & \text{(Markov's Inequality)} \\
+      & = \frac{\sum_{x\in X}p_x\cdot 2^{\log(1/p_x)-|C(x)|}}{2^s} \\
+      & = \frac{\sum_{x\in X}2^{-|C(x)|}}{2^s} \\
+      & \le \frac{1}{2^s} & \text{(Kraft's Inequality).}  & \qedhere
+  \end{align*}
+\end{proof}
+
+Notice that the Non-Uniform Encoding Lemma is a strict generalization
+of the Uniform Encoding Lemma; take $p_x=1/|X|$ for all $x\in X$
+and we obtain the Uniform Encoding Lemma.
 
 \section{Applications of the Non-Uniform Encoding Lemma}
 \seclabel{applications-ii}
@@ -648,5 +771,8 @@ pointed out the application to runs in binary strings (\thmref{runs-i})
 and G\'abor~Lugosi stated and proved the Non-Uniform Encoding Lemma
 (\lemref{nuel}) in response to the author's half-formed ideas about a
 non-uniform version of \lemref{uel}.
+
+\bibliographystyle{plain}
+\bibliography{encoding}
 
 \end{document}
