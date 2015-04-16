@@ -1,4 +1,4 @@
-\documentclass[lotsofwhite]{patmorin}
+\documentclass{patmorin}
 \usepackage{pat}
 \usepackage[utf8]{inputenc}
 \usepackage[noend]{algorithmic}
@@ -181,7 +181,13 @@ versatile:
 
 As a warm-up exercise to illustrate the use of the Uniform Encoding
 Lemma we will show that a random $n$-bit string is unlikely to contain
-a run of significantly more than $\log n$ one bits.
+a run of significantly more than $\log n$ one bits.  (See \figref{runs-i}.)
+
+\begin{figure}
+  \centering{\includegraphics{runs-i}}
+  \caption{Illustration of \thmref{runs-i} and its proof.}
+  \figlabel{runs-i}
+\end{figure}
 
 \begin{thm}\thmlabel{runs-i}
   Let $x=\langle x_1,\ldots,x_n\rangle\in\{0,1\}^n$ be chosen
@@ -274,7 +280,7 @@ size $\binom{n}{k}$ in which every codeword has length given by the ceiling of
      & \le n\log n - k\log k - (n-k)\log(n-k) + (1/2)\log\left(\frac{n}{k(n-k)}\right) + O(1/n) \\
      & \le n\log n - k\log k - (n-k)\log(n-k) + O(1/n) \\
      & = n\log n - k\log k - (n-k)\log n + (n-k)(\log n-\log(n-k)) + O(1/n) \\
-     & = k\log n - k\log k + \underbrace{(n-k)(\log n-\log(n-k))}_\text{yuck!}  + O(1/n) 
+     & = k\log n - k\log k + \underbrace{(n-k)(\log n-\log(n-k))}_\text{awkward}  + O(1/n) 
          \numberthis \eqlabel{hassle} \\ 
 \end{align*}
 
@@ -349,14 +355,13 @@ done using an encoding argument.
 \end{proof}
 
 \begin{rem}
-The bound in \thmref{erdos-renyi-i} can be strengthened a little,
-since the elements of $S$ can be encoded with fewer than $t\log n$
-bits; in particular $\lceil\log\binom{n}{t}\rceil=t\log n - t\log t +
-t\log e - O(\log t)$ bits suffice.  With a careful calculation, using
-the approximations described in \secref{stirling}, the
-proof then works with $t=2\log n +O(\log\log n) + \sqrt{s}$. This comes
-closer to Erdős' original result, which was at the threshold $2\log n -
-2\log\log n + O(1)$.
+  The bound in \thmref{erdos-renyi-i} can be strengthened a little,
+  since the elements of $S$ can be encoded with fewer than $t\log n$
+  bits; in particular $\lceil\log\binom{n}{t}\rceil$ bits are sufficient.
+  With a more careful calculation, using \eqref{log-n-choose-k}, the
+  proof then works with $t=2\log n +O(\log\log n) + \sqrt{s}$. This
+  comes closer to Erdős' original result, which was at the threshold
+  $2\log n - 2\log\log n + O(1)$.
 \end{rem}
 
 
@@ -366,7 +371,9 @@ closer to Erdős' original result, which was at the threshold $2\log n -
 
 The question of what happens when one throws $n$ balls, randomly and
 indepently into $n$ urns is a useful abstraction of many algorithmic,
-data structures and load-balancing problems.
+data structures and load-balancing problem.  Here we show how an encoding
+argument can be used to prove the classic result that, when we do this,
+no urn contains more than $O(\log n/\log\log n)$ balls.
 
 \begin{thm}\thmlabel{urns}
   Let $t$ be such that $t\log(t/e) \ge 4+s+\log n$ and suppose we throw
@@ -375,8 +382,8 @@ data structures and load-balancing problems.
   than $t$ balls is at most $2^{-s}$.
 \end{thm}
 
-Note that, for any constant $\epsilon >0$ and all sufficiently large
-$n$, taking 
+Before proving \thmref{urns}, we note that, for any constant $\epsilon
+>0$ and all sufficiently large $n$, taking
 \[
    t = \frac{(1+\epsilon)\log n}{\log\log n}
 \] 
@@ -385,7 +392,7 @@ satisfies the requirements of \thmref{urns}.
 \begin{proof}
   For each $i\in\{1,\ldots,n\}$, let $b_i$ denote the index of the urn in
   which the $i$th ball lands. Notice that the sequence $b_1,\ldots,b_n$
-  is chosen uniformly at random from a set of size $n^n$, and it is this
+  is chosen uniformly at random from a set $X$ of size $n^n$, and it is this
   choice that will be used in our encoding argument.
 
   If no urn contains $t$ or more balls, then our code is a 0 bit followed
@@ -411,20 +418,21 @@ satisfies the requirements of \thmref{urns}.
 
 \subsection{Linear Probing}
 
-While balls in urns is a valid abstraction of hashing with chaining, a more practically efficient form of a hashing is \emph{linear probing}.  
-In a linear-probing hash table, we hash $n$ items $x_1,\ldots,x_n$ into
-a linear probing hash table of size $m=cn$, $c\ge 1$. When we insert
-$x_i$ we try and place it at table position $j=h(x_i)$ unless it is
-already occupied by one of $x_1,\ldots,x_{i-1}$ in which case we try
-table location $(j+1)\bmod m$, $(j+2)\bmod m$, and so on until we find
-an empty spot for $x_i$.  We want to study the expected search time for
-some item $x_i$ in this hash table.
+Studying balls in urns is a useful technique to analyze hashing with
+chaining (see, e.g., \cite[Section~5.1]{morin:open}), a more practically
+efficient form of a hashing is \emph{linear probing}.  In a linear-probing
+hash table, we hash $n$ items $x_1,\ldots,x_n$ into a linear probing hash
+table of size $m=cn$, $c\ge 1$. When we insert $x_i$ we try and place
+it at table position $j=h(x_i)$ unless it is already occupied by one of
+$x_1,\ldots,x_{i-1}$ in which case we try table location $(j+1)\bmod m$,
+$(j+2)\bmod m$, and so on until we find an empty spot for $x_i$.  We want
+to study the expected search time for some item $x_i$ in this hash table.
 
 We call a maximal consecutive (the table locations $m-1$ and
 $0$ are considered consecutive) sequence of occupied table locations
 a \emph{block}.
 
-\begin{thm}
+\begin{thm}\thmlabel{linear-probing}
   Fix some $x\in\{x_1,\ldots,x_n\}$. Then the probability that the block
   containing $x$ has size $t\ge 1+(s+\log t + O(1))/\log(c/e)$ is at most $2^{-s}$.
 \end{thm}
@@ -462,6 +470,14 @@ a \emph{block}.
   for $t\ge (s+\log t+O(1))/\log (c/e) + 1$.
 \end{proof}
 
+\begin{rem}
+  The proof of \thmref{linear-probing} requires that the linear probing
+  hash table has size $cn$ for some $c>e$.  We know from previous analysis
+  that this is not necessary, any $c>1$ is sufficient. We leave it as an open
+  problem to find an encoding proof of \thmref{linear-probing} that works
+  for any $c>1$.
+\end{rem}
+
 
 
 \subsection{Bipartite Expanders}
@@ -482,8 +498,8 @@ Raghavan \cite[Theorem~5.3]{motwani.raghavan:randomized}, Pinsker
 
 \begin{thm}
   There exists a constant $\alpha >0$ such that, with probability at
-  least $1-2^{-\Omega(n^{1/2})}$, for all $A'\subset A$ with $|A'|\le
-  \alpha n$, $|N(A')| \ge 3|A'|/2$.
+  least $O(n^{-1/2})$, $|N(A')| \ge 3|A'|/2$ for all $A'\subset A$
+  with $|A'|\le \alpha n$.
 \end{thm}
 
 \begin{proof}
@@ -533,20 +549,20 @@ and $2^{-s(\alpha n)} = 2^{-\Omega(n)}$ for $\alpha < 2/3$.
 \subsection{Analysis of Cuckoo Hashing}
 
 Cuckoo hashing is relatively new kind of hash table that offers an
-alternative to classic perfect hashing.  Mihai Pătraşcu is responsible
-for the following incredibly beautiful proof that cuckoo hashing succeeds
-with probability $1-O(1/n)$ \cite{patrascu:cuckoo}.
+alternative to classic perfect hashing \cite{pagh.rodler:cuckoo}. Here we present a clever proof,
+due to Mihai Pătraşcu, that cuckoo hashing succeeds with probability
+$1-O(1/n)$ \cite{patrascu:cuckoo}.
 
 The main object of study in cuckoo hashing is a random bipartite
 multigraph $G=(A,B,E)$ where $|A|=|B|=2n$ and $|E|=n$.  For each
 $i\in\{1,\ldots,n\}$, each edge $e_i$ of $E$ is obtained by randomly
 choosing (with replacement) and an endpoint in $a_i\in A$ and an endpoint
-in $b_i\in B$.  Cuckoo hashing has problems if this graph contains a
-long edge-simple path or if it contains a component with more edges
-than vertices.  (An edge-simple path is a path that uses each edge of
-the multiset $E$ at most once.)
+in $b_i\in B$.  The cuckoo hashing algorithm may fail if this graph
+contains a long edge-simple path or if it contains a component with more
+edges than vertices.  (An edge-simple path is a path that uses each edge
+of the multiset $E$ at most once.)
 
-\begin{thm}
+\begin{thm}\thmlabel{edge-simple}
   Fix some vertex $x\in A$, then the probability that $x$ is the endpoint
   of an edge-simple path of length $t=s+1$ is at most $2^{-s}$.
 \end{thm}
@@ -563,24 +579,27 @@ the multiset $E$ at most once.)
 
   Otherwise the code starts with a 1 bit, followed by the encoding of
   $t$ edges and vertices (excluding $x$) on a path, $P$, of length $t$ that
-  starts at $x$, followed by the $2n-2t$ entries in $R$ that we can are
+  starts at $x$, followed by the $2n-2t$ entries in $R$ that are
   not edges of this path.  
 
   The path $P$ consists of $t+1$ vertices (the first of which is $x$) and
   $t$ edges. The encoding of $P$ specifies the vertices (excluding $x$)
   as well as the indices of the edges. The former requires $t\log m$ bits
-  and the latter requires $t\log n$ bits, for a total of $2t\log n$ bits.
+  and the latter requires $t\log n$ bits, for a total of $2t\log n-t$ bits.
 
 
 This encoding requires
   \[
-    b = 1 + t\log m + t\log n + (2n-2t)\log m < 2n\log m - s
+    b = 1 + t\log m + t\log n + 2(n-t)\log m < 2n\log m - s
   \]
   bits, for $t=s+1$. The proof finishes, as usual, by applying the
   Uniform Encoding Lemma.
 \end{proof}
 
-That was the long path part of the proof.  The overly-dense subgraph part works as follows:
+\thmref{edge-simple} and the union bound establish that, with probability
+at least $1-1/n$, the cuckoo graph has no edge-simple path of length
+greater than $1+2\log n$. The following theorem shows that the cuckoo
+graph has no subgraph with more edges than vertices.
 
 \begin{thm}
   Fix a vertex $x\in A$.  Then the probability that $x$ is part of a
@@ -588,9 +607,7 @@ That was the long path part of the proof.  The overly-dense subgraph part works 
 \end{thm}
 
 \begin{proof}
-  We encode the same bitstring $R$ as in the previous proof, which still
-  has length $2n\log m$.
-
+  We encode the same sequence $R$ as in the previous proof.
   If $x$ is not part of such a minimal subgraph, then we output a 0 bit
   followed by the obvious encoding of $R$.
 
@@ -602,7 +619,7 @@ That was the long path part of the proof.  The overly-dense subgraph part works 
   of each of these two paths, excluding $x$; and enough information to
   determine the two edges we removed (this takes $2\log n + O(\log t)$
   bits); finally, the code includes all the $2n-2(t+1)$ entries in $R$
-  that cannot be derived from the previous stuff. This gives a total of
+  that cannot be derived from the previous information. This gives a total of
   \begin{align*}
      b &= 1 + (t-1)(\log n+\log m) + (2n-2(t+1))\log m + 2\log n + O(\log t) \\
         &= 2n\log m + O(\log t) - (t-1) - 2\log m \\
@@ -716,7 +733,7 @@ here follows the same outline as Vitanyi's analysis of bubble sort
 
 
 
-\section{The Non-Uniform Encoding Lemma}
+\section{The Non-Uniform Encoding Lemma and Shannon-Fano Codes}
 \seclabel{nuel}
 
 Thus far, we have been lucky to study applications that could always
@@ -751,8 +768,78 @@ Notice that the Non-Uniform Encoding Lemma is a strict generalization
 of the Uniform Encoding Lemma; take $p_x=1/|X|$ for all $x\in X$
 and we obtain the Uniform Encoding Lemma.
 
+The \emph{Shannon-Fano code} \cite{fano:transmission,shannon:mathematical}
+for a finite set $X$ is prefix-free code that is constructed by a top-down
+algorithm from a probability distribution over the elements of $X$. An
+important property of the Shannon-Fano code is that it is \emph{locally
+optimal}: If $C\from X\to\{0,1\}^*$ is a Shannon-Fano code, then for every $x\in X$,
+\[
+    |C(x)| \le \left\lceil\log(1/p_x)\right\rceil \enspace 
+\]
+where, as before, $p_x$ denotes the probability of $x$.
+
+We will find it particularly useful to apply Shannon-Fano codes to
+$\mathrm{Bernoulli}(p)$ strings consisting of indepenent random bits that
+are each set to 1 with probability $p$ and 0 with probability $1-p$.
+A particular binary string $x=x_1,\ldots,x_n$, occurs as
+a $\mathrm{Bernoulli}(p)$ string with
+probability exactly
+\[
+   p_x= p^{N_1}(1-p)^{N_0} \enspace ,
+\]
+where $N_1$ and $N_0$ are the numbers of 1 and 0 bits in $x$, respectively. In this case, the Shannon-Fano code for $x$ has length at most
+\[
+    |C(x)|\le \left\lceil N_1\log (1/p) + N_0\log(1/(1-p)) \right\rceil \enspace .
+\]
+
+
 \section{Applications of the Non-Uniform Encoding Lemma}
 \seclabel{applications-ii}
+
+\subsection{Chernoff's Bounds}
+
+\subsection{Percolation on the Torus}
+
+\subsection{The Components of $G_{n,p}$}
+
+\begin{lem}
+  The probability that $G_{n,p}$ has a partition of $(U,W)$ of its vertex
+  set such that $|U|=k$ and there is no edge with one endpoint in $U$
+  and one endpoint in $W$ is at most $2n^k\cdot (1-p)^{k(n-k)}$.
+\end{lem}
+
+\begin{proof}
+  We encode the adjacency matrix, $x$, of $G_{n,p}$ as follows.
+  If $G_{n,p}$ does not contain such a partition, then the encoding is
+  zero bit followed by the obvious encoding.
+
+  Otherwise, the encoding is a one bit, followed by the list of $k$
+  vertices, followed by the remaining $\binom{n}{2}-k(n-k)$ bits of the
+  adjacency matrix that are not implied by the information already given.
+  These latter bits are encoded using a Shannon--Fano code that is
+  optimized for $p$.
+
+  If $G$ has $N_1$ edges and $N_0=\binom{n}{2}-N_1$ non-edges, then the codeword has length
+  \begin{align*}
+      b & = 1 + k\log n + N_1\log(1/p) + (N_0-k(n-k))\log(1/(1-p)) \enspace .
+  \end{align*}
+  On the other hand,
+  \[
+      \log p_x = N_1\log(1/p) + N_0\log(1/(1-p)) \enspace ,
+  \]
+  so the savings obtained by this encoding is 
+  \[
+      s = \log p_x - b = k(n-k)\log(1/(1-p)) - k\log n - 1 \enspace ,
+  \]
+  and the result follows from the Non-Uniform Encoding Lemma.
+\end{proof}
+
+
+
+
+\subsection{}
+
+
 
 
 \section{Summary and Conclusions}
