@@ -778,6 +778,10 @@ optimal}: If $C\from X\to\{0,1\}^*$ is a Shannon-Fano code, then for every $x\in
 \]
 where, as before, $p_x$ denotes the probability of $x$.
 
+When designing efficient encoding schemes it helps, at least
+informally, to think of $\log(1/p)$ as the cost of encoding a 1 bit and
+$\log(1/(1-p))$ as the cost of encoding a 0 bit.  For example, $p=1/n$
+
 We will find it particularly useful to apply Shannon-Fano codes to
 $\mathrm{Bernoulli}(p)$ strings consisting of indepenent random bits that
 are each set to 1 with probability $p$ and 0 with probability $1-p$.
@@ -785,11 +789,11 @@ A particular binary string $x=x_1,\ldots,x_n$, occurs as
 a $\mathrm{Bernoulli}(p)$ string with
 probability exactly
 \[
-   p_x= p^{N_1}(1-p)^{N_0} \enspace ,
+   p_x= p^{r_1}(1-p)^{r_0} \enspace ,
 \]
-where $N_1$ and $N_0$ are the numbers of 1 and 0 bits in $x$, respectively. In this case, the Shannon-Fano code for $x$ has length at most
+where $r_1$ and $r_0$ are the numbers of 1 and 0 bits in $x$, respectively. In this case, the Shannon-Fano code for $x$ has length at most
 \[
-    |C(x)|\le \left\lceil N_1\log (1/p) + N_0\log(1/(1-p)) \right\rceil \enspace .
+    |C(x)|\le \left\lceil r_1\log (1/p) + r_0\log(1/(1-p)) \right\rceil \enspace .
 \]
 
 
@@ -799,6 +803,54 @@ where $N_1$ and $N_0$ are the numbers of 1 and 0 bits in $x$, respectively. In t
 \subsection{Chernoff's Bounds}
 
 \subsection{Percolation on the Torus}
+
+The following is a version of Peierls' argument that proves that
+percolation occurs on the torus if the edge survival rate is greater
+than $2/3$:
+
+\begin{thm}
+  Let $G$ be the $\sqrt n\times\sqrt n$ torus and let $G'$ be the graph
+  obtained by sampling each edge of $G$ independently with probability
+  $p<1/3$.  Then the probability that $G'$ contains a simple cycle of
+  length at least $t=(s+\log n+O(1))/\log(1/(3p))$ is at most $2^{-s}$.
+\end{thm}
+
+\begin{proof}
+  Let $x$ be the bitstring of length $r=2n$ that encodes the existence
+  of the edges in $G'$.  Suppose such a cycle, $C$, exists in $G'$
+  and its length is $t'$.  Then we can encode $G'$ by specifying a
+  single vertex, $u$, on $C$; the sequence of $t'$ steps (directions)
+  that the cycle moves along from there; and then the rest of $G$ using
+  a variable length code with parameter $p$.
+
+  When specifying the cycle, there are four possibilities for the first
+  step, but only three possibilities for each the subsequent step. Therefore,
+  all the steps in the cycle can be specified using $\lceil 2+(t'-1)\log
+  3\rceil$ bits.
+
+  The total lenght of the codeword is then
+  \[
+      b = \log n + t'\log 3 + (r_1-t')\log(1/p) + r_0\log(1/(1-p)) + O(1) 
+  \]
+  bits, where $r_1$ is the number of edges in $G'$ and $r_0=r-r_1$
+  is the number of missing edges in $G'$.  But then,
+  \[
+     p_x = p^{r_1}(1-p)^{r_0}
+  \]
+  so 
+  \[
+     \log(1/p_x) = r_1\log(1/p) + r_0\log(1/(1-p)) \enspace .
+  \]
+  Therefore, $\log(1/p_x)-b = t'(\log(1/p)-\log 3) - \log n - O(1)\ge
+  s$, for $t'\ge t$.  Applying the Non-Uniform Encoding Lemma completes
+  the proof.
+\end{proof}
+
+Since the torus is self-dual, this implies that if we keep each edge of the torus with probability greater than $2/3$ then, with high probability, there is only one component whose size is $\omega(\log^2 n)$.  This is because, having more than one such component would imply the existence of a dual cycle of missing edges whose length is $\omega(\log n)$.  The preceding theorem shows that, with high probability, no such dual cycle exists.
+
+
+
+
 
 \subsection{The Components of $G_{n,p}$}
 
@@ -819,13 +871,13 @@ where $N_1$ and $N_0$ are the numbers of 1 and 0 bits in $x$, respectively. In t
   These latter bits are encoded using a Shannon--Fano code that is
   optimized for $p$.
 
-  If $G$ has $N_1$ edges and $N_0=\binom{n}{2}-N_1$ non-edges, then the codeword has length
+  If $G$ has $r_1$ edges and $r_0=\binom{n}{2}-r_1$ non-edges, then the codeword has length
   \begin{align*}
-      b & = 1 + k\log n + N_1\log(1/p) + (N_0-k(n-k))\log(1/(1-p)) \enspace .
+      b & = 1 + k\log n + r_1\log(1/p) + (r_0-k(n-k))\log(1/(1-p)) \enspace .
   \end{align*}
   On the other hand,
   \[
-      \log p_x = N_1\log(1/p) + N_0\log(1/(1-p)) \enspace ,
+      \log p_x = r_1\log(1/p) + r_0\log(1/(1-p)) \enspace ,
   \]
   so the savings obtained by this encoding is 
   \[
