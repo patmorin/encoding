@@ -802,6 +802,50 @@ where $r_1$ and $r_0$ are the numbers of 1 and 0 bits in $x$, respectively. In t
 
 \subsection{Chernoff's Bounds}
 
+The following theorem is the so-called \emph{additive version} of the
+Chernoff bound on the tail of a binomial random variable:
+
+\begin{thm}\thmlabel{chernoff}
+  If $B$ is a $\mathrm{binomial}(n,p)$ random variable, then $\Pr\{B\ge
+  (p+\epsilon)n\} \le 2^{-nD(p+\epsilon||p)}$, where 
+  \[ 
+    D(\hat p||p)=\hat p\log(\hat p/p) + (1-\hat p)\log((1-\hat p)/(1-p)) 
+  \] is
+  the Kullbach-Liebler divergence between Bernoulli random variables
+  with probabilities $\hat p$ and $p$.
+\end{thm}
+
+\begin{proof}
+By definition, $B=\sum_{i=1}^nx_i$, where $x_1,\ldots,x_n$ are independent $\mathrm{Bernoulli}(p)$ random variables.   We will use an encoding argument on the bitstring $x=x_1,\ldots,x_n$.
+
+We can encode $x$ by using a Shannon-Fano code for the probability
+$p+\epsilon$.  If $B=\hat pn$, then this takes
+\[
+   b = n(\hat p\log(1/(p+\epsilon))+ (1-\hat p)\log(1/(1-p-\epsilon)))
+\]
+bits.
+
+On the other hand,
+\[
+    p_x = p^{\hat pn}(1-p)^{(1-\hat p)n} \enspace ,
+\]
+and
+\[
+    \log (1/p_x) = n(\hat p\log(1/p)+ (1-\hat p)\log(1/(1-p)) \enspace .
+\]
+For $\hat p\ge p+\epsilon$, the savings from this code is
+\begin{align*}
+  \log(1/p_x) - b
+    & =  n(\hat p\log((p+\epsilon)/p) + (1-\hat p)\log((1-p-\epsilon)/(1-p))) \\
+    & \ge  n((p+\epsilon)\log((p+\epsilon)/p) + (1-p-\epsilon)\log((1-p-\epsilon)/(1-p)))\\
+    & =  nD(p+\epsilon||p)
+\end{align*}
+bits.  Therefore, the probability that $B\ge (p+\epsilon)n$ is at most $2^{-nD(p+\epsilon||p)}$.
+\end{proof}
+
+It is also possible to derive the multiplicative form of the Chernoff
+bound this way. This is left an exercise to the reader.
+
 \subsection{Percolation on the Torus}
 
 The following is a version of Peierls' argument that proves that
@@ -852,7 +896,7 @@ Since the torus is self-dual, this implies that if we keep each edge of the toru
 \subsection{Triangles in $G_{n,p}$}
 
 The expected number of triangles (cycles of length 3) in $G_{n,p}$
-is easily seen to be $p^3\binom{n}{3}$.  For $p>(6k)^{1/3}/n$, this
+is easily seen to be $p^3\binom{n}{3}$.  For $p=(6k)^{1/3}/n$, this
 expectation is $k-O(1/n)$.  Unfortunately, even when $k$ is a large
 constant, it still takes some work to show that there is a constant
 probability that $G_{n,p}$ contains at least one triangle. Indeed, this
@@ -862,31 +906,63 @@ computing the variance of the number of triangles in $G_{n,p}$.
 Here we show how this can be accomplished with an encoding argument.
 
 \begin{thm}
-  For $p=k/n$, $G_{n,p}$ contains at least one triangle with probability
-  greater than blah.
+  For $p=c/n$, $G_{n,p}$ contains at least one triangle with probability
+  at least $1-2^{-\Omega(c^3)}$.
 \end{thm}
 
 \begin{proof}
    Without loss of generality assume that $G$'s vertex set is
-   $V=\{1,\ldots,n\}$.  
+   $V=\{1,\ldots,n\}$.  In this argument, we will produce an encoding
+   of $G$'s adjacency matrix, $x$.  If $G$ contains some triangle, then
+   we encode $x$ as a zero followed by the obvious encoding of $G$'s $x$
+   (a binary string of length $\binom{n}{2}$).
 
-   If $G$ contains some triangle, then we encode it as a zero followed by 
-   the obvious encoding of $G$'s adjacency matrix.
+   Refer to \figref{triangles}.  If $G$ contains no triangles, then we
+   look at the number of 1's in the $n/2\times n/2$ submatrix determined
+   by rows $1,\ldots,n/2$ and columns $n/2+1,\ldots,n$.  There are two
+   cases to consider (which result in codewords beginning with 10 or 11,
+   respectively):
 
-   If $G$ contains no triangles, then we look at the number of 1's in
-   the $n/2\times n/2$ submatrix determined rows $1,\ldots,n/2$ and
-   columns $n/2+1,\ldots,n$.  There are two cases to consider:
+   \begin{figure}
+     \centering{\includegraphics{triangles}}
+     \caption{The random graph $G_{n,c/n}$ contains triangles when $c$ is
+       large enough.  The highlighted 0 bits in the last five rows can
+       be deduced from pairs of 1 bits in the first 5 rows.}
+     \figlabel{triangles} 
+   \end{figure}
 
-   \begin{enumerate}
+   \begin{enumerate}\setcounter{enumi}{-1}
      \item The number of 1's in the submatrix is less than $cn/8$.
-     \item The number of 1's in the submatrix is greater than $cn/8$.
-   \end{enumerate}
+      In this case, the number of 1's in this submatrix is much less than
+      the expected number, $cn/4$.  Here one can apply the same argument
+      used to prove Chernoff's Bounds (\thmref{chernoff}) or simply
+      apply Chernoff's bounds. We leave this as an exercise to the reader.
 
-   We encode the adjacency matrix of $G$
+     \item The number of 1's in the submatrix is greater than $cn/8$.
+      Notice that, for $i<j<k$ if $M_{i,j}=1$ and $M_{i,k}=1$, then the
+      fact that there are no triangles implies tha $M_{j,k}=0$.
+
+      Let $m_i$ be the number of 1's in the $i$th row of the submatrix.
+      By specifying rows $1,\ldots,n/2$, we eliminate the need to specify
+      \[
+          m = \sum_{i=1}^{n/2}\binom{m_i}{2} \ge (n/2)\binom{c/4}{2} = \Omega(c^2n) \enspace ,
+      \]
+      zeros in rows $n/2+1,\ldots,n$.
+      Using a Shannon-Fano code to specify the first $n/2$ rows and the bits of the remaining rows that can not be deduced from the first $n/2$ rows, we obtain a codeword of length 
+      \[
+          b = r_1\log(1/p) + (r_0-m)\log(1/(1-p))  + O(1)
+      \]
+      which results in a savings of
+      \[
+          s = \log(1/p_x) - b = m\log(1/(1-p)) -O(1) \ge \Omega(c^2n)\log(1/(1-p)) - O(1) = \Omega(c^3) \enspace .
+      \]
+   \end{enumerate}
 \end{proof}
 
 
 \subsection{The Components of $G_{n,p}$}
+
+[The following result is really boring. It's easier to prove just using linearity of expectation and Markov's Inequality.]
 
 \begin{thm}
   For $p=\alpha/n$, the probability that $G_{n,p}$ contains a component of size at least $t$ is at most $blah$.
