@@ -849,10 +849,86 @@ than $2/3$:
 Since the torus is self-dual, this implies that if we keep each edge of the torus with probability greater than $2/3$ then, with high probability, there is only one component whose size is $\omega(\log^2 n)$.  This is because, having more than one such component would imply the existence of a dual cycle of missing edges whose length is $\omega(\log n)$.  The preceding theorem shows that, with high probability, no such dual cycle exists.
 
 
+\subsection{Triangles in $G_{n,p}$}
 
+The expected number of triangles (cycles of length 3) in $G_{n,p}$
+is easily seen to be $p^3\binom{n}{3}$.  For $p>(6k)^{1/3}/n$, this
+expectation is $k-O(1/n)$.  Unfortunately, even when $k$ is a large
+constant, it still takes some work to show that there is a constant
+probability that $G_{n,p}$ contains at least one triangle. Indeed, this
+typically requires the use of the second moment method, which involves
+computing the variance of the number of triangles in $G_{n,p}$.
+
+Here we show how this can be accomplished with an encoding argument.
+
+\begin{thm}
+  For $p=k/n$, $G_{n,p}$ contains at least one triangle with probability
+  greater than blah.
+\end{thm}
+
+\begin{proof}
+   Without loss of generality assume that $G$'s vertex set is
+   $V=\{1,\ldots,n\}$.  
+
+   If $G$ contains some triangle, then we encode it as a zero followed by 
+   the obvious encoding of $G$'s adjacency matrix.
+
+   If $G$ contains no triangles, then we look at the number of 1's in
+   the $n/2\times n/2$ submatrix determined rows $1,\ldots,n/2$ and
+   columns $n/2+1,\ldots,n$.  There are two cases to consider:
+
+   \begin{enumerate}
+     \item The number of 1's in the submatrix is less than $cn/8$.
+     \item The number of 1's in the submatrix is greater than $cn/8$.
+   \end{enumerate}
+
+   We encode the adjacency matrix of $G$
+\end{proof}
 
 
 \subsection{The Components of $G_{n,p}$}
+
+\begin{thm}
+  For $p=\alpha/n$, the probability that $G_{n,p}$ contains a component of size at least $t$ is at most $blah$.
+\end{thm}
+
+\begin{proof}
+  We use an encoding argument on the bits of the adjacency matrix, $x$,
+  of $G$.  In the case where $G$ has no component of size $t$ or more,
+  the codeword is a 0 followed by the obvious encoding of the adjacency
+  matrix.
+
+  If $G$ does contain a component of size $t$ or greater, then we
+  find, within this component, a tree, $T$, of size exactly $t$.
+  The codeword then consists of a 1 bit, a list of the vertices in $T$
+  as they are encountered during an preorder traversal, a description
+  of the shape of $T$, and then finally, a Shannon-Fano code that gives
+  the $\binom{n}{2}-t+1$ bits of the adjacency matrix corresponding to
+  the edges not in $T$.
+
+  The shape of $T$ can be described using $2n$ bits by tracing the
+  execution of the traversal of $T$, using a 1 to indicate that the
+  traversal takes a step deeper into the tree and a 0 to indicate that
+  the traversal moves up in the tree.
+
+  In total, this results in a codeword of length
+  \[   
+    b \le 2 + t\log n + 2t + (r_1-t+1)\log(1/p) + r_0\log(1/(1-p))  \enspace . 
+  \]
+  On the other hand
+  \[   
+     \log (1/p_x) = r_1\log(1/p) + r_0\log(1/(1-p)) \enspace ,
+  \]
+  so
+  \begin{align*}
+     s & = \log(1/p_x) - b \\
+       & =  (t-1)\log(1/p) - t\log n - 2t - 2 \\
+       & = t(\log(1/p)-\log n - 2) - \log n - 2 \\
+       & = t\log(1/(4\alpha)) - \log n - 2 \\
+  \end{align*}
+\end{proof}
+
+
 
 \begin{lem}
   The probability that $G_{n,p}$ has a partition of $(U,W)$ of its vertex
