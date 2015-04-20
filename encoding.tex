@@ -247,6 +247,51 @@ used in most encoding arguments:
   bits do not need to be specified in the second part of the codeword. 
 \end{enumerate}
 
+\subsection{A Streamlined Encoding Lemma}
+
+Points 2 and 3 about encoding arguments suggest that the Uniform
+Encoding Lemma can be streamlined.  Since we only care about the cases
+where event $\mathcal{E}$ occurs, it is enough to find a \emph{partial
+prefix-free code} that is defined only for the elementary envents
+contained in $\mathcal{E}$.  A \emph{partial prefix-free code} for a
+set $X$ is a function $C\from X\to\{0,1\}^*\cup\{\bot\}$ such that $C$
+is prefix-free code for the set $X'=\{x\in X:C(x)\neq\bot\}$.
+(We think of the code as being undefined for $x$ if $C(x)=\bot$.)
+
+The following lemma, whose proof is identical to that of \lemref{uel},
+is a streamlined version of \lemref{uel}.
+
+\begin{lem}\lemlabel{streamlined}
+ Let $C\from X\to\{0,1\}^*\cup\{\bot\}$ be a partial prefix-free
+ code. If $x\in X$ is chosen uniformly at random, then
+ \[  \Pr\{C(x)\neq \bot\text{ and } |C(x)|\le\log |X|-s\} \le 2^{-s} \enspace .  
+ \]
+\end{lem}
+
+We can now reprove \thmref{runs-i}, obtaining a shorter proof and a
+tighter result.
+
+\begin{thm}\thmlabel{runs-i-a}
+  Let $x=\langle x_1,\ldots,x_n\rangle\in\{0,1\}^n$ be chosen
+  uniformly at random and let $t=\lceil\log n\rceil + s$. Then, the
+  probability that there exists an $i\in\{1,\ldots,n-k-1\}$ such that
+  $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$ is at most $2^{-s}$.
+\end{thm}
+
+\begin{proof}
+  We will give a partial prefix-free code, $C$, for $n$-bit binary strings
+  that is defined for any binary string that contains a run of $t$
+  consecutive $1$s.  For any such string, $x$, let $i$ denote the minimum
+  index such that $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$.  The codeword $C(x)$
+  consists of the value $i$, encoded using $\lceil\log n\rceil$ bits, followed
+  by $x_1,\ldots,x_{i-1},x_{i+t},\ldots,x_n$.  The codeword for $x$ has length
+  \[  
+    |C(x)| = \lceil\log n\rceil + n-t = n-s 
+  \] 
+  The result now follows from \lemref{streamlined}. 
+\end{proof}
+
+
 \subsection{Stirling Approximations}
 \seclabel{stirling}
 
@@ -324,11 +369,11 @@ done using an encoding argument.
 \end{thm}
 
 \begin{proof}
-  This is an encoding argument that compresses the $r=\binom{n}{2}$ bits
-  of $G$'s adjacency matrix, as they appear in row-major order.  If $G$
-  has no clique or independent set of size $t$, then the code consists of
-  a 0 bit followed by the $\binom{n}{2}$ bits of $G$'s adjacency matrix
-  in row-major order.
+  This is an encoding argument that compresses the $r=\binom{n}{2}$
+  bits of $G$'s adjacency matrix, as they appear in row-major order.
+  If $G$ has no clique or independent set of size $t$, then the code
+  consists of a 0 bit followed by the $\binom{n}{2}$ bits of $G$'s
+  adjacency matrix in row-major order.
   
   Otherwise, $G$ contains a clique or independent set, $S$, of size
   $t$.  Then the code consists of a 1; another bit indicating whether
