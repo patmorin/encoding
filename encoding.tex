@@ -252,11 +252,11 @@ used in most encoding arguments:
 Points 2 and 3 about encoding arguments suggest that the Uniform
 Encoding Lemma can be streamlined.  Since we only care about the cases
 where event $\mathcal{E}$ occurs, it is enough to find a \emph{partial
-prefix-free code} that is defined only for the elementary envents
+  prefix-free code} that is defined only for the elementary events
 contained in $\mathcal{E}$.  A \emph{partial prefix-free code} for a
 set $X$ is a function $C\from X\to\{0,1\}^*\cup\{\bot\}$ such that $C$
-is prefix-free code for the set $X'=\{x\in X:C(x)\neq\bot\}$.
-(We think of the code as being undefined for $x$ if $C(x)=\bot$.)
+is prefix-free code for the set $X'=\{x\in X:C(x)\neq\bot\}$.  (We
+think of the code as being undefined for $x$ if $C(x)=\bot$.)
 
 The following lemma, whose proof is identical to that of \lemref{uel},
 is a streamlined version of \lemref{uel}.
@@ -351,6 +351,76 @@ Using this simplification, \eqref{hassle} becomes
 
 We now start with some applications of the Uniform Encoding Lemma.
 
+\subsection{Runs in Permutations}
+
+We consider the use of encoding arguments to study statistics of
+equiprobable permutations of $1, 2, \ldots, n$.
+
+Given a permutation
+$x = \langle x_1, x_2, \ldots, x_n \rangle \in S_n$, we say a
+subsequence $\langle x_{k_1}, x_{k_2}, \ldots, x_{k_m} \rangle$ is an
+{\em ascending run} if $x_{k_i} < x_{k_{i+1}}$ for all $i$.
+
+INCLUDE ODLYZKO CITATION ABOUT SURVEY OF THIS STATISTIC ETC.
+
+\begin{thm}\thmlabel{runs}
+  Let $x = \langle x_1, x_2, \ldots, x_n \rangle$ be a uniformly
+  random permutation of the integers from $1$ through $n$, and let
+  $t = o(n)$ satisfy the implicit inequality
+  $2t\log(t/e\sqrt{n}) - 2t^2/n \geq s + O(1/n)$. Then, the
+  probability that $x$ has an ascending run of length $t$ is $2^{-s}$.
+\end{thm}
+
+\begin{proof}
+  We encode the string
+  \[x = x_1, x_2, \ldots, x_n\]
+
+  which is drawn uniformly at random from a set of size $n!$. In our
+  partial prefix-free code, we provide first the positions of the $t$
+  values in the ascending run; then the values in the run; and finally
+  the rest of the permutation. In total, this costs:
+  \begin{align*}
+    b & = 2\log \binom{n}{t} + \log(n - t)! \\
+      & = \log n! + 2 \log \binom{n}{t} - \sum_{0 \leq i < t} \log (n - i) \\
+      & \le \log n! + 2t \log n - 2t \log t + 2t \log e - \sum_{0 \leq i < t} \log(n - i) + O(1/n)  & \text{(using \eqref{log-n-choose-k})}\\
+      & \le \log n! + t \log n - 2t \log t + 2t \log e - t \log \left(1 - \frac{t}{n}\right) +  O(1/n)
+  \end{align*}
+
+  bits. Since $t = o(n)$, then $- \log(1 - t/n) \leq 2t/n$ for
+  sufficiently large $n$, so:
+  \begin{align*}
+    b & \le \log n! + t \log n - 2t \log t + 2t \log e + \frac{2 t^2}{n} + O(1/n) \\
+      & \le \log n! - s
+  \end{align*}
+
+  bits, as long as $t$ is such that:
+  \begin{align*}
+    2t\log(t/e\sqrt{n}) - 2 t^2/n \ge s + O(1/n)
+  \end{align*}
+
+  We obtain the result by applying \lemref{streamlined}.
+\end{proof}
+
+\begin{rem}
+  A valid solution to the implicit inequality of \thmref{runs} is
+  $t = c \sqrt{n}$, for any $c > e$ and for sufficiently large $n$. We
+  know that the expectation of random ascending run length is instead
+  concentrated around $2 \sqrt{n}$ (CITATION NEEDED). Indeed, the
+  proof of \thmref{runs} exhibits a recurring artifact in the
+  extraneous `$e$' factor.
+\end{rem}
+
+One might na\"{i}evly attempt to use the above encoding to obtain a
+result about the expected number of records in a uniformly chosen
+permutation -- clearly, such an attempt would be fruitless, since this
+statistic is known to be concentrated around $\ln n$ (CITATION
+NEEDED). Instead, a more careful encoding is surely required. We leave
+this as an open problem. Indeed, it is interesting to acknowledge the
+relative difficulty of producing an encoding argument to study this
+statistic; the ordinary argument without the burden of encoding is
+comparatively simple.
+
+
 \subsection{Graphs with no Large Clique or Independent Set}
 
 
@@ -371,32 +441,28 @@ done using an encoding argument.
 \begin{proof}
   This is an encoding argument that compresses the $r=\binom{n}{2}$
   bits of $G$'s adjacency matrix, as they appear in row-major order.
-  If $G$ has no clique or independent set of size $t$, then the code
-  consists of a 0 bit followed by the $\binom{n}{2}$ bits of $G$'s
-  adjacency matrix in row-major order.
   
-  Otherwise, $G$ contains a clique or independent set, $S$, of size
-  $t$.  Then the code consists of a 1; another bit indicating whether
-  $S$ is a clique or independent set; the vertices of $S$; then the
-  adjacency matrix of $G$ in row major-order but leaving out all of the
-  $\binom{t}{2}$ bits implied by the edges or non-edges in $S$.
+  $G$ contains a clique or independent set, $S$, of size $t$. Hence,
+  the code begins with a bit indicating whether $S$ is a clique or
+  independent set; the vertices of $S$; then the adjacency matrix of
+  $G$ in row major-order but leaving out all of the $\binom{t}{2}$
+  bits implied by the edges or non-edges in $S$.
   
-  In the second case, this encoding requires 
+  This encoding requires
   \begin{align*}
-     b & = 2 + t\log n + \binom{n}{2}-\binom{t}{2} \\
-       & = \binom{n}{2} + 2 + t\log n - (1/2)(t^2 - t) \\
-       & = \binom{n}{2} + 2 + t\log n 
+     b & = 1 + t\log n + \binom{n}{2}-\binom{t}{2} \\
+       & = \binom{n}{2} + 1 + t\log n - (1/2)(t^2 - t) \\
+       & = \binom{n}{2} + 1 + t\log n 
             - (1/2)\left(9\log^2 n +3\sqrt{2s}\log n + 2s - t\right) \\
-       & = \binom{n}{2} + 2 
+       & = \binom{n}{2} + 1 
             - (1/2)\left(3\log^2 n + \sqrt{2s}\log n + 2s - t\right) \\
-       & = \binom{n}{2} + 2 
+       & = \binom{n}{2} + 1 
             - (1/2)\left(t\log n + 2s - t\right) \\
-       & = \binom{n}{2} + 2 
+       & = \binom{n}{2} + 1 
             - (1/2)\left(t(\log n-1)\right) - s \\
        & \le \binom{n}{2} - s 
   \end{align*}
-  bits.   Applying the Uniform Encoding
-  Lemma completes the proof.
+  bits. Applying the Uniform Encoding Lemma completes the proof.
 \end{proof}
 
 \begin{rem}
@@ -421,7 +487,7 @@ argument can be used to prove the classic result that, when we do this,
 no urn contains more than $O(\log n/\log\log n)$ balls.
 
 \begin{thm}\thmlabel{urns}
-  Let $t$ be such that $t\log(t/e) \ge 4+s+\log n$ and suppose we throw
+  Let $t$ be such that $t\log(t/e) \ge 1+s+\log n$ and suppose we throw
   $n$ balls independently and uniformly at random into $n$ urns. Then,
   for sufficiently large $n$, the probability that any urn contains more 
   than $t$ balls is at most $2^{-s}$.
@@ -440,22 +506,21 @@ satisfies the requirements of \thmref{urns}.
   is chosen uniformly at random from a set $X$ of size $n^n$, and it is this
   choice that will be used in our encoding argument.
 
-  If no urn contains $t$ or more balls, then our code is a 0 bit followed
-  by the obvious encoding. If some urn, $i$, contains $t$ or more balls,
-  then our code is a 1 bit followed by $i$, followed by a code that
-  describes $t$ of the balls in urn $i$, followed by the remaining $n-t$
-  values of $b_1,\ldots,b_n$ that cannot be deduced from the preceding
+  If the urn labelled $i$ contains $t$ or more balls, then our code
+  begins with the value $i$, followed by a code that describes $t$ of
+  the balls in urn $i$, followed by the remaining $n-t$ values of
+  $b_1,\ldots,b_n$ that cannot be deduced from the preceding
   information.  In total, this is
   \begin{align*}
     b &\le \log n + \log\binom{n}{t} 
-           + (n-t)\log n + 3 \\
+           + (n-t)\log n \\
      & = \log n + t\log n - t\log t + t\log e  
-           + (n-t)\log n + 3 + O(1/n)
+           + (n-t)\log n + O(1/n)
              & \text{(using \eqref{log-n-choose-k})} \\
      & = \log n + t\log n - t\log t + t\log e  
-           + (n-t)\log n + 4
+           + (n-t)\log n + 1
              & \text{(for large enough $n$)} \\
-     & = (n+1)\log n - t\log t + t\log e + 4 \\
+     & = (n+1)\log n - t\log t + t\log e + 1 \\
      & \le  n\log n - s &\text{(by the choice of $t$)} \\
      & =  \log n^n - s \enspace . & \qedhere
   \end{align*}
@@ -489,15 +554,12 @@ a \emph{block}.
   \]
   which is drawn uniformly at random from a set $X$ of size $n^{m}=n^{cn}$.
   
-  If the block containing $x$ does not have size $t$ then we encode $R$
-  as a 0 bit followed by the obvious encoding of $h(x_1),\ldots,h(x_n)$.
-  
-  Otherwise, we encode $R$ as a 1 bit followed by the first index,
-  $b$, of the block containing $x$; followed by the $t-1$ elements,
-  $y_1,\ldots,y_{t-1}$, of this block (excluding $x$); followed
-  by enough information to decode the hash values of $h(x)$ and
-  $h(y_1),\ldots,h(y_{t-1})$; followed by $h(x_1),\ldots,h(x_n)$ excluding
-  the $t$ hash values we can compute from the preceding information.
+  We encode $R$ by the first index $b$ of the block containing $x$;
+  followed by the $t-1$ elements, $y_1,\ldots,y_{t-1}$, of this block
+  (excluding $x$); followed by enough information to decode the hash
+  values of $h(x)$ and $h(y_1),\ldots,h(y_{t-1})$; followed by
+  $h(x_1),\ldots,h(x_n)$ excluding the $t$ hash values we can compute
+  from the preceding information.
 
   Notice that $h(x),h(y_1),h(y_2),\ldots,h(y_{t-1})$ are in the range
   $b,\ldots,b+t-1$ (modulo $m$) so these can be encoded using $\lceil
@@ -554,15 +616,12 @@ Without loss of generality, let $A=\{1,\ldots,n\}$.  We use an encoding argument
 \]
 which is chosen uniformly from a set $X$ of size $n^{3n}$.
 
-If no set $A'$ violates the conditions of the lemma, then the code for
-$R$ is a zero bit followed by the obvious $3n\log n$ bit encoding of $R$.
-
 If some set $A'$, $|A'|=k\le \alpha n$, violates the conditions of the
-lemma, then we encode a one bit, followed by $k$, $A'$, $N(A')$ and
-then the edges between $A'$ and $N(A')$.  Then we encode the rest of
-$R$, skipping the $3k\log n$ bits devoted to elements in $A'$.  The key
-savings here comes because $N(A')$ should take $3k\log n$ bits to encode,
-but can actually be encoded in roughly $3k\log(3k/2)$ bits.
+lemma, then we encode $k$, $A'$, $N(A')$ and then the edges between
+$A'$ and $N(A')$. Then we encode the rest of $R$, skipping the
+$3k\log n$ bits devoted to elements in $A'$.  The key savings here
+comes because $N(A')$ should take $3k\log n$ bits to encode, but can
+actually be encoded in roughly $3k\log(3k/2)$ bits.
 
 The total size of the first part of our encoding is, which includes $k$,
 $A'$ and $N(A')$ is
@@ -601,15 +660,15 @@ $1-O(1/n)$ \cite{patrascu:cuckoo}.
 The main object of study in cuckoo hashing is a random bipartite
 multigraph $G=(A,B,E)$ where $|A|=|B|=2n$ and $|E|=n$.  For each
 $i\in\{1,\ldots,n\}$, each edge $e_i$ of $E$ is obtained by randomly
-choosing (with replacement) and an endpoint in $a_i\in A$ and an endpoint
+choosing (with replacement) an endpoint in $a_i\in A$ and an endpoint
 in $b_i\in B$.  The cuckoo hashing algorithm may fail if this graph
 contains a long edge-simple path or if it contains a component with more
 edges than vertices.  (An edge-simple path is a path that uses each edge
 of the multiset $E$ at most once.)
 
 \begin{thm}\thmlabel{edge-simple}
-  Fix some vertex $x\in A$, then the probability that $x$ is the endpoint
-  of an edge-simple path of length $t=s+1$ is at most $2^{-s}$.
+  Fix some vertex $x\in A$, 1then the probability that $x$ is the endpoint
+  of an edge-simple path of length $t=s$ is at most $2^{-s}$.
 \end{thm}
 
 \begin{proof}
@@ -618,26 +677,21 @@ of the multiset $E$ at most once.)
      R=a_1,b_1,a_2,b_2,\ldots,a_n,b_n
   \]
   which is drawn uniformly from a set $X$ of size $m^{2n}$.
-  
-  If $x$ is not the endpoints of a (edge-simple) path of length $t$,
-  then we encode $R$ as a 0 bit followed by the obvious encoding of $R$.
 
-  Otherwise the code starts with a 1 bit, followed by the encoding of
-  $t$ edges and vertices (excluding $x$) on a path, $P$, of length $t$ that
-  starts at $x$, followed by the $2n-2t$ entries in $R$ that are
-  not edges of this path.  
+  The code begins with the $t$ edges and vertices (excluding $x$) on a
+  path, $P$, of length $t$ that starts at $x$, followed by the $2n-2t$
+  entries in $R$ that are not edges of this path.
 
   The path $P$ consists of $t+1$ vertices (the first of which is $x$) and
   $t$ edges. The encoding of $P$ specifies the vertices (excluding $x$)
   as well as the indices of the edges. The former requires $t\log m$ bits
   and the latter requires $t\log n$ bits, for a total of $2t\log n-t$ bits.
 
-
-This encoding requires
+  This encoding requires
   \[
-    b = 1 + t\log m + t\log n + 2(n-t)\log m < 2n\log m - s
+    b = t\log m + t\log n + 2(n-t)\log m < 2n\log m - s
   \]
-  bits, for $t=s+1$. The proof finishes, as usual, by applying the
+  bits, for $t=s$. The proof finishes, as usual, by applying the
   Uniform Encoding Lemma.
 \end{proof}
 
@@ -652,22 +706,19 @@ graph has no subgraph with more edges than vertices.
 \end{thm}
 
 \begin{proof}
-  We encode the same sequence $R$ as in the previous proof.
-  If $x$ is not part of such a minimal subgraph, then we output a 0 bit
-  followed by the obvious encoding of $R$.
-
-  Otherwise, assume that $x$ is a part of a minimal subgraph having
-  $t$ vertices and $t+1$ edges. Note that, after removing two edges,
-  this subgraph consists of two paths, of length $t_1$ and $t_2$,
-  (with $t_1+t_2=t-1$) that have $x$ as an endpoint.  In this case,
-  we encode $R$ as a 1 bit; $t_1$ and $t_2$; the vertices and edges
-  of each of these two paths, excluding $x$; and enough information to
-  determine the two edges we removed (this takes $2\log n + O(\log t)$
-  bits); finally, the code includes all the $2n-2(t+1)$ entries in $R$
-  that cannot be derived from the previous information. This gives a total of
+  We encode the same sequence $R$ as in the previous proof. Now, $x$
+  is a part of a minimal subgraph having $t$ vertices and $t+1$
+  edges. Note that, after removing two edges, this subgraph consists
+  of two paths, of length $t_1$ and $t_2$, (with $t_1+t_2=t-1$) that
+  have $x$ as an endpoint.  In this case, we encode $R$ as $t_1$ and
+  $t_2$; the vertices and edges of each of these two paths, excluding
+  $x$; and enough information to determine the two edges we removed
+  (this takes $2\log n + O(\log t)$ bits); finally, the code includes
+  all the $2n-2(t+1)$ entries in $R$ that cannot be derived from the
+  previous information. This gives a total of
   \begin{align*}
-     b &= 1 + (t-1)(\log n+\log m) + (2n-2(t+1))\log m + 2\log n + O(\log t) \\
-        &= 2n\log m + O(\log t) - (t-1) - 2\log m \\
+     b &= (t-1)(\log n+\log m) + (2n-2(t+1))\log m + 2\log n + O(\log t) \\
+        &= 2n\log m + O(\log t) - t - 2\log m \\
        & \le 2n\log m - 2\log m + O(1) \enspace .
   \end{align*}
   Applying the Uniform Encoding Lemma with $s=2\log m+O(1)$ completes
@@ -958,15 +1009,13 @@ Here we show how this can be accomplished with an encoding argument.
 \begin{proof}
    Without loss of generality assume that $G$'s vertex set is
    $V=\{1,\ldots,n\}$.  In this argument, we will produce an encoding
-   of $G$'s adjacency matrix, $x$.  If $G$ contains some triangle, then
-   we encode $x$ as a zero followed by the obvious encoding of $G$'s $x$
-   (a binary string of length $\binom{n}{2}$).
+   of $G$'s adjacency matrix, $x$.
 
    Refer to \figref{triangles}.  If $G$ contains no triangles, then we
-   look at the number of 1's in the $n/2\times n/2$ submatrix determined
-   by rows $1,\ldots,n/2$ and columns $n/2+1,\ldots,n$.  There are two
-   cases to consider (which result in codewords beginning with 10 or 11,
-   respectively):
+   look at the number of 1's in the $n/2\times n/2$ submatrix
+   determined by rows $1,\ldots,n/2$ and columns $n/2+1,\ldots,n$.
+   There are two cases to consider (which result in codewords
+   beginning with 10 or 11, respectively):
 
    \begin{figure}
      \centering{\includegraphics{triangles}}
@@ -1015,17 +1064,15 @@ Here we show how this can be accomplished with an encoding argument.
 
 \begin{proof}
   We use an encoding argument on the bits of the adjacency matrix, $x$,
-  of $G$.  In the case where $G$ has no component of size $t$ or more,
-  the codeword is a 0 followed by the obvious encoding of the adjacency
-  matrix.
+  of $G$.
 
   If $G$ does contain a component of size $t$ or greater, then we
-  find, within this component, a tree, $T$, of size exactly $t$.
-  The codeword then consists of a 1 bit, a list of the vertices in $T$
-  as they are encountered during an preorder traversal, a description
-  of the shape of $T$, and then finally, a Shannon-Fano code that gives
-  the $\binom{n}{2}-t+1$ bits of the adjacency matrix corresponding to
-  the edges not in $T$.
+  find, within this component, a tree, $T$, of size exactly $t$.  The
+  codeword then consists of a list of the vertices in $T$ as they are
+  encountered during an preorder traversal, a description of the shape
+  of $T$, and then finally, a Shannon-Fano code that gives the
+  $\binom{n}{2}-t+1$ bits of the adjacency matrix corresponding to the
+  edges not in $T$.
 
   The shape of $T$ can be described using $2n$ bits by tracing the
   execution of the traversal of $T$, using a 1 to indicate that the
