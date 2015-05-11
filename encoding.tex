@@ -227,24 +227,25 @@ Simple as it is, the proof of \thmref{runs-i} contains the main ideas
 used in most encoding arguments:
 
 \begin{enumerate}
-  \item The arguments usually show that a particular \emph{bad event}
-  is unlikely.  In \thmref{runs-i} the bad event is the occurrence of a long
-  substring of consecutive 1's.
+\item The arguments usually show that a particular \emph{bad event} is
+  unlikely.  In \thmref{runs-i} the bad event is the occurrence of a
+  long substring of consecutive 1's.
 
-  \item The length of the codeword is irrelevant to the argument if
-  the bad event does not occur.  In \thmref{runs-i}
-  the codeword has length $n+1$ in this case.
+\item The length of the codeword is irrelevant to the argument if the
+  bad event does not occur.  In \thmref{runs-i} the codeword has
+  length $n+1$ in this case.
  
-  \item Codewords often start with a 1 or 0 to flag the occurrence or
+\item Codewords often start with a 1 or 0 to flag the occurrence or
   non-occurrence of the bad event.
 
-  \item When the bad event does occur, the code usually begins with
-  a concise description of the bad event, and is then followed by a
-  straightforward encoding of the information that is not implied by the
-  bad event. In \thmref{runs-i}, the bad event is completely described
-  by the index $i$ at which the run of $t$ 1 bits begins, and this implies
-  that the bits $x_i,\ldots,x_{i+t-1}$ are all equal to 1, so these
-  bits do not need to be specified in the second part of the codeword. 
+\item When the bad event does occur, the code usually begins with a
+  concise description of the bad event, and is then followed by a
+  straightforward encoding of the information that is not implied by
+  the bad event. In \thmref{runs-i}, the bad event is completely
+  described by the index $i$ at which the run of $t$ 1 bits begins,
+  and this implies that the bits $x_i,\ldots,x_{i+t-1}$ are all equal
+  to 1, so these bits do not need to be specified in the second part
+  of the codeword.
 \end{enumerate}
 
 \subsection{A Streamlined Encoding Lemma}
@@ -264,7 +265,9 @@ is a streamlined version of \lemref{uel}.
 \begin{lem}\lemlabel{streamlined}
  Let $C\from X\to\{0,1\}^*\cup\{\bot\}$ be a partial prefix-free
  code. If $x\in X$ is chosen uniformly at random, then
- \[  \Pr\{C(x)\neq \bot\text{ and } |C(x)|\le\log |X|-s\} \le 2^{-s} \enspace .  
+ \[
+ \Pr\{C(x)\neq \bot\text{ and } |C(x)|\le\log |X|-s\} \le 2^{-s}
+ \enspace .
  \]
 \end{lem}
 
@@ -279,16 +282,18 @@ tighter result.
 \end{thm}
 
 \begin{proof}
-  We will give a partial prefix-free code, $C$, for $n$-bit binary strings
-  that is defined for any binary string that contains a run of $t$
-  consecutive $1$s.  For any such string, $x$, let $i$ denote the minimum
-  index such that $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$.  The codeword $C(x)$
-  consists of the value $i$, encoded using $\lceil\log n\rceil$ bits, followed
-  by $x_1,\ldots,x_{i-1},x_{i+t},\ldots,x_n$.  The codeword for $x$ has length
+  We will give a partial prefix-free code, $C$, for $n$-bit binary
+  strings that is defined for any binary string that contains a run of
+  $t$ consecutive $1$s.  For any such string, $x$, let $i$ denote the
+  minimum index such that $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$.  The
+  codeword $C(x)$ consists of the value $i$, encoded using
+  $\lceil\log n\rceil$ bits, followed by
+  $x_1,\ldots,x_{i-1},x_{i+t},\ldots,x_n$.  The codeword for $x$ has
+  length
   \[  
-    |C(x)| = \lceil\log n\rceil + n-t = n-s 
+  |C(x)| = \lceil\log n\rceil + n-t = n-s
   \] 
-  The result now follows from \lemref{streamlined}. 
+  The result now follows from \lemref{streamlined}.
 \end{proof}
 
 
@@ -351,24 +356,32 @@ Using this simplification, \eqref{hassle} becomes
 
 We now start with some applications of the Uniform Encoding Lemma.
 
-\subsection{Runs in Permutations}
+\subsection{Permutation Statistics}
 
 We consider the use of encoding arguments to study statistics of
-equiprobable permutations of $1, 2, \ldots, n$.
+equiprobable permutations of $\{1, 2, \ldots, n\}$.
 
-Given a permutation
-$x = \langle x_1, x_2, \ldots, x_n \rangle \in S_n$, we say a
-subsequence $\langle x_{k_1}, x_{k_2}, \ldots, x_{k_m} \rangle$ is an
-{\em ascending run} if $x_{k_i} < x_{k_{i+1}}$ for all $i$.
+\subsubsection{Ascending Runs}
 
-INCLUDE ODLYZKO CITATION ABOUT SURVEY OF THIS STATISTIC ETC.
+Given a permutation $x = \langle x_1, x_2, \ldots, x_n \rangle$, we
+say a subsequence $\langle x_{k_1}, x_{k_2}, \ldots, x_{k_t} \rangle$
+is an {\em ascending run} if $x_{k_1} < x_{k_2} < \ldots < x_{k_t}$.
+
+The length of the longest ascending run has been well-studied. Logan
+and Shepp \cite{logan.shepp:runs} together with Vershik and Kerov
+\cite{vershik.kerov:runs} first established that the expected length
+of the longest ascending run in a random permutation is asymptotically
+$2 \sqrt{n}$. Several new original proofs of this fact have appeared
+more recently; accordingly, we present an encoding argument to study
+this problem.
 
 \begin{thm}\thmlabel{runs}
   Let $x = \langle x_1, x_2, \ldots, x_n \rangle$ be a uniformly
-  random permutation of the integers from $1$ through $n$, and let
-  $t = o(n)$ satisfy the implicit inequality
-  $2t\log(t/e\sqrt{n}) - 2t^2/n \geq s + O(1/n)$. Then, the
-  probability that $x$ has an ascending run of length $t$ is $2^{-s}$.
+  random permutation of the integers from $1$ through $n$, and let $t$
+  satisfy the implicit inequality
+  $2t\log(t/e\sqrt{n}) - \frac{t^2}{n - t}\log e \geq s + O(1/n)$.
+  Then, the probability that $x$ has an ascending run of length $t$ is
+  $2^{-s}$.
 \end{thm}
 
 \begin{proof}
@@ -383,19 +396,14 @@ INCLUDE ODLYZKO CITATION ABOUT SURVEY OF THIS STATISTIC ETC.
     b & = 2\log \binom{n}{t} + \log(n - t)! \\
       & = \log n! + 2 \log \binom{n}{t} - \sum_{0 \leq i < t} \log (n - i) \\
       & \le \log n! + 2t \log n - 2t \log t + 2t \log e - \sum_{0 \leq i < t} \log(n - i) + O(1/n)  & \text{(using \eqref{log-n-choose-k})}\\
-      & \le \log n! + t \log n - 2t \log t + 2t \log e - t \log \left(1 - \frac{t}{n}\right) +  O(1/n)
-  \end{align*}
-
-  bits. Since $t = o(n)$, then $- \log(1 - t/n) \leq 2t/n$ for
-  sufficiently large $n$, so:
-  \begin{align*}
-    b & \le \log n! + t \log n - 2t \log t + 2t \log e + \frac{2 t^2}{n} + O(1/n) \\
+      & \le \log n! + t \log n - 2t \log t + 2t \log e + t \log \left(1 + \frac{t}{n - t}\right) +  O(1/n) \\
+      & \le \log n! - 2t \log(t/e\sqrt{n}) + \frac{t^2}{n - t} \log e + O(1/n) & \text{(since $1+x \le e^x$)} \\
       & \le \log n! - s
   \end{align*}
 
   bits, as long as $t$ is such that:
   \begin{align*}
-    2t\log(t/e\sqrt{n}) - 2 t^2/n \ge s + O(1/n)
+    2t\log(t/e\sqrt{n}) - \frac{t^2}{n - t}\log e \ge s + O(1/n)
   \end{align*}
 
   We obtain the result by applying \lemref{streamlined}.
@@ -420,6 +428,28 @@ relative difficulty of producing an encoding argument to study this
 statistic; the ordinary argument without the burden of encoding is
 comparatively simple.
 
+\subsubsection{Records}
+
+Given a permutation $x = \langle x_1, x_2, \ldots, x_n \rangle$, a
+(max-)record of $x$ is a value $x_i$ such that $x_i > x_j$ for all
+$j < i$. The subsequence of
+$\langle x_{k_1}, x_{k_2}, \ldots, x_{k_t} \rangle$ forms an ascending
+run of $x$. INCLUDE SHIT ABOUT HOW EASY IT IS TO CALCULATE THE
+EXPECTED NUMBER OF RECORDS IN A RANDOM PERMUTATION.
+
+Let $\langle x_1, x_2, \ldots, x_n \rangle$ have records
+$\langle x_{n_1}, x_{n_2}, \ldots, x_{n_t} \rangle$. Define
+$f : [n]^n \to [n]^n$ to be
+$f(x_1, x_2, \ldots, x_n) = (y_1, y_2, \ldots, y_n)$ where:
+\[
+y_i = \left\{ \begin{array}{ll}
+                x_i & \mbox{if $x_i$ is not a record of $x$};\\
+                x_{n_j} - x_{n_{j - 1}} & \mbox{if $x_i = x_{n_j}$ for some $j$}.\end{array} \right.
+\]
+
+Let $f^{(n)}(x)$ denote the $n$\textsuperscript{th} iterated
+application of $f$ to $x$, {\em i.e.} $f^{(1)}(x) = f(x)$, and
+$f^{(n)}(x) = f( f^{(n - 1)}(x))$.
 
 \subsection{Graphs with no Large Clique or Independent Set}
 
@@ -578,13 +608,71 @@ a \emph{block}.
 \end{proof}
 
 \begin{rem}
-  The proof of \thmref{linear-probing} requires that the linear probing
-  hash table has size $cn$ for some $c>e$.  We know from previous analysis
-  that this is not necessary, any $c>1$ is sufficient. We leave it as an open
-  problem to find an encoding proof of \thmref{linear-probing} that works
-  for any $c>1$.
+  The proof of \thmref{linear-probing} requires that the linear
+  probing hash table has size $cn$ for some $c>e$.  We know from
+  previous analysis that this is not necessary, any $c>1$ is
+  sufficient. We leave it as an open problem to find an encoding proof
+  of \thmref{linear-probing} that works for any $c>1$.
 \end{rem}
 
+\subsection{2-Choice Hashing}
+
+We showed earlier how, when throwing $n$ balls uniformly at random and
+independently into $n$ urns, no urn contains more than
+$O(\log n/\log \log n)$ balls. In 2-choice hashing, each ball is
+instead given a choice of two of these $n$ urns, and the urn
+containing fewer balls is preferred.
+
+\begin{thm}\thmlabel{2-choice-hashing}
+  Fix some $x \in \{x_1, \ldots, x_n\}$. Then, in the 2-choice hashing
+  scheme, the probability that the urn containing $x$ has size $t$ is
+  $2^{-s}$, where:
+  \[t 2^t - 2^t(\log e + 2) \geq s + O(1/n)\]
+\end{thm}
+
+Perhaps surprisingly, we note that $t = O(\log \log n)$ satisfies the
+conditions of \thmref{2-choice-hashing} -- an exponential improvement
+over the single choice scheme considered in \secref{urns}. In fact,
+Azar {\em et al.} \cite{azar:multiplechoice} showed that the expected
+maximum size of an urn is $\log_2 \ln n + O(1)$. More general and more
+precise results have since appeared.
+
+\begin{proof}
+  We encode the vector:
+  \[
+  R = h_1(x_1), h_2(x_1), h_1(x_2), h_2(x_2) \ldots, h_1(x_n), h_2(x_n)
+  \]
+
+  which is drawn uniformly at random from a set of size $n^{2n}$.
+
+  If an element $x$ has search time $t$, then it corresponds to a
+  witness tree $T$ with root $x$ and height $t$. If $y$ is $x$'s
+  $i$\textsuperscript{th} child, then we know that $h_j(y) = h_i(x)$
+  for either $j = 1$ or $2$.
+
+  We encode $R$ as follows: first we give $y_1, y_2, \ldots, y_{2^t}$,
+  the sequence of leaves in the witness tree given in increasing
+  order; then we include each pair $(i, j)$ for each edge $(x, y)$ in
+  the tree, where $y$ is $x$'s $i$\textsuperscript{th} child and
+  $h_j(y) = h_i(x)$; then we include the values $h_1(x)$ and
+  $h_2(x)$. From this, we can deduce $2^t$ values of the hash
+  function. Finally, we include the remaining $2n - 2 - 2^t$ hash
+  values. In total, this requires:
+
+  \begin{align*}
+    b & = \log \binom{n}{2^t} + 2^{t + 1} - 2 + 2\log n + (2n - 2 - 2^t)\log n \\
+      & \le \log n^{2n} - 2^t \log 2^t + 2^t \log e + 2^{t + 1} + O(1/n) \\
+      & = \log n^{2n} - t 2^t + 2^t (\log e + 2) + O(1/n) \\
+      & \le \log n^{2n} - s
+  \end{align*}
+
+  bits, as long as:
+  \[t 2^t - 2^t(\log e + 2) \geq s + O(1/n)\]
+\end{proof}
+
+\subsection{Robin-Hood Hashing}
+
+Soon.
 
 
 \subsection{Bipartite Expanders}
@@ -667,8 +755,8 @@ edges than vertices.  (An edge-simple path is a path that uses each edge
 of the multiset $E$ at most once.)
 
 \begin{thm}\thmlabel{edge-simple}
-  Fix some vertex $x\in A$, 1then the probability that $x$ is the endpoint
-  of an edge-simple path of length $t=s$ is at most $2^{-s}$.
+  Fix some vertex $x\in A$, then the probability that $x$ is the
+  endpoint of an edge-simple path of length $t=s$ is at most $2^{-s}$.
 \end{thm}
 
 \begin{proof}
@@ -724,7 +812,6 @@ graph has no subgraph with more edges than vertices.
   Applying the Uniform Encoding Lemma with $s=2\log m+O(1)$ completes
   the proof.
 \end{proof}
-
 
 \subsection{Analysis of Insertion Sort}
 
