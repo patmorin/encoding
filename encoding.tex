@@ -5,6 +5,12 @@
 
 \newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
 
+% taken from http://goo.gl/JVNEL2
+\newtheorem{innercustomthm}{Theorem}
+\newenvironment{customthm}[1]
+  {\renewcommand\theinnercustomthm{#1}\innercustomthm}
+  {\endinnercustomthm}
+
 %\newcommand{\keywords}[1]{\vspace{2em}\noindent\textbf{Keywords:} #1}
 %\newcommand{\from}{\colon}
 
@@ -286,7 +292,17 @@ $i$ using $\log n$ bits even if $\log n$ is not an integer.  In general
 we can imagine encoding a choice from among $r$ options using $\log r$
 bits for any $r\in\N$.  From this point onwards, we omit ceilings this
 way in all our theorems and proofs. This makes calculations simpler and
-provides tighter results.
+provides tighter results.  For now, it allows us to state the following result:
+
+\begin{customthm}{\ref{thm:runs-i}b}\thmlabel{runs-ii}
+  Let $x=\langle x_1,\ldots,x_n\rangle\in\{0,1\}^n$ be chosen
+  uniformly at random and let $t= \log n + s$. Then, the
+  probability that there exists an $i\in\{1,\ldots,n-\lfloor t\rfloor-1\}$ such that
+  $x_i=x_{i+1}=\cdots=x_{i+\lfloor t\rfloor-1}=1$ is at most $2^{-s}$.
+\end{customthm}
+
+
+
 
 \subsection{Stirling Approximations}
 \seclabel{stirling}
