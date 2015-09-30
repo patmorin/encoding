@@ -9,19 +9,25 @@
 %\newcommand{\from}{\colon}
 
 \title{\MakeUppercase{Encoding Arguments}}
-\author{Pat Morin}
+\author{Pat Morin, Tommy Reddad, and Wolfgang Mulzer}
 \date{}
 
 \begin{document}
 \begin{titlepage}
 \maketitle
 
+
 \begin{abstract}
 \setlength{\baselineskip}{15.84pt}
-This expository article surveys a number of applications of ``encoding
-arguments,'' in which probabilistic statements are proven using the fact
-a uniformly random choice from a set of size $N$ can not be encoded with
-fewer than $\log N$ bits on average.
+This expository article surveys ``encoding arguments.'' In their most most
+basic form an encoding argument proves an upper bound on the probability
+of an event using the fact a uniformly random choice from a set of size
+$N$ can not be encoded with fewer than $\log N$ bits on average.
+
+We survey many applications of this basic argument, give a generalization
+of this argument for the case of non-uniform distributions, and give a
+rigorous justification for the use of non-integer codeword lengths in
+encoding arguments.  These latter two results allow encoding arguments to be applied more widely and to produce tighter results.
 \end{abstract}
 
 \keywords{Encoding arguments, entropy, Kolmogorov complexity, incompressibility, random graphs, expanders, \ldots}
@@ -33,7 +39,7 @@ fewer than $\log N$ bits on average.
 \pagenumbering{arabic}
 
 \section{Introduction}
-
+\setlength{\baselineskip}{15.84pt}
 There is no doubt that probability theory plays a fundamental role
 in computer science: Some of the fastest and simplest fundamental
 algorithms and data structures are randomized; average-case analysis of
@@ -51,8 +57,8 @@ probability, as part of the discrete structures curriculum.
 In this expository paper, we survey applications of ``encoding arguments''
 that tranforms the problem of upper-bounding the probability of a specific
 event, $\mathcal{E}$, into the problem of devising a code for the set
-of elementary events that happens to be particularly short whenever
-$\mathcal{E}$ occurs.  Encoding arguments have several advantages over
+of elementary events in 
+$\mathcal{E}$.  Encoding arguments have several advantages over
 traditional probabilistic analysis:
 
 \begin{enumerate}
@@ -70,7 +76,7 @@ traditional probabilistic analysis:
   \item Encoding arguments usually yield strong results;
   $\Pr\{\mathcal{E}\}$ typically decreases at least exponentially in
   the parameter of interest. Traditionally, these strong concentration
-  results require (at least) carefuly calculations on probabilities of
+  results require (at least) careful calculations on probabilities of
   independent events and/or the application of concentration inequalities.
   The subject of concentration inequalities is advanced enough to be
   the topic of entire textbooks \cite{boucheron.lugosi.ea:concentration,dubhashi.panconesi:concentration}.
@@ -109,8 +115,10 @@ Encoding Lemma}, which is the basis of most of our encoding arguments.
 Lemma to a variety of problems.  \Secref{nuel} presents a more
 general Non-Uniform Encoding Lemma that can handle a larger variety of
 applications, some of which are presented in \secref{applications-ii}.
-\Secref{summary} summarizes and concludes with some directions for
-future research.
+\Secref{weights} presents an alternative view of encoding arguments in
+terms of weight functions; this alternative view justifies the use of
+non-integer codeword lengths.  \Secref{summary} summarizes and concludes
+with some directions for future research.
 
 
 
@@ -121,17 +129,22 @@ This section presents the necessary background on prefix-free codes and binomial
 
 \subsection{Prefix-free Codes and the Uniform Encoding Lemma}
 
-A \emph{code}, $C\from X\to \{0,1\}^*$ is a one-to-function from a set
+A \emph{code}, $C\from X\to \{0,1\}^*$ is a one-to-one function from a set
 $X$ to the set of binary strings.  The elements of the range of $C$ are
-called $C$'s \emph{codewords}.
+called $C$'s \emph{codewords}.  In most cases, there are some elements of
+the set $X$ that are not of interest to us.  In these cases, we consider
+partial codes. A \emph{partial code} $C\from X\nrightarrow \{0,1\}^*$ is
+a one-to-one partial function.  When discussing partial codes we will use
+the convention that $|C(x)|=\infty$ if $x$ is not in the domain of $C$.
 
-A code, $C$, is \emph{prefix-free} if, for every $x,y\in X$ the binary
-string $C(x)$ is not a prefix of $C(y)$.  It can be helpful to think
-of prefix-free codes as (rooted ordered) binary trees whose leaves
-are labelled with the elements in $S$.  The codeword for a particular
-$x\in X$ is obtained by tracing the root-to-leaf path leading to $x$
-and outputting a 0 (respectively, 1) each time this path goes from a
-parent to its left (respectively, right) child. (See \figref{bintree}.)
+A (partial) code, $C$, is \emph{prefix-free} if, for every pair $x\neq y$
+in the domain of $C$ the binary string $C(x)$ is not a prefix of $C(y)$.
+It can be helpful to think of prefix-free codes as (rooted ordered)
+binary trees whose leaves are labelled with the elements in $S$.
+The codeword for a particular $x\in X$ is obtained by tracing the
+root-to-leaf path leading to $x$ and outputting a 0 (respectively, 1)
+each time this path goes from a parent to its left (respectively, right)
+child. (See \figref{bintree}.)
 
 \begin{figure}
   \centering{\includegraphics{bintree}}
@@ -158,22 +171,23 @@ each $x_i$ the binary representation of $i$ (padded with leading zeros),
 which has length $\lceil\log |X|\rceil$, since $i\in\{0,\ldots,|X|-1\}$.
 We will use this type of \emph{fixed-length code} implicitly in many arguments.
 
+
 As we will see, the following lemma, which is folklore, is surprisingly
 versatile:
 \begin{lem}[Uniform Encoding Lemma]\lemlabel{uel}
-  Let $C\from X\to \{0,1\}^*$ be a prefix-free code. If an element $x\in
-  X$ is chosen uniformly at random, then $\Pr\{|C(x)|\le \log|X|-s\}\le
-  2^{-s}$.
+  Let $C\from X\nrightarrow \{0,1\}^*$ be a prefix-free partial code. If
+  an element $x\in X$ is chosen uniformly at random, then $\Pr\{|C(x)|\le
+  \log|X|-s\}\le 2^{-s}$.
 \end{lem}
 
 \begin{proof}
-  Since $C$ is a one-to-one function, choosing $x$ uniformly from $S$
-  implies that $C(x)$ is chosen uniformly from $C$'s codewords. Let
-  $k=\log|X|-s$. Since $C$ has $|X|$ codewords and at most $2^{k}$ of these
-  have length at most $k$, the probability that $C(x)$ is one of these 
+  Let $k=\log|X|-s$ and recall that $C$ has at most $2^{k}$ codewords
+  length at most $k$.  Since $C$ is one-to-one each such codeword has
+  at most one preimage in $X$.  Since $x$ is chosen uniformly at random
+  from $X$, the probability that it is the preimage of one of these
   short codewords is at most
   \[
-     \frac{2^k}{|X|} = \frac{2^{\log|S|-s}}{|X|} = 2^{-s} \enspace . \qedhere 
+     \frac{2^k}{|X|} = \frac{2^{\log|X|-s}}{|X|} = 2^{-s} \enspace . \qedhere 
   \]
 \end{proof}
 
@@ -1223,7 +1237,8 @@ Here we show how this can be accomplished with an encoding argument.
 \subsection{}
 
 
-
+\section{Weight Functions}
+\seclabel{weights}
 
 \section{Summary and Conclusions}
 \seclabel{summary}
