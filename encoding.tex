@@ -205,28 +205,29 @@ a run of significantly more than $\log n$ one bits.  (See \figref{runs-i}.)
 
 \begin{thm}\thmlabel{runs-i}
   Let $x=\langle x_1,\ldots,x_n\rangle\in\{0,1\}^n$ be chosen
-  uniformly at random and let $t=1+\lceil\log n\rceil + s$. Then, the
-  probability that there exists an $i\in\{1,\ldots,n-k-1\}$ such that
+  uniformly at random and let $t=\lceil\log(n-t)\rceil + s$. Then, the
+  probability that there exists an $i\in\{1,\ldots,n-t-1\}$ such that
   $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$ is at most $2^{-s}$.
 \end{thm}
 
 \begin{proof}
-  We will prove this theorem by constructing a prefix-free code
-  for $x$. If there is no $i\in\{1,\ldots,n-k-1\}$ such that
-  $x_i=x_{i+1}=\cdots=x_{i+k-1}=1$, then $C(x)$ is a zero bit
-  followed by the $n$ bits $x_1,\ldots,x_n$.  However, if there is
-  such an index, $i$, then $C(x)$ is a one bit, followed by (the
-  $\log n$-bit binary encoding of) $i$, followed by the $n-t$ bits
-  $x_1,\ldots,x_{i-1},x_{i+t},\ldots,x_n$.
+  We will prove this theorem by constructing a partial prefix-free
+  code for strings having a run of $t$ or more 1's.  For such a string
+  string $x=\langle x_1,\ldots,x_n\rangle$ let $i$ be the minimum index
+  such that $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$. The codeword, $C(x)$,
+  for $x$ is the binary string that consists of the ($\lceil\log
+  (n-t)\rceil$-bit binary encoding of the) index $i$ followed by the $n-t$
+  bits $x_1,\ldots,x_{i-1},x_{i+t},\ldots,x_n$. (see \figref{runs-i}.)
 
-  Observe that, in the latter case, $C(x)$ has length 
+  Observe that $C(x)$ has length 
   \[
-      1 + \lceil\log n\rceil + n - t = n-s \enspace .
+      \lceil\log n\rceil + n - t = n-s \enspace .
   \]
-  It is easy to check that, for any $x$, we can reconstruct
-  $x_1,\ldots,x_n$ from $C(x)$, so $C$ is indeed a code for $\{0,1\}^n$.
-  It is also easy to check that $C$ is prefix free, since the first bit of
-  $C(x)$ determines the length of $C(x)$ (which is either $n+1$ or $n-s$).
+  It is easy to check that, for any such $x$, we can reconstruct
+  $x_1,\ldots,x_n$ from $C(x)$, so $C$ is indeed a partial code whose
+  domain is the set of binary strings of length $n$ having a run of $t$
+  or more 1's.  It is also easy to see that $C$ is prefix free, since
+  all codewords are unique and have the same length.
 
   Now, $x$ was chosen uniformly at random from a set of size $2^{n}$.
   Therefore, by the Uniform Encoding Lemma, the probability
@@ -243,73 +244,48 @@ used in most encoding arguments:
 \begin{enumerate}
 \item The arguments usually show that a particular \emph{bad event} is
   unlikely.  In \thmref{runs-i} the bad event is the occurrence of a
-  long substring of consecutive 1's.
+  substring of $t$ consecutive 1's.
 
-\item The length of the codeword is irrelevant to the argument if the
-  bad event does not occur.  In \thmref{runs-i} the codeword has
-  length $n+1$ in this case.
- 
-\item Codewords often start with a 1 or 0 to flag the occurrence or
-  non-occurrence of the bad event.
+\item The code is partial prefix-free code whose domain contains the 
+  set of bad events.  In this case, the code $C$ is only capable of
+  encoding strings containing a run of $t$ consecutive 1's.
 
-\item When the bad event does occur, the code usually begins with a
+\item The code usually begins with a
   concise description of the bad event, and is then followed by a
-  straightforward encoding of the information that is not implied by
-  the bad event. In \thmref{runs-i}, the bad event is completely
-  described by the index $i$ at which the run of $t$ 1 bits begins,
-  and this implies that the bits $x_i,\ldots,x_{i+t-1}$ are all equal
-  to 1, so these bits do not need to be specified in the second part
-  of the codeword.
+  straightforward encoding of the information that is not implied by the
+  bad event. In \thmref{runs-i}, the bad event is completely described by
+  the index $i$ at which the run of $t$ 1 bits begins, and this implies
+  that the bits $x_i,\ldots,x_{i+t-1}$ are all equal to 1, so these bits
+  do not need to be specified in the second part of the codeword.
 \end{enumerate}
 
-\subsection{A Streamlined Encoding Lemma}
+Now, \thmref{runs-i} also has an easy proof using the union bound:
+If we let $\mathcal{E}_i$ denote the event $x_i=x_{i+1}=\cdots x_{i+t}$, then
+\begin{align*}
+\Pr \bigcup_{i=0}^{n-t-1} \mathcal{E}_i  
+   & \le \sum_{i=0}^{n-t-1} \Pr\mathcal{E}_i & \text{(using the union bound)}\\
+   & = \sum_{i=0}^{n-t-1} 2^{-t} & \text{(using the independence of the $x_i$'s)}\\
+   & = (n-t)2^{-t} \\
+   & = (n-t)2^{-\lceil\log(n-t)\rceil-s} \\
+   & \le 2^{-s} \enspace .
+\end{align*}
+This traditional proof also works with the sometimes smaller value
+$t=\log(n-t)+s$ (note the lack of a ceiling over the logarithmic term).
 
-Points 2 and 3 about encoding arguments suggest that the Uniform
-Encoding Lemma can be streamlined.  Since we only care about the cases
-where event $\mathcal{E}$ occurs, it is enough to find a \emph{partial
-  prefix-free code} that is defined only for the elementary events
-contained in $\mathcal{E}$.  A \emph{partial prefix-free code} for a
-set $X$ is a function $C\from X\to\{0,1\}^*\cup\{\bot\}$ such that $C$
-is prefix-free code for the set $X'=\{x\in X:C(x)\neq\bot\}$.  (We
-think of the code as being undefined for $x$ if $C(x)=\bot$.)
+In the encoding proof of \thmref{runs-i}, the ceiling in this expression
+for $t$ is caused by the encoding of the integer $i$ which is taken
+from a set of $n-t$. When sketching an encoding argument, we think of
+this as requiring $\log (n-t)$ bits but when it comes time to carefully
+write down a proof we include a ceiling over this term since bits are
+a discrete quantity.
 
-The following lemma, whose proof is identical to that of \lemref{uel},
-is a streamlined version of \lemref{uel}.
-
-\begin{lem}\lemlabel{streamlined}
- Let $C\from X\to\{0,1\}^*\cup\{\bot\}$ be a partial prefix-free
- code. If $x\in X$ is chosen uniformly at random, then
- \[
- \Pr\{C(x)\neq \bot\text{ and } |C(x)|\le\log |X|-s\} \le 2^{-s}
- \enspace .
- \]
-\end{lem}
-
-We can now reprove \thmref{runs-i}, obtaining a shorter proof and a
-tighter result.
-
-\begin{thm}\thmlabel{runs-i-a}
-  Let $x=\langle x_1,\ldots,x_n\rangle\in\{0,1\}^n$ be chosen
-  uniformly at random and let $t=\lceil\log n\rceil + s$. Then, the
-  probability that there exists an $i\in\{1,\ldots,n-k-1\}$ such that
-  $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$ is at most $2^{-s}$.
-\end{thm}
-
-\begin{proof}
-  We will give a partial prefix-free code, $C$, for $n$-bit binary
-  strings that is defined for any binary string that contains a run of
-  $t$ consecutive $1$s.  For any such string, $x$, let $i$ denote the
-  minimum index such that $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$.  The
-  codeword $C(x)$ consists of the value $i$, encoded using
-  $\lceil\log n\rceil$ bits, followed by
-  $x_1,\ldots,x_{i-1},x_{i+t},\ldots,x_n$.  The codeword for $x$ has
-  length
-  \[  
-  |C(x)| = \lceil\log n\rceil + n-t = n-s
-  \] 
-  The result now follows from \lemref{streamlined}.
-\end{proof}
-
+In \secref{weights}, however, we will see that the informal intuition we
+use in blackboard proofs is actually valid; we can think of encoding $i$
+using $\log(n-t)$ bits even if $\log(n-t)$ is not an integer.  In general
+we can imagine encoding a choice from among $r$ options using $\log r$ bits for
+any $r\in\N$.  From this point onwards, we omit ceilings this way in all
+our theorems and proofs. This makes calculations simpler and provides
+tighter results.
 
 \subsection{Stirling Approximations}
 \seclabel{stirling}

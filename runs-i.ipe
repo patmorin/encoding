@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70005" creator="Ipe 7.1.4">
-<info created="D:20150416100209" modified="D:20150416103214"/>
+<info created="D:20150416100209" modified="D:20150930142131"/>
 <preamble>\usepackage{kpfonts}</preamble>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
@@ -267,60 +267,46 @@ h
 377.6 668 l
 </path>
 <text matrix="1 0 0 1 80 0" transformations="translations" pos="112 624" stroke="black" type="label" width="3.626" height="6.926" depth="0.07" halign="center" valign="baseline">$i$</text>
-<text matrix="2 0 0 1 -224 -48" transformations="translations" pos="224 672" stroke="black" type="label" width="9.706" height="4.57" depth="2.1" halign="center" valign="baseline">$x_1$</text>
-<text matrix="2 0 0 1 -352 -64" transformations="translations" pos="320 688" stroke="black" type="label" width="17.088" height="4.57" depth="2.1" halign="center" valign="baseline">$x_{i-1}$</text>
-<text matrix="2 0 0 1 -192 -48" transformations="translations" pos="224 672" stroke="black" type="label" width="10.793" height="3.049" depth="0" halign="center" valign="baseline">$\cdots$</text>
-<text matrix="2 0 0 1 -640 -64" transformations="translations" pos="512 688" stroke="black" type="label" width="9.887" height="4.564" depth="2.1" halign="center" valign="baseline">$x_{n}$</text>
-<text matrix="2 0 0 1 -704 -64" transformations="translations" pos="512 688" stroke="black" type="label" width="15.998" height="4.57" depth="2.1" halign="center" valign="baseline">$x_{i+t}$</text>
-<text matrix="2 0 0 1 -96 -48" transformations="translations" pos="224 672" stroke="black" type="label" width="10.793" height="3.049" depth="0" halign="center" valign="baseline">$\cdots$</text>
-<path matrix="0 0.3 -0.6 0 608 508.4" stroke="black">
+<text matrix="2 0 0 1 -208 -48" transformations="translations" pos="224 672" stroke="black" type="label" width="9.706" height="4.57" depth="2.1" halign="center" valign="baseline">$x_1$</text>
+<text matrix="2 0 0 1 -336 -64" transformations="translations" pos="320 688" stroke="black" type="label" width="17.088" height="4.57" depth="2.1" halign="center" valign="baseline">$x_{i-1}$</text>
+<text matrix="2 0 0 1 -176 -48" transformations="translations" pos="224 672" stroke="black" type="label" width="10.793" height="3.049" depth="0" halign="center" valign="baseline">$\cdots$</text>
+<text matrix="2 0 0 1 -624 -64" transformations="translations" pos="512 688" stroke="black" type="label" width="9.887" height="4.564" depth="2.1" halign="center" valign="baseline">$x_{n}$</text>
+<text matrix="2 0 0 1 -688 -64" transformations="translations" pos="512 688" stroke="black" type="label" width="15.998" height="4.57" depth="2.1" halign="center" valign="baseline">$x_{i+t}$</text>
+<text matrix="2 0 0 1 -80 -48" transformations="translations" pos="224 672" stroke="black" type="label" width="10.793" height="3.049" depth="0" halign="center" valign="baseline">$\cdots$</text>
+<path matrix="0 0.3 -0.6 0 624 508.4" stroke="black">
 352 656 m
 368 656 l
 </path>
-<path matrix="1 0 0 1 -48 -54" stroke="black">
+<path matrix="1 0 0 1 -32 -54" stroke="black">
 262.4 668 m
 377.6 668 l
 </path>
-<path matrix="0 0.3 -0.6 0 787.2 508.4" stroke="black">
+<path matrix="0 0.3 -0.6 0 803.2 508.4" stroke="black">
 352 656 m
 368 656 l
 </path>
-<path matrix="1 0 0 1 16 -54" stroke="black">
+<path matrix="1 0 0 1 32 -54" stroke="black">
 262.4 668 m
 377.6 668 l
 </path>
-<path matrix="1 0 0 1 64 13" stroke="black">
+<path matrix="1 0 0 1 80 13" stroke="black">
 150.4 601 m
 329.6 601 l
 </path>
-<text matrix="1 0 0 1 96 25" transformations="translations" pos="208 576" stroke="black" type="label" width="18.922" height="5.885" depth="0.07" halign="center" valign="baseline">$n-t$</text>
-<text matrix="1 0 0 1 -16 27.54" transformations="translations" pos="208 576" stroke="black" type="label" width="28.136" height="7.168" depth="2.61" halign="center" valign="baseline">$\lceil\log n\rceil$</text>
-<path matrix="0 0.3 -0.6 0 576 508.4" stroke="black">
+<text matrix="1 0 0 1 112 25" transformations="translations" pos="208 576" stroke="black" type="label" width="18.922" height="5.885" depth="0.07" halign="center" valign="baseline">$n-t$</text>
+<text matrix="1 0 0 1 -16 27.54" transformations="translations" pos="208 576" stroke="black" type="label" width="47.326" height="7.485" depth="2.61" halign="center" valign="baseline">$\left\lceil\log(n-t)\right\rceil$</text>
+<path matrix="0 0.3 -1.8 0 1344 508.4" stroke="black">
 352 656 m
 368 656 l
 </path>
-<path matrix="0 0.3 -0.6 0 595.2 508.4" stroke="black">
+<path matrix="0 0.3 -1.8 0 1401.6 508.4" stroke="black">
 352 656 m
 368 656 l
 </path>
-<path matrix="1 0 0 1 64 0" stroke="black">
+<path matrix="3 0 0 1 -192 0" stroke="black">
 118.4 614 m
 137.6 614 l
 </path>
 <text matrix="2 0 0 1 -265 -48" transformations="translations" pos="208 672" stroke="black" type="label" width="28.087" height="7.383" depth="2.52" halign="right" valign="baseline">$C(x)=$</text>
-<text matrix="1 0 0 1 48 0" transformations="translations" pos="112 624" stroke="black" type="label" width="5.43" height="6.6" depth="0.08" halign="center" valign="baseline">$1$</text>
-<text matrix="1 0 0 1 -48 27.54" transformations="translations" pos="208 576" stroke="black" type="label" width="5.43" height="6.6" depth="0.08" halign="center" valign="baseline">$1$</text>
-<path matrix="0 0.3 -0.6 0 544 508.4" stroke="black">
-352 656 m
-368 656 l
-</path>
-<path matrix="0 0.3 -0.6 0 563.2 508.4" stroke="black">
-352 656 m
-368 656 l
-</path>
-<path matrix="1 0 0 1 32 0" stroke="black">
-118.4 614 m
-137.6 614 l
-</path>
 </page>
 </ipe>
