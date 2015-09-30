@@ -259,8 +259,8 @@ used in most encoding arguments:
   do not need to be specified in the second part of the codeword.
 \end{enumerate}
 
-Now, \thmref{runs-i} also has an easy proof using the union bound:
-If we let $\mathcal{E}_i$ denote the event $x_i=x_{i+1}=\cdots x_{i+t}$, then
+Note that \thmref{runs-i} also has an easy proof using the union bound:
+If we let $\mathcal{E}_i$ denote the event $x_i=x_{i+1}=\cdots x_{i+t}=1$, then
 \begin{align*}
 \Pr \bigcup_{i=0}^{n-t-1} \mathcal{E}_i  
    & \le \sum_{i=0}^{n-t-1} \Pr\mathcal{E}_i & \text{(using the union bound)}\\
@@ -270,10 +270,11 @@ If we let $\mathcal{E}_i$ denote the event $x_i=x_{i+1}=\cdots x_{i+t}$, then
    & \le 2^{-s} \enspace .
 \end{align*}
 This traditional proof also works with the sometimes smaller value
-$t=\log(n-t)+s$ (note the lack of a ceiling over the logarithmic term).
+$t=\log(n-t)+s$ (note the lack of a ceiling over the logarithmic term),
+in which case the final inequality becomes an equality.
 
-In the encoding proof of \thmref{runs-i}, the ceiling in this expression
-for $t$ is caused by the encoding of the integer $i$ which is taken
+In the encoding proof of \thmref{runs-i}, the ceiling in the expression
+for $t$ is an artifact of encoding of the integer $i$ which is taken
 from a set of $n-t$. When sketching an encoding argument, we think of
 this as requiring $\log (n-t)$ bits but when it comes time to carefully
 write down a proof we include a ceiling over this term since bits are
