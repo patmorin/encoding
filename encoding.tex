@@ -53,12 +53,15 @@ algorithms relies entirely on tools from probability theory; and many
 difficult combinatorial questions have strikingly simple solutions using
 probabilistic arguments.
 
-Unfortunately, many of these beautiful results are inaccessible to most
-computer scientists because of a view that ``the math is too hard.''
-For instance, ACM's CS2013 Final Report does not require a full course
-in probability theory \cite[Page~50]{computing-curricula:computer}. Indeed, the report
-recommends a total of 6 Tier-1 hours and 2 Tier-2 hours spent on discrete
-probability, as part of the discrete structures curriculum.
+Unfortunately, many of these beautiful results are inaccessible
+to most computer scientists because of a view that ``the math
+is too hard.''  For instance, the 2013 edition of ACM/IEEE
+Curriculum Guidelines for Undergraduate Degree Progams in Computer
+Science does not require a full course in probability theory
+\cite[Page~50]{computing-curricula:computer}. Indeed, the report
+recommends a total of 6 Tier-1 hours and 2 Tier-2 hours spent on
+discrete probability, as part of the discrete structures curriculum
+\cite[Page~77]{computing-curricula:computer}.
 
 In this expository paper, we survey applications of ``encoding arguments''
 that tranforms the problem of upper-bounding the probability of a specific
@@ -146,7 +149,7 @@ the convention that $|C(x)|=\infty$ if $x$ is not in the domain of $C$.
 A (partial) code, $C$, is \emph{prefix-free} if, for every pair $x\neq y$
 in the domain of $C$ the binary string $C(x)$ is not a prefix of $C(y)$.
 It can be helpful to think of prefix-free codes as (rooted ordered)
-binary trees whose leaves are labelled with the elements in $S$.
+binary trees whose leaves are labelled with the elements of $X$.
 The codeword for a particular $x\in X$ is obtained by tracing the
 root-to-leaf path leading to $x$ and outputting a 0 (respectively, 1)
 each time this path goes from a parent to its left (respectively, right)
@@ -155,8 +158,8 @@ child. (See \figref{bintree}.)
 \begin{figure}
   \centering{\includegraphics{bintree}}
   \caption{A prefix-free code for the set
-    $S=\{\mathtt{a},\mathtt{b},\mathtt{c},\mathtt{d},\mathtt{e},\mathtt{f}\}$
-    and the corresponding leaf-labelled binary tree.}
+    $X=\{\mathtt{a},\mathtt{b},\mathtt{c},\mathtt{d},\mathtt{e},\mathtt{f}\}$
+    and the corresponding leaf-labelled binary tree. (Which can also be viewed as a prefix-free partial code for the set $\{\mathtt{a},\mathtt{b},\mathtt{c},\ldots,\mathtt{z}\}$.)}
   \figlabel{bintree}
 \end{figure}
 
@@ -165,7 +168,7 @@ If $C$ is prefix-free, then the number of $C$'s codewords that have length
 observe that $C$ can be modified into a code $\hat C$, in which every
 codeword of length $\ell <k$ is extended---by appending $k-\ell$ zeros---so that
 it has length exactly $k$. The prefix-freeness of $C$ ensures that $\hat
-C$ is also a prefix-free code). The number of $\hat C$'s codewords of
+C$ is also a prefix-free code. The number of $\hat C$'s codewords of
 length $k$ is equal to the the number of $C$'s codewords of length at
 most $k$; since codewords are just binary strings, there are not more
 than $2^k$ of these.
@@ -265,6 +268,8 @@ used in most encoding arguments:
   do not need to be specified in the second part of the codeword.
 \end{enumerate}
 
+\subsection{A Note on Ceilings}
+
 Note that \thmref{runs-i} also has an easy proof using the union bound:
 If we let $\mathcal{E}_i$ denote the event $x_i=x_{i+1}=\cdots x_{i+t}=1$, then
 \begin{align*}
@@ -272,7 +277,7 @@ If we let $\mathcal{E}_i$ denote the event $x_i=x_{i+1}=\cdots x_{i+t}=1$, then
    & \le \sum_{i=0}^{n-t-1} \Pr\mathcal{E}_i & \text{(using the union bound)}\\
    & = \sum_{i=0}^{n-t-1} 2^{-t} & \text{(using the independence of the $x_i$'s)}\\
    & \le n2^{-t} & \text{(the sum has $n-t\le n$ identical terms)}\\
-   & = n2^{-\lceil\log n\rceil-s} \\
+   & = n2^{-\lceil\log n\rceil-s} & \text{(from the definition of $t$)}\\
    & \le 2^{-s} \enspace .
 \end{align*}
 This traditional proof also works with the sometimes smaller value
@@ -292,7 +297,7 @@ $i$ using $\log n$ bits even if $\log n$ is not an integer.  In general
 we can imagine encoding a choice from among $r$ options using $\log r$
 bits for any $r\in\N$.  From this point onwards, we omit ceilings this
 way in all our theorems and proofs. This makes calculations simpler and
-provides tighter results.  For now, it allows us to state the following result:
+provides tighter results.  For now, it allows us to state the following cleaner version of \thmref{runs-i}:
 
 \begin{customthm}{\ref{thm:runs-i}b}\thmlabel{runs-ii}
   Let $x=\langle x_1,\ldots,x_n\rangle\in\{0,1\}^n$ be chosen
@@ -301,8 +306,47 @@ provides tighter results.  For now, it allows us to state the following result:
   $x_i=x_{i+1}=\cdots=x_{i+\lfloor t\rfloor-1}=1$ is at most $2^{-s}$.
 \end{customthm}
 
+\subsection{Encoding Sparse Bit Strings}
 
+At this point we should also point out an extremely useful trick that
+we can use for encoding sparse bit strings.  For any $p\in(0,1)$, there
+exists a code $C_p\from \{0,1\}^n\rightarrow \{0,1\}^*$ such that, for
+any bit string $x\in\{0,1\}^n$ having $n_1(x)$ 1's and $n_0(x)$ 0's,
+\[
+    |C_p(x)| = \lceil n_1(x)\log(1/p) + n_0(x)\log(1/(1-p)) \rceil \enspace .
+\]
+This code is the so-called Shannon-Fano code for Bernoulli$(p)$ bitstrings
+of length $n$ \cite{fano:transmission,shannon:mathematical}.  Again, as we will see in \secref{weights},
+we can omit the ceiling in the expression for $|C_p(x)|$.  This is true
+for any value of $n$: In particular, for $n=1$, it gives us a ``code''
+for encoding a single bit where the cost of encoding a 1 is $\log(1/p)$
+and the cost of encoding a 0 is $\log(1/(1-p))$.  Indeed, the ``code'' for
+bitstrings of length $n>1$ is just what we get when we apply this 1-bit
+code to each bit of the bitstring.
 
+\subsection{Binary Entropy}
+
+The \emph{binary entropy function} $H\from (0,1)\to(0,1]$ is defined by
+\[
+    H(p) = p\log(1/p) + (1-p)\log(1/(1-p)) 
+\]
+and will be quite useful.  It can be difficult to work with, so it is helpful to have some more manageable approximations to work with.  One of these is derived as follows:
+\begin{align}
+  H(p) & = p\log(1/p) + (1-p)\log(1/(1-p)) \notag \\
+       & = p\log(1/p) + (1-p)\log(1+(p/(1-p)) \notag \\
+       & \le p\log(1/p) + p\log e \eqlabel{entropy-i} 
+\end{align}
+since $1+x\le e^x$ for all $x\in\mathbb{R}$. \Eqref{entropy-i} is a
+useful approximation when $p$ is close to zero. For $p$ close to $1/2$,
+a more useful approximation is obtained from the Taylor series expansion at $1/2$:
+\begin{align}
+   H(p) & = 1-\frac{1}{2\ln 2}\sum_{i=1}^{\infty}\frac{(1-2p)^{2i}}{i(2i-1)} \\ 
+        & < 1-\frac{(1-2p)^2}{2\ln 2} \eqlabel{entropy-ii}
+\end{align}
+In particular, for small $\epsilon\in (-1/2,1/2)$, 
+\[
+     H((1+\epsilon)/2) < 1-\frac{\epsilon^2}{2\ln 2} \enspace .
+\]
 
 \subsection{Stirling Approximations}
 \seclabel{stirling}
@@ -318,7 +362,7 @@ Approximation states that
 
 In many cases, we are interested in representing a set of size $n!$
 using a fixed-length code.  The length of the codewords in such a code
-is given by the ceiling of
+is 
 \begin{align}
   \log n!
       & \le n\log n - n\log e + (1/2)\log n + \log(1+O(1/n)) \notag \\
@@ -330,133 +374,22 @@ is given by the ceiling of
 \end{align}
 
 Similarly, for any $k\in\{1,\ldots,n-1\}$, there is a code for sets of 
-size $\binom{n}{k}$ in which every codeword has length given by the ceiling of
-\begin{align*}
+size $\binom{n}{k}$ in which every codeword has length 
+\begin{align}
   \log \binom{n}{k}
-     & = \log n! - \log k! - \log (n-k)! \\
-     & \le n\log n - k\log k - (n-k)\log(n-k) + (1/2)\log\left(\frac{n}{k(n-k)}\right) + O(1/n) \\
-     & \le n\log n - k\log k - (n-k)\log(n-k) + O(1/n) \\
-     & = n\log n - k\log k - (n-k)\log n + (n-k)(\log n-\log(n-k)) + O(1/n) \\
-     & = k\log n - k\log k + \underbrace{(n-k)(\log n-\log(n-k))}_\text{awkward}  + O(1/n) 
-         \numberthis \eqlabel{hassle} \\ 
-\end{align*}
-
-The subexpression $(n-k)(\log n-\log(n-k))$ is awkward here. We can
-simplify it as follows:
-\begin{align*}
-   (n-k)(\log n-\log(n-k))
-      & = (n-k)\log \left(\frac{n}{n-k}\right) \\
-      & = (n-k)\log \left(1+\frac{k}{n-k}\right) \\
-      & \le (n-k)(k/(n-k))\log e & \text{(since $1+x \le e^x$)} \\
-      & = k\log e 
-\end{align*}
-Using this simplification, \eqref{hassle} becomes
-\begin{equation}
-  \left\lceil\log \binom{n}{k}\right\rceil 
-    \le k\log n - k\log k + k\log e + O(1/n) \eqlabel{log-n-choose-k}
-     \enspace .
-\end{equation} 
+     & = \log n! - \log k! - \log (n-k)! \notag \\
+     & \le n\log n - k\log k - (n-k)\log(n-k) + (1/2)\log\left(\frac{n}{k(n-k)}\right) + \Theta(1/k) \notag \\
+     & \le k(\log n-\log k) + (n-k)(\log n - \log(n-k)) + O(1) \notag \\
+     & = nH(k/n) + O(1) \notag \\
+     & \le k\log n - k\log k + k\log e + O(1) \enspace , \eqlabel{log-n-choose-k}
+\end{align}
+where the last inequality is an application of \eqref{entropy-i}.
 
 
 \section{Applications of the Uniform Encoding Lemma}
 \seclabel{applications-i}
 
 We now start with some applications of the Uniform Encoding Lemma.
-
-\subsection{Permutation Statistics}
-
-We consider the use of encoding arguments to study statistics of
-equiprobable permutations of $\{1, 2, \ldots, n\}$.
-
-\subsubsection{Ascending Runs}
-
-Given a permutation $x = \langle x_1, x_2, \ldots, x_n \rangle$, we
-say a subsequence $\langle x_{k_1}, x_{k_2}, \ldots, x_{k_t} \rangle$
-is an {\em ascending run} if $x_{k_1} < x_{k_2} < \ldots < x_{k_t}$.
-
-The length of the longest ascending run has been well-studied. Logan
-and Shepp \cite{logan.shepp:runs} together with Vershik and Kerov
-\cite{vershik.kerov:runs} first established that the expected length
-of the longest ascending run in a random permutation is asymptotically
-$2 \sqrt{n}$. Several new original proofs of this fact have appeared
-more recently; accordingly, we present an encoding argument to study
-this problem.
-
-\begin{thm}\thmlabel{runs}
-  Let $x = \langle x_1, x_2, \ldots, x_n \rangle$ be a uniformly
-  random permutation of the integers from $1$ through $n$, and let $t$
-  satisfy the implicit inequality
-  $2t\log(t/e\sqrt{n}) - \frac{t^2}{n - t}\log e \geq s + O(1/n)$.
-  Then, the probability that $x$ has an ascending run of length $t$ is
-  $2^{-s}$.
-\end{thm}
-
-\begin{proof}
-  We encode the string
-  \[x = x_1, x_2, \ldots, x_n\]
-
-  which is drawn uniformly at random from a set of size $n!$. In our
-  partial prefix-free code, we provide first the positions of the $t$
-  values in the ascending run; then the values in the run; and finally
-  the rest of the permutation. In total, this costs:
-  \begin{align*}
-    b & = 2\log \binom{n}{t} + \log(n - t)! \\
-      & = \log n! + 2 \log \binom{n}{t} - \sum_{0 \leq i < t} \log (n - i) \\
-      & \le \log n! + 2t \log n - 2t \log t + 2t \log e - \sum_{0 \leq i < t} \log(n - i) + O(1/n)  & \text{(using \eqref{log-n-choose-k})}\\
-      & \le \log n! + t \log n - 2t \log t + 2t \log e + t \log \left(1 + \frac{t}{n - t}\right) +  O(1/n) \\
-      & \le \log n! - 2t \log(t/e\sqrt{n}) + \frac{t^2}{n - t} \log e + O(1/n) & \text{(since $1+x \le e^x$)} \\
-      & \le \log n! - s
-  \end{align*}
-
-  bits, as long as $t$ is such that:
-  \begin{align*}
-    2t\log(t/e\sqrt{n}) - \frac{t^2}{n - t}\log e \ge s + O(1/n)
-  \end{align*}
-
-  We obtain the result by applying \lemref{streamlined}.
-\end{proof}
-
-\begin{rem}
-  A valid solution to the implicit inequality of \thmref{runs} is
-  $t = c \sqrt{n}$, for any $c > e$ and for sufficiently large $n$. We
-  know that the expectation of random ascending run length is instead
-  concentrated around $2 \sqrt{n}$ (CITATION NEEDED). Indeed, the
-  proof of \thmref{runs} exhibits a recurring artifact in the
-  extraneous `$e$' factor.
-\end{rem}
-
-One might na\"{i}evly attempt to use the above encoding to obtain a
-result about the expected number of records in a uniformly chosen
-permutation -- clearly, such an attempt would be fruitless, since this
-statistic is known to be concentrated around $\ln n$ (CITATION
-NEEDED). Instead, a more careful encoding is surely required. We leave
-this as an open problem. Indeed, it is interesting to acknowledge the
-relative difficulty of producing an encoding argument to study this
-statistic; the ordinary argument without the burden of encoding is
-comparatively simple.
-
-\subsubsection{Records}
-
-Given a permutation $x = \langle x_1, x_2, \ldots, x_n \rangle$, a
-(max-)record of $x$ is a value $x_i$ such that $x_i > x_j$ for all
-$j < i$. The subsequence of
-$\langle x_{k_1}, x_{k_2}, \ldots, x_{k_t} \rangle$ forms an ascending
-run of $x$. INCLUDE SHIT ABOUT HOW EASY IT IS TO CALCULATE THE
-EXPECTED NUMBER OF RECORDS IN A RANDOM PERMUTATION.
-
-Let $\langle x_1, x_2, \ldots, x_n \rangle$ have records
-$\langle x_{n_1}, x_{n_2}, \ldots, x_{n_t} \rangle$. Define
-$f : [n]^n \to [n]^n$ to be
-$f(x_1, x_2, \ldots, x_n) = (y_1, y_2, \ldots, y_n)$ where:
-\[
-y_i = \left\{ \begin{array}{ll}
-                x_i & \mbox{if $x_i$ is not a record of $x$};\\
-                x_{n_j} - x_{n_{j - 1}} & \mbox{if $x_i = x_{n_j}$ for some $j$}.\end{array} \right.
-\]
-
-Let $f^{(n)}(x)$ denote the $n$\textsuperscript{th} iterated
-application of $f$ to $x$, {\em i.e.} $f^{(1)}(x) = f(x)$, and
-$f^{(n)}(x) = f( f^{(n - 1)}(x))$.
 
 \subsection{Graphs with no Large Clique or Independent Set}
 
@@ -920,7 +853,98 @@ here follows the same outline as Vitanyi's analysis of bubble sort
   of size $O(n^{3/2})$.
 \end{rem}
 
+\subsection{Permutation Statistics}
 
+We consider the use of encoding arguments to study statistics of
+equiprobable permutations of $\{1, 2, \ldots, n\}$.
+
+\subsubsection{Ascending Runs}
+
+Given a permutation $x = \langle x_1, x_2, \ldots, x_n \rangle$, we
+say a subsequence $\langle x_{k_1}, x_{k_2}, \ldots, x_{k_t} \rangle$
+is an {\em ascending run} if $x_{k_1} < x_{k_2} < \ldots < x_{k_t}$.
+
+The length of the longest ascending run has been well-studied. Logan
+and Shepp \cite{logan.shepp:runs} together with Vershik and Kerov
+\cite{vershik.kerov:runs} first established that the expected length
+of the longest ascending run in a random permutation is asymptotically
+$2 \sqrt{n}$. Several new original proofs of this fact have appeared
+more recently; accordingly, we present an encoding argument to study
+this problem.
+
+\begin{thm}\thmlabel{runs}
+  Let $x = \langle x_1, x_2, \ldots, x_n \rangle$ be a uniformly
+  random permutation of the integers from $1$ through $n$, and let $t$
+  satisfy the implicit inequality
+  $2t\log(t/e\sqrt{n}) - \frac{t^2}{n - t}\log e \geq s + O(1/n)$.
+  Then, the probability that $x$ has an ascending run of length $t$ is
+  $2^{-s}$.
+\end{thm}
+
+\begin{proof}
+  We encode the string
+  \[x = x_1, x_2, \ldots, x_n\]
+
+  which is drawn uniformly at random from a set of size $n!$. In our
+  partial prefix-free code, we provide first the positions of the $t$
+  values in the ascending run; then the values in the run; and finally
+  the rest of the permutation. In total, this costs:
+  \begin{align*}
+    b & = 2\log \binom{n}{t} + \log(n - t)! \\
+      & = \log n! + 2 \log \binom{n}{t} - \sum_{0 \leq i < t} \log (n - i) \\
+      & \le \log n! + 2t \log n - 2t \log t + 2t \log e - \sum_{0 \leq i < t} \log(n - i) + O(1/n)  & \text{(using \eqref{log-n-choose-k})}\\
+      & \le \log n! + t \log n - 2t \log t + 2t \log e + t \log \left(1 + \frac{t}{n - t}\right) +  O(1/n) \\
+      & \le \log n! - 2t \log(t/e\sqrt{n}) + \frac{t^2}{n - t} \log e + O(1/n) & \text{(since $1+x \le e^x$)} \\
+      & \le \log n! - s
+  \end{align*}
+
+  bits, as long as $t$ is such that:
+  \begin{align*}
+    2t\log(t/e\sqrt{n}) - \frac{t^2}{n - t}\log e \ge s + O(1/n)
+  \end{align*}
+
+  We obtain the result by applying \lemref{uel}.
+\end{proof}
+
+\begin{rem}
+  A valid solution to the implicit inequality of \thmref{runs} is
+  $t = c \sqrt{n}$, for any $c > e$ and for sufficiently large $n$. We
+  know that the expectation of random ascending run length is instead
+  concentrated around $2 \sqrt{n}$ (CITATION NEEDED). Indeed, the
+  proof of \thmref{runs} exhibits a recurring artifact in the
+  extraneous `$e$' factor.
+\end{rem}
+
+\subsubsection{Records}
+
+Figure out where to move Shannon-Fano code stuff here.  
+
+
+
+%Given a permutation $x = \langle x_1, x_2, \ldots, x_n \rangle$, a
+%(max-)record of $x$ is a value $x_i$ such that $x_i > x_j$ for all
+%$j < i$. The subsequence of
+%$\langle x_{k_1}, x_{k_2}, \ldots, x_{k_t} \rangle$ forms an ascending
+%run of $x$. INCLUDE SHIT ABOUT HOW EASY IT IS TO CALCULATE THE
+%EXPECTED NUMBER OF RECORDS IN A RANDOM PERMUTATION.
+%
+%Let $\langle x_1, x_2, \ldots, x_n \rangle$ have records
+%$\langle x_{n_1}, x_{n_2}, \ldots, x_{n_t} \rangle$. Define
+%$f : [n]^n \to [n]^n$ to be
+%$f(x_1, x_2, \ldots, x_n) = (y_1, y_2, \ldots, y_n)$ where:
+%\[
+%y_i = \left\{ \begin{array}{ll}
+%                x_i & \mbox{if $x_i$ is not a record of $x$};\\
+%                x_{n_j} - x_{n_{j - 1}} & \mbox{if $x_i = x_{n_j}$ for some $j$}.\end{array} \right.
+%\]
+%
+%Let $f^{(n)}(x)$ denote the $n$\textsuperscript{th} iterated
+%application of $f$ to $x$, {\em i.e.} $f^{(1)}(x) = f(x)$, and
+%$f^{(n)}(x) = f( f^{(n - 1)}(x))$.
+
+\subsubsection{The Height of Random Binary Search Tree}
+
+\subsubsection{Hoare's Find Algorithm}
 
 
 \section{The Non-Uniform Encoding Lemma and Shannon-Fano Codes}
