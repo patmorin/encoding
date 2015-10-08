@@ -3,7 +3,7 @@ figs=$(wildcard *.ipe)
 pdffigs=$(figs:.ipe=.pdf)
 
 
-encoding.pdf : 
+encoding.pdf : encoding.tex $(pdffigs) entropy.pdf
 	latexmk -pdf encoding.tex
 
 %.pdf : %.ipe
