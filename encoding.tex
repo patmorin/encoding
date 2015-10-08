@@ -312,43 +312,102 @@ At this point we should also point out an extremely useful trick that
 we can use for encoding sparse bit strings.  For any $p\in(0,1)$, there
 exists a code $C_p\from \{0,1\}^n\rightarrow \{0,1\}^*$ such that, for
 any bit string $x\in\{0,1\}^n$ having $n_1(x)$ 1's and $n_0(x)$ 0's,
-\[
+\begin{equation}
     |C_p(x)| = \lceil n_1(x)\log(1/p) + n_0(x)\log(1/(1-p)) \rceil \enspace .
-\]
-This code is the so-called Shannon-Fano code for Bernoulli$(p)$ bitstrings
-of length $n$ \cite{fano:transmission,shannon:mathematical}.  Again, as we will see in \secref{weights},
-we can omit the ceiling in the expression for $|C_p(x)|$.  This is true
-for any value of $n$: In particular, for $n=1$, it gives us a ``code''
-for encoding a single bit where the cost of encoding a 1 is $\log(1/p)$
-and the cost of encoding a 0 is $\log(1/(1-p))$.  Indeed, the ``code'' for
-bitstrings of length $n>1$ is just what we get when we apply this 1-bit
-code to each bit of the bitstring.
+    \eqlabel{sparse-bitstring-i}
+\end{equation}
+This code is the so-called Shannon-Fano code for Bernoulli$(p)$
+bitstrings of length $n$ \cite{fano:transmission,shannon:mathematical}.
+Again, as we will see in \secref{weights}, we can omit the ceiling in
+the expression for $|C_p(x)|$.  This is true for any value of $n$: In
+particular, for $n=1$, it gives us a ``code'' for encoding a single bit
+where the cost of encoding a 1 is $\log(1/p)$ and the cost of encoding
+a 0 is $\log(1/(1-p))$.  Indeed, the ``code'' for bitstrings of length
+$n>1$ is just what we get when we apply this 1-bit code to each bit of
+the bitstring.
+
+If we wish to encode a bitstring of length $n$ and we know in advance that this bit string has exactly $k$ 1 bits, then we can optimize this process by taking $p=k/n$, in which case we obtain a fixed length code of length
+\begin{equation}
+    k\log (n/k) + (n-k)\log(n/(n-k))  \eqlabel{sparse-bitstring-ii} \enspace .
+\end{equation}
+\Eqref{sparse-bitstring-ii} brings us to our next topic: binary entropy.
 
 \subsection{Binary Entropy}
 
 The \emph{binary entropy function} $H\from (0,1)\to(0,1]$ is defined by
 \[
-    H(p) = p\log(1/p) + (1-p)\log(1/(1-p)) 
+    H(\alpha) = \alpha\log(1/\alpha) + (1-\alpha)\log(1/(1-\alpha)) 
 \]
-and will be quite useful.  It can be difficult to work with, so it is helpful to have some more manageable approximations to work with.  One of these is derived as follows:
+and will be quite useful.  The binary entropy function and two upper bounds on it that we derive below are illustrated in \figref{entropy}.
+
+\begin{figure}
+  \centering{\includegraphics{entropy}}
+  \caption{Binary entropy and two of its more useful approximations.}
+  \figlabel{entropy}
+\end{figure}
+
+Notice that we have already encountered a quantity that can be expressed in terms of the binary entropy.  From \eqref{sparse-bitstring-ii}, a bitstring of length $n$ that has exactly $k$ 1 bits can be encoded with a fixed length code of length
+$nH(k/n)$.
+
+The binary entropy function can be difficult to work with, so it is
+helpful to have some manageable approximations.  One of these is derived
+as follows:
 \begin{align}
-  H(p) & = p\log(1/p) + (1-p)\log(1/(1-p)) \notag \\
-       & = p\log(1/p) + (1-p)\log(1+(p/(1-p)) \notag \\
-       & \le p\log(1/p) + p\log e \eqlabel{entropy-i} 
+  H(\alpha) & = \alpha\log(1/\alpha) + (1-\alpha)\log(1/(1-\alpha)) \notag \\
+       & = \alpha\log(1/\alpha) + (1-\alpha)\log(1+(\alpha/(1-\alpha)) \notag \\
+       & \le \alpha\log(1/\alpha) + \alpha\log e \eqlabel{entropy-i} 
 \end{align}
 since $1+x\le e^x$ for all $x\in\mathbb{R}$. \Eqref{entropy-i} is a
-useful approximation when $p$ is close to zero. For $p$ close to $1/2$,
-a more useful approximation is obtained from the Taylor series expansion at $1/2$:
-\begin{align}
-   H(p) & = 1-\frac{1}{2\ln 2}\sum_{i=1}^{\infty}\frac{(1-2p)^{2i}}{i(2i-1)} \\ 
-        & < 1-\frac{(1-2p)^2}{2\ln 2} \eqlabel{entropy-ii}
-\end{align}
-In particular, for small $\epsilon\in (-1/2,1/2)$, 
-\[
-     H((1+\epsilon)/2) < 1-\frac{\epsilon^2}{2\ln 2} \enspace .
-\]
+useful approximation when $\alpha$ is close to zero, so that $H(\alpha)$ is also
+close to zero.
 
-\subsection{Stirling Approximations}
+For $\alpha$ close to $1/2$ (so that $H(\alpha)$ is close to 1), we
+obtain a good approximation from the Taylor series expansion at $1/2$. In
+particular, for $\alpha=(1-\epsilon)/2$,
+\begin{align}
+   H(\alpha) & = 1-\frac{1}{2\ln 2}\sum_{i=1}^{\infty}\frac{(1-2\alpha)^{2i}}{i(2i-1)} 
+            \notag \\ 
+        & = 1-\frac{1}{2\ln 2}\sum_{i=1}^{\infty}\frac{\epsilon^{2i}}{i(2i-1)} 
+             \notag \\ 
+        & < 1-\frac{\epsilon^2}{2\ln 2} \enspace .\eqlabel{entropy-ii}
+\end{align}
+
+\subsection{Basic Chernoff Bounds}
+
+Since we now have the pieces we need, we give an encoding argument for a well-known result and extremely useful result typically attributed to Chernoff \cite{X}.  
+
+\begin{thm}\label{chernoff-basic}
+Let $x=\langle x_1,\ldots,x_n\rangle\in\{0,1\}^n$ be chosen uniformly at random.Then
+\[  \Pr\{n_1(x) \le n(1-\epsilon)/2\} < e^{-\epsilon^2n/2} \]
+\end{thm}
+
+\begin{proof}
+Encode the bitstring $x$ using a Shannon-Fano code, $C_\alpha$, with $\alpha=(1-\epsilon)/2$.  Then the length of the codeword for $x$ is 
+\[
+     |C_\alpha(x)| = n_1(x)\log(1/\alpha) + n_0(x)\log (1/(1-alpha))  \enspace .
+\]
+Since $\alpha < 1/2$, $\log(1/\alpha) > \log(1/(1-\alpha))$, so $|C_\alpha(x)|$ is maximal when $n_1(x)$ is maximal.  Under the conditions of the theorem, this happens when $n_1(x)=\alpha n$.  Therefore,
+\begin{align*}
+  |C_\alpha(x)| & \le \alpha n\log(1/\alpha) + (1-\alpha)n\log(1/(1-\alpha))\\
+                & = n H(\alpha) \\
+                & \le n\left(1-\frac{\epsilon^2}{2\ln 2}\right) \enspace ,
+\end{align*}
+where the second inequality is an application of \eqref{entropy-ii}.
+Now, $x$ was chosen uniformly at random from a set $X$ of size $2^n$.  Therefore, this encoding saves:
+\[  
+    s = n-\left(n\left(1-\frac{\epsilon^2}{2\ln 2}\right)\right)
+      = \frac{\epsilon^2n}{2\ln 2} \]
+bits.  By the Uniform Encoding Lemma, the probability that this happens is at
+most
+\[
+     2^{-s} = e^{-\epsilon^2n/2} \enspace . \qedhere
+\]
+\end{proof}
+In \secref{chernoff}, after developing a Non-Uniform Encoding Lemma,
+we will extend this argument to binary strings where each bit is set
+independently to 1 or 0 with probabilities $p$ and $1-p$, respectively.
+
+\subsection{Factorials and Choices}
 \seclabel{stirling}
 
 Before moving on to some more advanced encoding arguments, it will
@@ -367,24 +426,19 @@ is
   \log n!
       & \le n\log n - n\log e + (1/2)\log n + \log(1+O(1/n)) \notag \\
       & \le n\log n - n\log e + (1/2)\log n + O(1/n)  
-             & \text{(since $1+x < e^x$)}
-               \eqlabel{stirling-tight} \\
+             & \text{(since $1+x < e^x$)} \notag \\
       & \le n\log n - n\log e + O(\log n)  
              \eqlabel{stirling-loose} \enspace .
 \end{align}
 
-Similarly, for any $k\in\{1,\ldots,n-1\}$, there is a code for sets of 
-size $\binom{n}{k}$ in which every codeword has length 
-\begin{align}
-  \log \binom{n}{k}
-     & = \log n! - \log k! - \log (n-k)! \notag \\
-     & \le n\log n - k\log k - (n-k)\log(n-k) + (1/2)\log\left(\frac{n}{k(n-k)}\right) + \Theta(1/k) \notag \\
-     & \le k(\log n-\log k) + (n-k)(\log n - \log(n-k)) + O(1) \notag \\
-     & = nH(k/n) + O(1) \notag \\
-     & \le k\log n - k\log k + k\log e + O(1) \enspace , \eqlabel{log-n-choose-k}
-\end{align}
+We are sometimes interested in codes for the $\binom{n}{k}$ subsets of $n$
+elements.  Note that any such subset can be represented as a binary string of length $n$ having exactly $k$ 1's. Therefore, we can represent using the Shannon-Fano code $C_{k/n}$ and it will have length 
+$nH(k/n)$.  In particular, this implies that
+\begin{equation}
+  \log\binom{n}{k} \le nH(k/n) \le k\log n - k\log k + k\log e 
+  \eqlabel{log-n-choose-k}
+\end{equation}
 where the last inequality is an application of \eqref{entropy-i}.
-
 
 \section{Applications of the Uniform Encoding Lemma}
 \seclabel{applications-i}
@@ -1015,6 +1069,7 @@ where $r_1$ and $r_0$ are the numbers of 1 and 0 bits in $x$, respectively. In t
 \seclabel{applications-ii}
 
 \subsection{Chernoff's Bounds}
+\seclabel{chernoff}
 
 The following theorem is the so-called \emph{additive version} of the
 Chernoff bound on the tail of a binomial random variable:
