@@ -10,5 +10,5 @@ encoding.pdf : encoding.tex $(pdffigs) entropy.pdf
 	ipetoipe -pdf $<
 
 clean :
-	rm -f *.pdf *.log *.bbl *.aux
+	rm -f $(pdffigs) *.log *.bbl *.aux
 

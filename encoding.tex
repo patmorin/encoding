@@ -25,18 +25,22 @@
 
 \begin{abstract}
 \setlength{\baselineskip}{15.84pt}
-This expository article surveys ``encoding arguments.'' In their most most
-basic form an encoding argument proves an upper bound on the probability
-of an event using the fact a uniformly random choice from a set of size
-$N$ can not be encoded with fewer than $\log N$ bits on average.
+  This expository article surveys ``encoding arguments.'' In their
+  most most basic form an encoding argument proves an upper bound on
+  the probability of an event using the fact a uniformly random choice
+  from a set of size $N$ can not be encoded with fewer than $\log N$
+  bits on average.
 
-We survey many applications of this basic argument, give a generalization
-of this argument for the case of non-uniform distributions, and give a
-rigorous justification for the use of non-integer codeword lengths in
-encoding arguments.  These latter two results allow encoding arguments to be applied more widely and to produce tighter results.
+  We survey many applications of this basic argument, give a
+  generalization of this argument for the case of non-uniform
+  distributions, and give a rigorous justification for the use of
+  non-integer codeword lengths in encoding arguments.  These latter
+  two results allow encoding arguments to be applied more widely and to
+  produce tighter results.
 \end{abstract}
 
-\keywords{Encoding arguments, entropy, Kolmogorov complexity, incompressibility, random graphs, expanders, \ldots}
+\keywords{Encoding arguments, entropy, Kolmogorov complexity, 
+          incompressibility, random graphs, expanders, \ldots}
 
 \end{titlepage}
 \pagenumbering{roman}
@@ -309,24 +313,27 @@ provides tighter results.  For now, it allows us to state the following cleaner 
 \subsection{Encoding Sparse Bit Strings}
 
 At this point we should also point out an extremely useful trick that
-we can use for encoding sparse bit strings.  For any $p\in(0,1)$, there
-exists a code $C_p\from \{0,1\}^n\rightarrow \{0,1\}^*$ such that, for
+we can use for encoding sparse bit strings.  For any $\alpha\in(0,1)$, there
+exists a code $C_\alpha\from \{0,1\}^n\rightarrow \{0,1\}^*$ such that, for
 any bit string $x\in\{0,1\}^n$ having $n_1(x)$ 1's and $n_0(x)$ 0's,
 \begin{equation}
-    |C_p(x)| = \lceil n_1(x)\log(1/p) + n_0(x)\log(1/(1-p)) \rceil \enspace .
+    |C_p(x)| = \lceil n_1(x)\log(1/\alpha) + n_0(x)\log(1/(1-\alpha)) \rceil \enspace .
     \eqlabel{sparse-bitstring-i}
 \end{equation}
 This code is the so-called Shannon-Fano code for Bernoulli$(p)$
 bitstrings of length $n$ \cite{fano:transmission,shannon:mathematical}.
-Again, as we will see in \secref{weights}, we can omit the ceiling in
-the expression for $|C_p(x)|$.  This is true for any value of $n$: In
-particular, for $n=1$, it gives us a ``code'' for encoding a single bit
-where the cost of encoding a 1 is $\log(1/p)$ and the cost of encoding
-a 0 is $\log(1/(1-p))$.  Indeed, the ``code'' for bitstrings of length
-$n>1$ is just what we get when we apply this 1-bit code to each bit of
-the bitstring.
 
-If we wish to encode a bitstring of length $n$ and we know in advance that this bit string has exactly $k$ 1 bits, then we can optimize this process by taking $p=k/n$, in which case we obtain a fixed length code of length
+Again, as we will see in \secref{weights}, we can omit the ceiling
+in the expression for $|C_\alpha(x)|$.  This is true for any value of
+$n$. In particular, for $n=1$, it gives us a ``code'' for encoding a
+single bit where the cost of encoding a 1 is $\log(1/\alpha)$ and the
+cost of encoding a 0 is $\log(1/(1-\alpha))$.  Indeed, the ``code''
+for bitstrings of length $n>1$ is just what we get when we apply this
+1-bit code to each bit of the bitstring.
+
+If we wish to encode bitstrings of length $n$ and we know in advance that
+the strings have exactly $k$ 1 bits, then we can optimize this process
+by taking $p=k/n$, in which case we obtain a fixed length code of length
 \begin{equation}
     k\log (n/k) + (n-k)\log(n/(n-k))  \eqlabel{sparse-bitstring-ii} \enspace .
 \end{equation}
@@ -338,7 +345,8 @@ The \emph{binary entropy function} $H\from (0,1)\to(0,1]$ is defined by
 \[
     H(\alpha) = \alpha\log(1/\alpha) + (1-\alpha)\log(1/(1-\alpha)) 
 \]
-and will be quite useful.  The binary entropy function and two upper bounds on it that we derive below are illustrated in \figref{entropy}.
+and will be quite useful.  The binary entropy function and two upper
+bounds on it that we derive below are illustrated in \figref{entropy}.
 
 \begin{figure}
   \centering{\includegraphics{entropy}}
@@ -346,8 +354,10 @@ and will be quite useful.  The binary entropy function and two upper bounds on i
   \figlabel{entropy}
 \end{figure}
 
-Notice that we have already encountered a quantity that can be expressed in terms of the binary entropy.  From \eqref{sparse-bitstring-ii}, a bitstring of length $n$ that has exactly $k$ 1 bits can be encoded with a fixed length code of length
-$nH(k/n)$.
+Notice that we have already encountered a quantity that can be expressed
+in terms of the binary entropy.  From \eqref{sparse-bitstring-ii},
+a bitstring of length $n$ that has exactly $k$ 1 bits can be encoded
+with a fixed length code of length $nH(k/n)$.
 
 The binary entropy function can be difficult to work with, so it is
 helpful to have some manageable approximations.  One of these is derived
@@ -382,23 +392,28 @@ Let $x=\langle x_1,\ldots,x_n\rangle\in\{0,1\}^n$ be chosen uniformly at random.
 \end{thm}
 
 \begin{proof}
-Encode the bitstring $x$ using a Shannon-Fano code, $C_\alpha$, with $\alpha=(1-\epsilon)/2$.  Then the length of the codeword for $x$ is 
+Encode the bitstring $x$ using a Shannon-Fano code, $C_\alpha$, with
+$\alpha=(1-\epsilon)/2$.  Then the length of the codeword for $x$ is
 \[
      |C_\alpha(x)| = n_1(x)\log(1/\alpha) + n_0(x)\log (1/(1-alpha))  \enspace .
 \]
-Since $\alpha < 1/2$, $\log(1/\alpha) > \log(1/(1-\alpha))$, so $|C_\alpha(x)|$ is maximal when $n_1(x)$ is maximal.  Under the conditions of the theorem, this happens when $n_1(x)=\alpha n$.  Therefore,
+Since $\alpha < 1/2$, $\log(1/\alpha) > \log(1/(1-\alpha))$, so
+$|C_\alpha(x)|$ is maximal when $n_1(x)$ is maximal.  Under the conditions
+of the theorem, this happens when $n_1(x)=\alpha n$.  Therefore,
 \begin{align*}
   |C_\alpha(x)| & \le \alpha n\log(1/\alpha) + (1-\alpha)n\log(1/(1-\alpha))\\
                 & = n H(\alpha) \\
                 & \le n\left(1-\frac{\epsilon^2}{2\ln 2}\right) \enspace ,
 \end{align*}
 where the second inequality is an application of \eqref{entropy-ii}.
-Now, $x$ was chosen uniformly at random from a set $X$ of size $2^n$.  Therefore, this encoding saves:
+Now, $x$ was chosen uniformly at random from a set $X$ of size $2^n$.
+Therefore, this encoding saves:
 \[  
     s = n-\left(n\left(1-\frac{\epsilon^2}{2\ln 2}\right)\right)
-      = \frac{\epsilon^2n}{2\ln 2} \]
-bits.  By the Uniform Encoding Lemma, the probability that this happens is at
-most
+      = \frac{\epsilon^2n}{2\ln 2} 
+\]
+bits.  By the Uniform Encoding Lemma, the probability that this happens
+is at most
 \[
      2^{-s} = e^{-\epsilon^2n/2} \enspace . \qedhere
 \]
@@ -407,7 +422,7 @@ In \secref{chernoff}, after developing a Non-Uniform Encoding Lemma,
 we will extend this argument to binary strings where each bit is set
 independently to 1 or 0 with probabilities $p$ and $1-p$, respectively.
 
-\subsection{Factorials and Choices}
+\subsection{Factorials and Binomial Coefficients}
 \seclabel{stirling}
 
 Before moving on to some more advanced encoding arguments, it will
@@ -420,8 +435,7 @@ Approximation states that
 \end{equation}
 
 In many cases, we are interested in representing a set of size $n!$
-using a fixed-length code.  The length of the codewords in such a code
-is 
+using a fixed-length code.  The length of the codewords in such a code is
 \begin{align}
   \log n!
       & \le n\log n - n\log e + (1/2)\log n + \log(1+O(1/n)) \notag \\
@@ -431,14 +445,18 @@ is
              \eqlabel{stirling-loose} \enspace .
 \end{align}
 
-We are sometimes interested in codes for the $\binom{n}{k}$ subsets of $n$
-elements.  Note that any such subset can be represented as a binary string of length $n$ having exactly $k$ 1's. Therefore, we can represent using the Shannon-Fano code $C_{k/n}$ and it will have length 
-$nH(k/n)$.  In particular, this implies that
+We are sometimes interested in codes for the $\binom{n}{k}$ subsets of
+$n$ elements.  Note that there is an easy bijection between such subsets
+and binary string of length $n$ having exactly $k$ 1's. Therefore, we
+can represent these using the Shannon-Fano code $C_{k/n}$ and each of our
+codewords will have length $nH(k/n)$.  In particular, this implies that
 \begin{equation}
   \log\binom{n}{k} \le nH(k/n) \le k\log n - k\log k + k\log e 
   \eqlabel{log-n-choose-k}
 \end{equation}
-where the last inequality is an application of \eqref{entropy-i}.
+where the last inequality is an application of \eqref{entropy-i}. (The
+astute reader will notice that we just used an encoding argument to
+prove an upper-bound on $\binom{n}{k}$.
 
 \section{Applications of the Uniform Encoding Lemma}
 \seclabel{applications-i}
