@@ -350,7 +350,7 @@ bounds on it that we derive below are illustrated in \figref{entropy}.
 
 \begin{figure}
   \centering{\includegraphics{entropy}}
-  \caption{Binary entropy and two of its more useful approximations.}
+  \caption{Binary entropy, $H$, and two useful approximations.}
   \figlabel{entropy}
 \end{figure}
 
@@ -384,18 +384,21 @@ particular, for $\alpha=(1-\epsilon)/2$,
 
 \subsection{Basic Chernoff Bounds}
 
-Since we now have the pieces we need, we give an encoding argument for a well-known result and extremely useful result typically attributed to Chernoff \cite{X}.  
+Since we now have the pieces we need, we give an encoding argument
+for a well-known and extremely useful result typically attributed to
+Chernoff \cite{X}.
 
 \begin{thm}\label{chernoff-basic}
-Let $x=\langle x_1,\ldots,x_n\rangle\in\{0,1\}^n$ be chosen uniformly at random.Then
-\[  \Pr\{n_1(x) \le n(1-\epsilon)/2\} < e^{-\epsilon^2n/2} \]
+  Let $x=\langle x_1,\ldots,x_n\rangle\in\{0,1\}^n$ be chosen uniformly
+  at random.Then
+  \[  \Pr\{n_1(x) \le n(1-\epsilon)/2\} < e^{-\epsilon^2n/2} \]
 \end{thm}
 
 \begin{proof}
 Encode the bitstring $x$ using a Shannon-Fano code, $C_\alpha$, with
 $\alpha=(1-\epsilon)/2$.  Then the length of the codeword for $x$ is
 \[
-     |C_\alpha(x)| = n_1(x)\log(1/\alpha) + n_0(x)\log (1/(1-alpha))  \enspace .
+     |C_\alpha(x)| = n_1(x)\log(1/\alpha) + n_0(x)\log (1/(1-\alpha))  \enspace .
 \]
 Since $\alpha < 1/2$, $\log(1/\alpha) > \log(1/(1-\alpha))$, so
 $|C_\alpha(x)|$ is maximal when $n_1(x)$ is maximal.  Under the conditions
@@ -456,7 +459,7 @@ codewords will have length $nH(k/n)$.  In particular, this implies that
 \end{equation}
 where the last inequality is an application of \eqref{entropy-i}. (The
 astute reader will notice that we just used an encoding argument to
-prove an upper-bound on $\binom{n}{k}$.
+prove an upper-bound on $\binom{n}{k}$.)
 
 \section{Applications of the Uniform Encoding Lemma}
 \seclabel{applications-i}
@@ -509,12 +512,11 @@ done using an encoding argument.
 
 \begin{rem}
   The bound in \thmref{erdos-renyi-i} can be strengthened a little,
-  since the elements of $S$ can be encoded with fewer than $t\log n$
-  bits; in particular $\lceil\log\binom{n}{t}\rceil$ bits are sufficient.
-  With a more careful calculation, using \eqref{log-n-choose-k}, the
-  proof then works with $t=2\log n +O(\log\log n) + \sqrt{s}$. This
-  comes closer to Erdős' original result, which was at the threshold
-  $2\log n - 2\log\log n + O(1)$.
+  since the elements of $S$ can be encoded using only $\log\binom{n}{t}$
+  bits, rather than $t\log n$.  With a more careful calculation, using
+  \eqref{log-n-choose-k}, the proof then works with $t=2\log n +O(\log\log
+  n) + \sqrt{s}$. This comes closer to Erdős' original result, which
+  was at the threshold $2\log n - 2\log\log n + O(1)$.
 \end{rem}
 
 
@@ -522,14 +524,14 @@ done using an encoding argument.
 \subsection{Balls in Urns}
 \seclabel{urns}
 
-The question of what happens when one throws $n$ balls, randomly and
+The question of what happens when one throws $n$ balls, uniformly and
 indepently into $n$ urns is a useful abstraction of many algorithmic,
 data structures and load-balancing problem.  Here we show how an encoding
 argument can be used to prove the classic result that, when we do this,
 no urn contains more than $O(\log n/\log\log n)$ balls.
 
 \begin{thm}\thmlabel{urns}
-  Let $t$ be such that $t\log(t/e) \ge 1+s+\log n$ and suppose we throw
+  Let $t$ be such that $t\log(t/e) \ge s+\log n$ and suppose we throw
   $n$ balls independently and uniformly at random into $n$ urns. Then,
   for sufficiently large $n$, the probability that any urn contains more 
   than $t$ balls is at most $2^{-s}$.
@@ -556,16 +558,13 @@ satisfies the requirements of \thmref{urns}.
   \begin{align*}
     b &\le \log n + \log\binom{n}{t} 
            + (n-t)\log n \\
-     & = \log n + t\log n - t\log t + t\log e  
-           + (n-t)\log n + O(1/n)
+     & = \log n + t\log n - t\log t + t\log e  + (n-t)\log n 
              & \text{(using \eqref{log-n-choose-k})} \\
-     & = \log n + t\log n - t\log t + t\log e  
-           + (n-t)\log n + 1
-             & \text{(for large enough $n$)} \\
-     & = (n+1)\log n - t\log t + t\log e + 1 \\
+     & = (n+1)\log n - t\log t + t\log e \\
      & \le  n\log n - s &\text{(by the choice of $t$)} \\
-     & =  \log n^n - s \enspace . & \qedhere
+     & =  \log n^n - s \enspace . 
   \end{align*}
+  bits. We conclude the proof by applying the Uniform Encoding Lemma.
 \end{proof}
 
 \subsection{Linear Probing}
@@ -596,7 +595,7 @@ a \emph{block}.
   \]
   which is drawn uniformly at random from a set $X$ of size $n^{m}=n^{cn}$.
   
-  We encode $R$ by the first index $b$ of the block containing $x$;
+  We encode $R$ by the first index, $b$, of the block containing $x$;
   followed by the $t-1$ elements, $y_1,\ldots,y_{t-1}$, of this block
   (excluding $x$); followed by enough information to decode the hash
   values of $h(x)$ and $h(y_1),\ldots,h(y_{t-1})$; followed by
@@ -604,15 +603,15 @@ a \emph{block}.
   from the preceding information.
 
   Notice that $h(x),h(y_1),h(y_2),\ldots,h(y_{t-1})$ are in the range
-  $b,\ldots,b+t-1$ (modulo $m$) so these can be encoded using $\lceil
-  t\log t\rceil$ bits.  Therefore, if the block containing $x$ has size $t$,
-  then we obtain a codeword whose length is
+  $b,\ldots,b+t-1$ (modulo $m$) so these can be encoded using $t\log
+  t$ bits.  Therefore, if the block containing $x$ has size $t$, then
+  we obtain a codeword whose length is
   \begin{align*}
-    b & = \log m + \log\binom{n}{t-1} + t\log t + (n-t)\log m + O(1) \\
+    b & = \overbrace{\log m}^{b} + \overbrace{\log\binom{n}{t-1}}^{y_1,\ldots,y_{t-1}} + \overbrace{t\log t}^{h(x),h(y_1),\ldots,h(y_{t-1})} + \overbrace{(n-t)\log m}^{\text{everything else}} \\
        & \le \log m + (t-1)\log n - 
-           {\color{red}(t-1)\log(t-1)} + (t-1)\log e + {\color{red}t\log t} + (n-t)\log m + {\color{red}O(1)}\\
-       & \le {\color{blue}\log m} + {\color{blue}(t-1)\log n} + (t-1)\log e + {\color{blue}(n-t)\log m} + {\color{red}\log t}+ {\color{red} O(1)}\\
-       & = {\color{blue}n\log m} - {\color{blue}(t-1)\log c} + (t-1)\log e + \log t + O(1) \\
+           (t-1)\log(t-1) + (t-1)\log e + t\log t + (n-t)\log m & \text{by \eqref{entropy-i}}\\
+       & \le \log m + (t-1)\log n + (t-1)\log e + (n-t)\log m + \log t+ O(1)\\
+       & = n\log m - (t-1)\log c + (t-1)\log e + \log t + O(1) \\
        & = n\log m - (t-1)\log(c/e) + \log t + O(1) \\
        & \le n\log m - s \enspace ,
   \end{align*}
