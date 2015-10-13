@@ -1,7 +1,9 @@
 \documentclass{patmorin}
+
 \usepackage{pat}
 \usepackage[utf8]{inputenc}
 \usepackage[noend]{algorithmic}
+\usepackage{subcaption}
 
 \newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
 
@@ -238,13 +240,13 @@ a run of significantly more than $\log n$ one bits.  (See \figref{runs-i}.)
   \]
   It is easy to check that, for any such $x$, we can reconstruct
   $x_1,\ldots,x_n$ from $C(x)$, so $C$ is indeed a partial code whose
-  domain is the set of binary strings of length $n$ having a run of $t$
-  or more 1's.  It is also easy to see that $C$ is prefix free, since
-  all codewords are unique and have the same length.
+  domain is the set of binary strings of length $n$ having a run of
+  $t$ or more 1's.  It is also easy to see that $C$ is prefix free,
+  since all codewords are unique and have the same length.
 
   Now, $x$ was chosen uniformly at random from a set of size $2^{n}$.
-  Therefore, by the Uniform Encoding Lemma, the probability
-  that there exists any index $i\in\{1,\ldots,n-k-1\}$ such that
+  Therefore, by the Uniform Encoding Lemma, the probability that there
+  exists any index $i\in\{1,\ldots,n-k-1\}$ such that
   $x_i=x_{i+1}=\cdots=x_{i+k-1}=1$ is at most
   \[
       \Pr\{|C(x)|\le n-s\} \le 2^{-s} \enspace . \qedhere 
@@ -256,26 +258,27 @@ used in most encoding arguments:
 
 \begin{enumerate}
 \item The arguments usually show that a particular \emph{bad event} is
-  unlikely.  In \thmref{runs-i} the bad event is the occurrence of a
+  unlikely. In \thmref{runs-i} the bad event is the occurrence of a
   substring of $t$ consecutive 1's.
 
-\item The code is partial prefix-free code whose domain contains the 
-  set of bad events.  In this case, the code $C$ is only capable of
+\item The code is partial prefix-free code whose domain contains the
+  set of bad events. In this case, the code $C$ is only capable of
   encoding strings containing a run of $t$ consecutive 1's.
 
-\item The code usually begins with a
-  concise description of the bad event, and is then followed by a
-  straightforward encoding of the information that is not implied by the
-  bad event. In \thmref{runs-i}, the bad event is completely described by
-  the index $i$ at which the run of $t$ 1 bits begins, and this implies
-  that the bits $x_i,\ldots,x_{i+t-1}$ are all equal to 1, so these bits
-  do not need to be specified in the second part of the codeword.
+\item The code usually begins with a concise description of the bad
+  event, and is then followed by a straightforward encoding of the
+  information that is not implied by the bad event. In
+  \thmref{runs-i}, the bad event is completely described by the index
+  $i$ at which the run of $t$ 1 bits begins, and this implies that the
+  bits $x_i,\ldots,x_{i+t-1}$ are all equal to 1, so these bits do not
+  need to be specified in the second part of the codeword.
 \end{enumerate}
 
 \subsection{A Note on Ceilings}
 
-Note that \thmref{runs-i} also has an easy proof using the union bound:
-If we let $\mathcal{E}_i$ denote the event $x_i=x_{i+1}=\cdots x_{i+t}=1$, then
+Note that \thmref{runs-i} also has an easy proof using the union
+bound: If we let $\mathcal{E}_i$ denote the event
+$x_i=x_{i+1}=\cdots x_{i+t}=1$, then
 \begin{align*}
 \Pr \bigcup_{i=0}^{n-t-1} \mathcal{E}_i  
    & \le \sum_{i=0}^{n-t-1} \Pr\mathcal{E}_i & \text{(using the union bound)}\\
@@ -288,20 +291,21 @@ This traditional proof also works with the sometimes smaller value
 $t=\log n+s$ (note the lack of a ceiling over the logarithmic term),
 in which case the final inequality becomes an equality.
 
-In the encoding proof of \thmref{runs-i}, the ceiling in the expression
-for $t$ is an artifact of encoding of the integer $i$ which is taken
-from a set of $n$. When sketching an encoding argument, we think of
-this as requiring $\log n$ bits but when it comes time to carefully
-write down a proof we include a ceiling over this term since bits are
-a discrete quantity.
+In the encoding proof of \thmref{runs-i}, the ceiling in the
+expression for $t$ is an artifact of encoding of the integer $i$ which
+is taken from a set of $n$. When sketching an encoding argument, we
+think of this as requiring $\log n$ bits but when it comes time to
+carefully write down a proof we include a ceiling over this term since
+bits are a discrete quantity.
 
 In \secref{weights}, however, we will see that the informal intuition
-we use in blackboard proofs is actually valid; we can think of encoding
-$i$ using $\log n$ bits even if $\log n$ is not an integer.  In general
-we can imagine encoding a choice from among $r$ options using $\log r$
-bits for any $r\in\N$.  From this point onwards, we omit ceilings this
-way in all our theorems and proofs. This makes calculations simpler and
-provides tighter results.  For now, it allows us to state the following cleaner version of \thmref{runs-i}:
+we use in blackboard proofs is actually valid; we can think of
+encoding $i$ using $\log n$ bits even if $\log n$ is not an integer.
+In general we can imagine encoding a choice from among $r$ options
+using $\log r$ bits for any $r\in\N$.  From this point onwards, we
+omit ceilings this way in all our theorems and proofs. This makes
+calculations simpler and provides tighter results.  For now, it allows
+us to state the following cleaner version of \thmref{runs-i}:
 
 \begin{customthm}{\ref{thm:runs-i}b}\thmlabel{runs-ii}
   Let $x=\langle x_1,\ldots,x_n\rangle\in\{0,1\}^n$ be chosen
@@ -313,27 +317,30 @@ provides tighter results.  For now, it allows us to state the following cleaner 
 \subsection{Encoding Sparse Bit Strings}
 
 At this point we should also point out an extremely useful trick that
-we can use for encoding sparse bit strings.  For any $\alpha\in(0,1)$, there
-exists a code $C_\alpha\from \{0,1\}^n\rightarrow \{0,1\}^*$ such that, for
-any bit string $x\in\{0,1\}^n$ having $n_1(x)$ 1's and $n_0(x)$ 0's,
+we can use for encoding sparse bit strings. For any $\alpha\in(0,1)$,
+there exists a code $C_\alpha\from \{0,1\}^n\rightarrow \{0,1\}^*$
+such that, for any bit string $x\in\{0,1\}^n$ having $n_1(x)$ 1's and
+$n_0(x)$ 0's,
 \begin{equation}
-    |C_p(x)| = \lceil n_1(x)\log(1/\alpha) + n_0(x)\log(1/(1-\alpha)) \rceil \enspace .
-    \eqlabel{sparse-bitstring-i}
+  |C_\alpha(x)| = \lceil n_1(x)\log(1/\alpha) + n_0(x)\log(1/(1-\alpha)) \rceil \enspace .
+  \eqlabel{sparse-bitstring-i}
 \end{equation}
-This code is the so-called Shannon-Fano code for Bernoulli$(p)$
-bitstrings of length $n$ \cite{fano:transmission,shannon:mathematical}.
+This code is the so-called Shannon-Fano code for Bernoulli$(\alpha)$
+bitstrings of length $n$
+\cite{fano:transmission,shannon:mathematical}.
 
-Again, as we will see in \secref{weights}, we can omit the ceiling
-in the expression for $|C_\alpha(x)|$.  This is true for any value of
+Again, as we will see in \secref{weights}, we can omit the ceiling in
+the expression for $|C_\alpha(x)|$.  This is true for any value of
 $n$. In particular, for $n=1$, it gives us a ``code'' for encoding a
 single bit where the cost of encoding a 1 is $\log(1/\alpha)$ and the
 cost of encoding a 0 is $\log(1/(1-\alpha))$.  Indeed, the ``code''
 for bitstrings of length $n>1$ is just what we get when we apply this
 1-bit code to each bit of the bitstring.
 
-If we wish to encode bitstrings of length $n$ and we know in advance that
-the strings have exactly $k$ 1 bits, then we can optimize this process
-by taking $p=k/n$, in which case we obtain a fixed length code of length
+If we wish to encode bitstrings of length $n$ and we know in advance
+that the strings have exactly $k$ 1 bits, then we can optimize this
+process by taking $\alpha=k/n$, in which case we obtain a fixed length
+code of length
 \begin{equation}
     k\log (n/k) + (n-k)\log(n/(n-k))  \eqlabel{sparse-bitstring-ii} \enspace .
 \end{equation}
@@ -609,7 +616,7 @@ a \emph{block}.
   \begin{align*}
     b & = \overbrace{\log m}^{b} + \overbrace{\log\binom{n}{t-1}}^{y_1,\ldots,y_{t-1}} + \overbrace{t\log t}^{h(x),h(y_1),\ldots,h(y_{t-1})} + \overbrace{(n-t)\log m}^{\text{everything else}} \\
        & \le \log m + (t-1)\log n - 
-           (t-1)\log(t-1) + (t-1)\log e + t\log t + (n-t)\log m & \text{by \eqref{entropy-i}}\\
+           (t-1)\log(t-1) + (t-1)\log e + t\log t + (n-t)\log m & \text{(by \eqref{log-n-choose-k})}\\
        & \le \log m + (t-1)\log n + (t-1)\log e + (n-t)\log m + \log t+ O(1)\\
        & = n\log m - (t-1)\log c + (t-1)\log e + \log t + O(1) \\
        & = n\log m - (t-1)\log(c/e) + \log t + O(1) \\
@@ -626,59 +633,224 @@ a \emph{block}.
   of \thmref{linear-probing} that works for any $c>1$.
 \end{rem}
 
+\subsection{Analysis of Cuckoo Hashing}
+
+Cuckoo hashing is relatively new kind of hash table that offers an
+alternative to classic perfect hashing \cite{pagh.rodler:cuckoo}. Here
+we present a clever proof, due to Mihai Pătraşcu, that cuckoo hashing
+succeeds with probability $1-O(1/n)$ \cite{patrascu:cuckoo}.
+
+The main object of study in cuckoo hashing is the \emph{cuckoo graph}:
+a random bipartite multigraph $G=(A,B,E)$ where $|A|=|B|=2n$ and
+$|E|=n$.  For each $i\in\{1,\ldots,n\}$, each edge $e_i$ of $E$ is
+obtained by randomly choosing (with replacement) an endpoint in
+$a_i\in A$ and an endpoint in $b_i\in B$.  The cuckoo hashing
+algorithm may fail if this graph contains a long edge-simple path or
+if it contains a component with more edges than vertices.  (An
+edge-simple path is a path that uses each edge of the multiset $E$ at
+most once.)
+
+\begin{lem}\lemlabel{cuckoo-path-length}
+  The cuckoo graph has an edge-simple path of length greater than
+  $s + \log n + O(1)$ with probability at most $2^{-s}$.
+\end{lem}
+\begin{proof}
+  We encode $G$ by presenting its set of edges. Since each endpoint of
+  an edge is chosen independently and uniformly at random from a set
+  of size $n$, then the set of all edges is chosen uniformly from a
+  set of size $m^{2n}$.
+
+  Suppose that some vertex $v$ is the endpoint of an edge-simple path
+  of length $t$; such a path has $t + 1$ vertices and $t$ edges. In
+  the encoding, we present the $t$ edges of the path in order; then,
+  we indicate whether $v \in A$ or $v \in B$; and we give the $t + 1$
+  vertices in order starting from $v$; and finally, the remaining
+  $2n - 2t$ endpoints of edges of the graph. This code has length
+  \begin{align*}
+    |C(G)| &\leq t \log n + 1 + (t + 1) \log m + (2n - 2t) \log m + O(1)\\
+           &= 2n \log m + t \log n - t \log m + \log m + O(1) \\
+           &= \log m^{2n} - t + \log n + O(1) \\
+           &\leq \log m^{2n} - s
+  \end{align*}
+  for $t \geq s + \log n + O(1)$. We finish by applying the Uniform
+  Encoding Lemma.
+\end{proof}
+This immediately implies that a successful insertion takes time at
+most $2 \log n + O(1)$ with probability $1 - O(1/n)$.
+
+The cuckoo hashing insertion algorithm can fail if some subgraph of
+the cuckoo graph contains more edges than vertices, since edges
+correspond to keys, and vertices correspond to array locations.
+\begin{lem}\lemlabel{cuckoo-failure}
+  Fix some vertex $v \in A$. The probability that $v$ is part of a
+  subgraph with more edges than vertices is $O(1/n^2)$.
+\end{lem}
+\begin{proof}
+  Suppose that $v$ is part of a subgraph with more edges than
+  vertices, and in particular a minimal such subgraph with $t + 1$
+  edges and $t$ vertices. Such a subgraph appears exactly as in
+  \figref{cuckoo-cycles}. For every such subgraph, there are two edges
+  $e_1$ and $e_2$ whose removal disconnects the graph into two paths
+  of length $t_1$ and $t_2$ starting from $v$, where
+  $t_1 + t_2 = t - 1$.
+
+  \begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.3\textwidth}
+      \includegraphics{cuckoo1}
+      \caption{A cycle with a chord.}
+    \end{subfigure}
+    \quad\quad
+    \begin{subfigure}[b]{0.6\textwidth}
+      \includegraphics{cuckoo2}
+      \caption{Two cycles connected by a path.}
+    \end{subfigure}
+    \caption{The potential minimal subgraphs of the cuckoo graph.}
+    \figlabel{cuckoo-cycles}
+  \end{figure}
+
+  We encode $G$ by presenting Elias $\delta$-codes for the values of
+  $t_1$ and $t_2$; then the edges of the above paths in order; then
+  the vertices of the paths in order; and the edges $e_1$ and $e_2$;
+  and finally the remaining $2n - 2(t + 1)$ endpoints of edges in the
+  graph. Such a code has length
+  \begin{align*}
+    |C(G)| &\leq (t - 1)(\log n + \log m) + 2\log n + (2n - 2(t + 1))\log m + O(\log t) \\
+           &= \log m^{2n} - 2\log m - t + O(\log t) \\
+           &\leq \log m^{2n} - 2\log n + O(1).
+  \end{align*}
+  We finish by applying the Uniform Encoding Lemma.
+\end{proof}
+
+From the union bound, we obtain the following:
+\begin{cor}
+  Cuckoo hashing succeeds upon insertion of $n$ elements with
+  probability $1 - O(1/n)$.
+\end{cor}
+
 \subsection{2-Choice Hashing}
 
-We showed earlier how, when throwing $n$ balls uniformly at random and
-independently into $n$ urns, no urn contains more than
-$O(\log n/\log \log n)$ balls. In 2-choice hashing, each ball is
-instead given a choice of two of these $n$ urns, and the urn
-containing fewer balls is preferred.
+We showed in \secref{urns} that if $n$ balls are thrown independently
+and uniformly at random into $n$ urns, then the maximum number of
+balls in any urn is $O(\log n/\log \log n)$ with high probability. In
+2-choice hashing, each ball is instead given a choice of two urns, and
+the urn containing the fewer balls is preferred.
 
-\begin{thm}\thmlabel{2-choice-hashing}
-  Fix some $x \in \{x_1, \ldots, x_n\}$. Then, in the 2-choice hashing
-  scheme, the probability that the urn containing $x$ has size $t$ is
-  $2^{-s}$, where:
-  \[t 2^t - 2^t(\log e + 2) \geq s + O(1/n)\]
-\end{thm}
+More specifically, we are given two hash functions
+$h, g : X \to \{1, \ldots, m\}$. Each value of $h$ and $g$ points to
+one of $m$ urns. The element $x \in X$ is added to the urn containing
+the fewest elements between $h(x)$ and $g(x)$ during an insertion. The
+worst case search time is at most the maximum number of hashing
+collisions, or the maximum number of elements in any urn.
 
-Perhaps surprisingly, we note that $t = O(\log \log n)$ satisfies the
-conditions of \thmref{2-choice-hashing} -- an exponential improvement
-over the single choice scheme considered in \secref{urns}. In fact,
-Azar {\em et al.} \cite{azar:multiplechoice} showed that the expected
-maximum size of an urn is $\log_2 \ln n + O(1)$. More general and more
-precise results have since appeared.
+Perhaps surprisingly, the simple change of having two choices instead
+of only one results in an exponential improvement over the strategy of
+\secref{urns}. Indeed, 2-choice hashing was first studied by Azar
+\emph{et al.}, who showed that the expected maximum size of an urn is
+$\log \log n + O(1)$~\cite{azar:multiplechoice}. Our encoding argument
+is based on V\"{o}cking's use of witness trees to analyze 2-choice
+hashing~\cite{vocking:witness}.
 
+Let $G = (V, E)$ be the random multigraph with $V = \{1, \ldots, m\}$,
+where $m = cn$ for some constant $c \geq e$, and
+$E = \{(h(x), g(x)) : x \in X\}$.
+
+\begin{lem}
+  The multigraph $G$ has an edge-simple path of length greater than
+  $s + \log n + O(1)$ with probability at most $2^{-s}$.
+\end{lem}
 \begin{proof}
-  We encode the vector:
-  \[
-  R = h_1(x_1), h_2(x_1), h_1(x_2), h_2(x_2) \ldots, h_1(x_n), h_2(x_n)
-  \]
+  We encode the set of edges of $G$.
 
-  which is drawn uniformly at random from a set of size $n^{2n}$.
-
-  If an element $x$ has search time $t$, then it corresponds to a
-  witness tree $T$ with root $x$ and height $t$. If $y$ is $x$'s
-  $i$\textsuperscript{th} child, then we know that $h_j(y) = h_i(x)$
-  for either $j = 1$ or $2$.
-
-  We encode $R$ as follows: first we give $y_1, y_2, \ldots, y_{2^t}$,
-  the sequence of leaves in the witness tree given in increasing
-  order; then we include each pair $(i, j)$ for each edge $(x, y)$ in
-  the tree, where $y$ is $x$'s $i$\textsuperscript{th} child and
-  $h_j(y) = h_i(x)$; then we include the values $h_1(x)$ and
-  $h_2(x)$. From this, we can deduce $2^t$ values of the hash
-  function. Finally, we include the remaining $2n - 2 - 2^t$ hash
-  values. In total, this requires:
-
+  Suppose some vertex $v$ is the endpoint of an edge-simple path of
+  length $t$. We encode this path by presenting the $t$ edges in
+  order, including their orientation; then, the $t + 1$ vertices,
+  starting from $v$; and finally, the remaining $2n - 2t$ endpoints of
+  edges in the graph. Our code has length
   \begin{align*}
-    b & = \log \binom{n}{2^t} + 2^{t + 1} - 2 + 2\log n + (2n - 2 - 2^t)\log n \\
-      & \le \log n^{2n} - 2^t \log 2^t + 2^t \log e + 2^{t + 1} + O(1/n) \\
-      & = \log n^{2n} - t 2^t + 2^t (\log e + 2) + O(1/n) \\
-      & \le \log n^{2n} - s
+    |C(G)| &\leq t\log 2n + (t + 1)\log m + (2n - 2t)\log m + O(1) \\
+           &= 2n \log m + t \log 2n - t \log m + \log m + O(1) \\
+           &= \log m^{2n} + t \log \frac{2n}{m} + \log m + O(1) \\
+           &\leq \log m^{2n} + \log n - t + O(1) \\
+           &\leq \log m^{2n} - s,
   \end{align*}
+  as long as $t \geq s + \log n + O(1)$, so apply the Uniform Encoding
+  Lemma.
+\end{proof}
 
-  bits, as long as:
-  \[t 2^t - 2^t(\log e + 2) \geq s + O(1/n)\]
+\begin{lem}\lemlabel{two-choice-two-cycles}
+  With probability $1 - O(1/n)$, $G$ has no subgraph with more edges
+  than vertices.
+\end{lem}
+\begin{proof}
+  Again, the proof is similar to that of \lemref{cuckoo-failure}, with
+  an additional application of the union bound.
+\end{proof}
+
+\begin{lem}
+  Fix some $v \in \{1, \ldots, m\}$. The probability that $v$ belongs
+  to a component of $G$ of size at least $2 \log n$ is $O(1/n^2)$.
+\end{lem}
+\begin{proof}
+  Suppose $G$ has a connected component $C$ containing $v$ with
+  $t - 1$ edges and at most $t$ vertices. We encode the edge set of
+  $G$ by providing the set of vertices in a spanning tree of $C$
+  rooted at $v$; then the shape of this tree; and the labels of the
+  $t - 1$ edges encountered in an inorder traversal of this tree; and
+  finally the remaining $2(n - t + 1)$ endpoints of edges. By Cayley's
+  formula and since $G$ is a multigraph, there are at most $t^{t - 2}$
+  spanning trees of $G$ rooted at $v$. In total, our code has length
+  \begin{align*}
+    |C(G)| &\leq \log \binom{m}{t - 1} + (t - 2) \log t + (t - 1) \log n + 2 (n - t + 1) \log m + O(1) \\
+           &\leq 2n \log m - (t - 1) \log (c/e) - \log t + O(1) & \text{(by \eqref{log-n-choose-k})} \\
+           &\leq \log m^{2n} - s,
+  \end{align*}
+  as long as $t$ is such that
+  \[t \log (c/e) + \log t \geq s + O(1).\]
+  In particular, if we choose $s = 2 \log n$, applying \lemref{uel}
+  tells us that $C$ has size at least $2 \log n$ with probability
+  $O(1/n^2)$.
+\end{proof}
+
+\begin{cor}\corlabel{two-choice-component-size}
+  With probability $1 - O(1/n)$, every component of $G$ has size at
+  most $2 \log n$.
+\end{cor}
+
+Suppose that when $x$ is inserted, it is placed in a list with $t$
+other elements. Then, we say that the age of $x$ is $a(x) = t$.
+\begin{thm}
+  The cost of any operation in 2-choice hashing is at most
+  $\log \log n + 1$ with probability $1 - O(1/n)$.
+\end{thm}
+\begin{proof}
+  Suppose that some element $x$ has $a(x) = t$. This leads to a binary
+  \emph{witness tree} $T$ of height $t$ as follows.
+
+  The root of $T$ is the element $x$. When $x$ was inserted into the
+  hash table, it had to choose between the lists $h(x)$ and $g(x)$,
+  both of which contained at least $t - 1$ elements; in particular,
+  $h(x)$ has an element $x_h$ with $a(x_h) = t - 1$, and $g(x)$ has an
+  element $x_g$ with $a(x_g) = t - 1$. The elements $x_h$ and $x_g$
+  become left and right children of $x$ in $T$. The process continues
+  recursively. If some element appears more than once on a level, we
+  only recurse on its leftmost occurence.
+
+  Note that each vertex of $T$ corresponds to the edge $(h(x), g(x))$
+  of $G$. Moreover, the subgraph of $G$ induced by the edges
+  $\{(h(x), g(x)) : x \in T\}$ is connected.
+
+  Suppose that some node appears more than once on a level of
+  $T$. From above, this means that some component of $G$ has a
+  cycle. If this happens twice, then $G$ has a subgraph with more
+  edges than vertices. By \lemref{two-choice-two-cycles}, this happens
+  with probability $O(1/n)$.
+
+  So with probability $1 - O(1/n)$, $T$ has at most one subtree
+  removed, so $T$ has at least $2^t$ nodes. If we choose
+  $t = \log \log n + 1$, then $C$ has more than $2 \log n$ nodes,
+  which we know from \corref{two-choice-component-size} happens with
+  probability $O(1/n)$.
 \end{proof}
 
 \subsection{Robin-Hood Hashing}
@@ -747,81 +919,6 @@ and $2^{-s(1)} = O(n^{-1/2})$.  For $k=\alpha n$ we have
    s(\alpha n) = (\alpha n/2)\log(2/(3\alpha))
 \]
 and $2^{-s(\alpha n)} = 2^{-\Omega(n)}$ for $\alpha < 2/3$.
-\end{proof}
-
-\subsection{Analysis of Cuckoo Hashing}
-
-Cuckoo hashing is relatively new kind of hash table that offers an
-alternative to classic perfect hashing \cite{pagh.rodler:cuckoo}. Here we present a clever proof,
-due to Mihai Pătraşcu, that cuckoo hashing succeeds with probability
-$1-O(1/n)$ \cite{patrascu:cuckoo}.
-
-The main object of study in cuckoo hashing is a random bipartite
-multigraph $G=(A,B,E)$ where $|A|=|B|=2n$ and $|E|=n$.  For each
-$i\in\{1,\ldots,n\}$, each edge $e_i$ of $E$ is obtained by randomly
-choosing (with replacement) an endpoint in $a_i\in A$ and an endpoint
-in $b_i\in B$.  The cuckoo hashing algorithm may fail if this graph
-contains a long edge-simple path or if it contains a component with more
-edges than vertices.  (An edge-simple path is a path that uses each edge
-of the multiset $E$ at most once.)
-
-\begin{thm}\thmlabel{edge-simple}
-  Fix some vertex $x\in A$, then the probability that $x$ is the
-  endpoint of an edge-simple path of length $t=s$ is at most $2^{-s}$.
-\end{thm}
-
-\begin{proof}
-  We use an encoding argument on the sequence
-  \[
-     R=a_1,b_1,a_2,b_2,\ldots,a_n,b_n
-  \]
-  which is drawn uniformly from a set $X$ of size $m^{2n}$.
-
-  The code begins with the $t$ edges and vertices (excluding $x$) on a
-  path, $P$, of length $t$ that starts at $x$, followed by the $2n-2t$
-  entries in $R$ that are not edges of this path.
-
-  The path $P$ consists of $t+1$ vertices (the first of which is $x$) and
-  $t$ edges. The encoding of $P$ specifies the vertices (excluding $x$)
-  as well as the indices of the edges. The former requires $t\log m$ bits
-  and the latter requires $t\log n$ bits, for a total of $2t\log n-t$ bits.
-
-  This encoding requires
-  \[
-    b = t\log m + t\log n + 2(n-t)\log m < 2n\log m - s
-  \]
-  bits, for $t=s$. The proof finishes, as usual, by applying the
-  Uniform Encoding Lemma.
-\end{proof}
-
-\thmref{edge-simple} and the union bound establish that, with probability
-at least $1-1/n$, the cuckoo graph has no edge-simple path of length
-greater than $1+2\log n$. The following theorem shows that the cuckoo
-graph has no subgraph with more edges than vertices.
-
-\begin{thm}
-  Fix a vertex $x\in A$.  Then the probability that $x$ is part of a
-  minimal subgraph that has more edges than vertices is $O(1/n^2)$.
-\end{thm}
-
-\begin{proof}
-  We encode the same sequence $R$ as in the previous proof. Now, $x$
-  is a part of a minimal subgraph having $t$ vertices and $t+1$
-  edges. Note that, after removing two edges, this subgraph consists
-  of two paths, of length $t_1$ and $t_2$, (with $t_1+t_2=t-1$) that
-  have $x$ as an endpoint.  In this case, we encode $R$ as $t_1$ and
-  $t_2$; the vertices and edges of each of these two paths, excluding
-  $x$; and enough information to determine the two edges we removed
-  (this takes $2\log n + O(\log t)$ bits); finally, the code includes
-  all the $2n-2(t+1)$ entries in $R$ that cannot be derived from the
-  previous information. This gives a total of
-  \begin{align*}
-     b &= (t-1)(\log n+\log m) + (2n-2(t+1))\log m + 2\log n + O(\log t) \\
-        &= 2n\log m + O(\log t) - t - 2\log m \\
-       & \le 2n\log m - 2\log m + O(1) \enspace .
-  \end{align*}
-  Applying the Uniform Encoding Lemma with $s=2\log m+O(1)$ completes
-  the proof.
 \end{proof}
 
 \subsection{Analysis of Insertion Sort}
