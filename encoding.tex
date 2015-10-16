@@ -220,23 +220,25 @@ a run of significantly more than $\log n$ one bits.  (See \figref{runs-i}.)
 
 \begin{thm}\thmlabel{runs-i}
   Let $x=\langle x_1,\ldots,x_n\rangle\in\{0,1\}^n$ be chosen
-  uniformly at random and let $t=\lceil\log n\rceil + s$. Then, the
-  probability that there exists an $i\in\{1,\ldots,n-t-1\}$ such that
-  $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$ is at most $2^{-s}$.
+  uniformly at random and let $t \ge \lceil\log n\rceil + s$. Then,
+  the probability that there exists an $i\in\{1,\ldots,n-t+1\}$ such
+  that $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$ is at most $2^{-s}$.
 \end{thm}
 
 \begin{proof}
   We will prove this theorem by constructing a partial prefix-free
   code for strings having a run of $t$ or more 1's.  For such a string
-  string $x=\langle x_1,\ldots,x_n\rangle$ let $i$ be the minimum index
-  such that $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$. The codeword, $C(x)$,
-  for $x$ is the binary string that consists of the ($\lceil\log
-   n\rceil$-bit binary encoding of the) index $i$ followed by the $n-t$
-  bits $x_1,\ldots,x_{i-1},x_{i+t},\ldots,x_n$. (see \figref{runs-i}.)
+  string $x=\langle x_1,\ldots,x_n\rangle$ let $i$ be the minimum
+  index such that $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$. The codeword,
+  $C(x)$, for $x$ is the binary string that consists of the
+  ($\lceil\log (n - t)\rceil$-bit binary encoding of the) index $i$
+  followed by the $n-t$ bits
+  $x_1,\ldots,x_{i-1},x_{i+t},\ldots,x_n$. (see \figref{runs-i}.)
 
   Observe that $C(x)$ has length 
   \[
-      \lceil\log n\rceil + n - t = n-s \enspace .
+  \lceil\log (n - t)\rceil + n - t \le \lceil\log n\rceil + n - t \le
+  n-s \enspace .
   \]
   It is easy to check that, for any such $x$, we can reconstruct
   $x_1,\ldots,x_n$ from $C(x)$, so $C$ is indeed a partial code whose
@@ -246,8 +248,8 @@ a run of significantly more than $\log n$ one bits.  (See \figref{runs-i}.)
 
   Now, $x$ was chosen uniformly at random from a set of size $2^{n}$.
   Therefore, by the Uniform Encoding Lemma, the probability that there
-  exists any index $i\in\{1,\ldots,n-k-1\}$ such that
-  $x_i=x_{i+1}=\cdots=x_{i+k-1}=1$ is at most
+  exists any index $i\in\{1,\ldots,n-t-1\}$ such that
+  $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$ is at most
   \[
       \Pr\{|C(x)|\le n-s\} \le 2^{-s} \enspace . \qedhere 
   \]
@@ -309,9 +311,9 @@ us to state the following cleaner version of \thmref{runs-i}:
 
 \begin{customthm}{\ref{thm:runs-i}b}\thmlabel{runs-ii}
   Let $x=\langle x_1,\ldots,x_n\rangle\in\{0,1\}^n$ be chosen
-  uniformly at random and let $t= \log n + s$. Then, the
-  probability that there exists an $i\in\{1,\ldots,n-\lfloor t\rfloor-1\}$ such that
-  $x_i=x_{i+1}=\cdots=x_{i+\lfloor t\rfloor-1}=1$ is at most $2^{-s}$.
+  uniformly at random and let $t \ge \log n + s$. Then, the
+  probability that there exists an $i\in\{1,\ldots,n-t+1\}$ such that
+  $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$ is at most $2^{-s}$.
 \end{customthm}
 
 \subsection{Encoding Sparse Bit Strings}
@@ -448,11 +450,11 @@ In many cases, we are interested in representing a set of size $n!$
 using a fixed-length code.  The length of the codewords in such a code is
 \begin{align}
   \log n!
-      & \le n\log n - n\log e + (1/2)\log n + \log(1+O(1/n)) \notag \\
-      & \le n\log n - n\log e + (1/2)\log n + O(1/n)  
-             & \text{(since $1+x < e^x$)} \notag \\
-      & \le n\log n - n\log e + O(\log n)  
-             \eqlabel{stirling-loose} \enspace .
+  & \le n\log n - n\log e + (1/2)\log n + \log(1+O(1/n)) \notag \\
+  & \le n\log n - n\log e + (1/2)\log n + O(1/n)
+  & \text{(since $1+x \le e^x$)} \notag \\
+  & \le n\log n - n\log e + O(\log n) \eqlabel{stirling-loose}
+  \enspace .
 \end{align}
 
 We are sometimes interested in codes for the $\binom{n}{k}$ subsets of
@@ -485,9 +487,9 @@ large clique and no large independent set. Here we show how this can be
 done using an encoding argument.
 
 \begin{thm}\thmlabel{erdos-renyi-i}
-  For all $n\ge 4$ and $s\ge 1$, the probability that the random graph,
-  $G_{n,\frac{1}{2}}$ contains a clique or an independent set of size $t =
-  \lceil 3\log n + \sqrt{2s}\rceil$ is at most $2^{-s}$.
+  For all $n\ge 3$ and $s\ge 1$, the probability that the random
+  graph, $G_{n,\frac{1}{2}}$ contains a clique or an independent set
+  of size $t \ge 3\log n + \sqrt{2s}$ is at most $2^{-s}$.
 \end{thm}
 
 \begin{proof}
@@ -502,28 +504,34 @@ done using an encoding argument.
   
   This encoding requires
   \begin{align*}
-     b & = 1 + t\log n + \binom{n}{2}-\binom{t}{2} \\
-       & = \binom{n}{2} + 1 + t\log n - (1/2)(t^2 - t) \\
-       & = \binom{n}{2} + 1 + t\log n 
-            - (1/2)\left(9\log^2 n +3\sqrt{2s}\log n + 2s - t\right) \\
-       & = \binom{n}{2} + 1 
-            - (1/2)\left(3\log^2 n + \sqrt{2s}\log n + 2s - t\right) \\
-       & = \binom{n}{2} + 1 
-            - (1/2)\left(t\log n + 2s - t\right) \\
-       & = \binom{n}{2} + 1 
-            - (1/2)\left(t(\log n-1)\right) - s \\
-       & \le \binom{n}{2} - s 
+    b & = 1 + t\log n + \binom{n}{2}-\binom{t}{2} \\
+    & = \binom{n}{2} + 1 + t\log n - (1/2)(t^2 - t) \\
+    & \le \binom{n}{2} + 1 - (1/2)(t^2 - t - 2t \log n)
   \end{align*}
-  bits. Applying the Uniform Encoding Lemma completes the proof.
+  bits. The function $f(x) = x^2 - x - 2x \log n$ is increasing for $x
+  \geq \log n + 1/2$, so 
+  \begin{align*}
+    f(t) &\ge f(3\log n + \sqrt{2s}) \\
+    &= 9 \log^2 n + 2 \sqrt{2s} \log n + 2s - 3 \log n - \sqrt{2s} - 6 \log^2 n - 2 \sqrt{2s} \log n \\
+    &= 3 \log^2 n - 3 \log n - \sqrt{2s} \enspace .
+  \end{align*}
+  Therefore, our code has length
+  \begin{align*}
+    b & \le \binom{n}{2} + 1 - (1/2)(3 \log^2 n - 3 \log n - \sqrt{2s}) - s \\
+    & \le \binom{n}{2} - s \enspace ,
+  \end{align*}
+  since $n \ge 3$. Applying the Uniform Encoding Lemma completes the
+  proof.
 \end{proof}
 
 \begin{rem}
   The bound in \thmref{erdos-renyi-i} can be strengthened a little,
-  since the elements of $S$ can be encoded using only $\log\binom{n}{t}$
-  bits, rather than $t\log n$.  With a more careful calculation, using
-  \eqref{log-n-choose-k}, the proof then works with $t=2\log n +O(\log\log
-  n) + \sqrt{s}$. This comes closer to Erdős' original result, which
-  was at the threshold $2\log n - 2\log\log n + O(1)$.
+  since the elements of $S$ can be encoded using only
+  $\log\binom{n}{t}$ bits, rather than $t\log n$.  With a more careful
+  calculation, using \eqref{log-n-choose-k}, the proof then works with
+  $t \ge 2\log n +O(\log\log n) + \sqrt{s}$. This comes closer to
+  Erdős' original result, which was at the threshold $2\log n -
+  2\log\log n + O(1)$.
 \end{rem}
 
 
@@ -532,10 +540,11 @@ done using an encoding argument.
 \seclabel{urns}
 
 The question of what happens when one throws $n$ balls, uniformly and
-indepently into $n$ urns is a useful abstraction of many algorithmic,
-data structures and load-balancing problem.  Here we show how an encoding
-argument can be used to prove the classic result that, when we do this,
-no urn contains more than $O(\log n/\log\log n)$ balls.
+independently into $n$ urns is a useful abstraction of many
+algorithmic, data structures and load-balancing problem.  Here we show
+how an encoding argument can be used to prove the classic result that,
+when we do this, no urn contains more than $O(\log n/\log\log n)$
+balls.
 
 \begin{thm}\thmlabel{urns}
   Let $t$ be such that $t\log(t/e) \ge s+\log n$ and suppose we throw
@@ -547,7 +556,7 @@ no urn contains more than $O(\log n/\log\log n)$ balls.
 Before proving \thmref{urns}, we note that, for any constant $\epsilon
 >0$ and all sufficiently large $n$, taking
 \[
-   t = \frac{(1+\epsilon)\log n}{\log\log n}
+t \ge \frac{(1+\epsilon)\log n}{\log\log n}
 \] 
 satisfies the requirements of \thmref{urns}.
 
@@ -563,13 +572,13 @@ satisfies the requirements of \thmref{urns}.
   $b_1,\ldots,b_n$ that cannot be deduced from the preceding
   information.  In total, this is
   \begin{align*}
-    b &\le \log n + \log\binom{n}{t} 
-           + (n-t)\log n \\
-     & = \log n + t\log n - t\log t + t\log e  + (n-t)\log n 
-             & \text{(using \eqref{log-n-choose-k})} \\
-     & = (n+1)\log n - t\log t + t\log e \\
-     & \le  n\log n - s &\text{(by the choice of $t$)} \\
-     & =  \log n^n - s \enspace . 
+    b &\le \log n + \log\binom{n}{t}
+    + (n-t)\log n \\
+    & = \log n + t\log n - t\log t + t\log e + (n-t)\log n
+    & \text{(using \eqref{log-n-choose-k})} \\
+    & = n \log n + \log n - t\log t + t\log e \\
+    & \le  n\log n - s &\text{(by the choice of $t$)} \\
+    & = \log n^n - s \enspace .
   \end{align*}
   bits. We conclude the proof by applying the Uniform Encoding Lemma.
 \end{proof}
