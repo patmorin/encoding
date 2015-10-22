@@ -929,44 +929,51 @@ Raghavan \cite[Theorem~5.3]{motwani.raghavan:randomized}, Pinsker
 \end{thm}
 
 \begin{proof}
-Without loss of generality, let $A=\{1,\ldots,n\}$.  We use an encoding argument on the bit string
-\[
-   R = x(1), y(1), z(1), x(2), y(2), z(2), \ldots, x(n), y(n), z(n) \enspace ,
-\]
-which is chosen uniformly from a set $X$ of size $n^{3n}$.
+  We encode the graph $G$ by presenting its edge set. Since each edge
+  is selected uniformly at random, then $G$ is chosen uniformly at
+  random from a set of size $n^{3n}$.
 
-If some set $A'$, $|A'|=k\le \alpha n$, violates the conditions of the
-lemma, then we encode $k$, $A'$, $N(A')$ and then the edges between
-$A'$ and $N(A')$. Then we encode the rest of $R$, skipping the
-$3k\log n$ bits devoted to elements in $A'$.  The key savings here
-comes because $N(A')$ should take $3k\log n$ bits to encode, but can
-actually be encoded in roughly $3k\log(3k/2)$ bits.
+  If some set $A'$, $|A'|=k\le \alpha n$, violates the conditions of
+  the theorem, then we encode $k$, $A'$, $N(A')$ and then the edges
+  between $A'$ and $N(A')$. Then we encode the rest of $G$, skipping
+  the $3k\log n$ bits devoted to elements in $A'$.  The key savings
+  here comes because $N(A')$ should take $3k\log n$ bits to encode,
+  but can actually be encoded in roughly $3k\log(3k/2)$ bits.
 
-The total size of the first part of our encoding is, which includes $k$,
-$A'$ and $N(A')$ is
-\begin{align*}
+  The total size of the first part of our encoding is, which includes
+  $k$, $A'$ and $N(A')$ is
+  \begin{align*}
     h & = 2\log k + \log\binom{n}{k} + \log\binom{n}{3k/2} + 3k\log (3k/2) \\
-       & \le k\log n - k\log k + (3/2)k\log n - (3/2)k\log k + 3k\log k + k\log(3/2) \\
-      & = (5/2)k\log n + (1/2)k\log k + k\log(3/2)  \enspace .
-\end{align*}
-The size of the second part of our encoding is $3n\log n - 3k\log n$.  The savings, $s=s(k)$, we obtain is therefore
-\begin{align*}
-     s(k) & = 3k\log n - (5/2)k\log n - (1/2)k\log k - k\log(3/2) \\
-       & = (1/2)k(\log n - \log(2k/3)) \\
-       & = (1/2)k(\log n - \log k - \log(3/2)) \\
-       & = (1/2)k\log(2n/(3k)) \enspace .
-\end{align*}
-The function $s(k)$ is concave and is therefore minimized when $k$
-is extremal, with the extremes being $k=1$ and $k=\alpha
-n$. For $k=1$, we have
-\[
-    s(1)=(1/2)\log n - \log(2/3)
-\]
-and $2^{-s(1)} = O(n^{-1/2})$.  For $k=\alpha n$ we have
-\[
-   s(\alpha n) = (\alpha n/2)\log(2/(3\alpha))
-\]
-and $2^{-s(\alpha n)} = 2^{-\Omega(n)}$ for $\alpha < 2/3$.
+      & \le k\log n - k\log k + (3/2)k\log n - (3/2)k\log k + 3k\log k + \beta k + 2 \log k \\
+      & = (5/2)k\log n + (1/2)k\log k + \beta k + 2 \log k  \enspace ,
+  \end{align*}
+  for $\beta = (3/2) \log (3/2) + (5/2) \log e$. The size of the
+  second part of our encoding is $3n\log n - 3k\log n$.  The savings,
+  $s=s(k)$, we obtain is therefore
+  \begin{align*}
+    s(k) & = 3k\log n - (5/2)k\log n - (1/2)k\log k - \beta k - 2 \log k \\
+         & = (1/2)k(\log n - \log k - 2 \beta) - 2\log k \\
+         & = (1/2)k\log\left(\frac{n}{\beta^2 k}\right) - 2 \log k \enspace .
+  \end{align*}
+  Note that
+  \[
+  \frac{d^2}{dk^2} s(k) = \frac{4 - k}{2 k^2} \log e \enspace ,
+  \]
+  so that $s(k)$ is concave for all $k \geq 4$. Thus, $s(k)$ is
+  minimized either when $k = 1, 2, 3, 4$, or $k = \alpha n$. We have
+  \begin{align*}
+    s(1) &= (1/2)\log n + c_1 \enspace , & 
+    s(2) &= \log n + c_2 \enspace , \\
+    s(3) &= (3/2) \log n + c_3 \enspace , &
+    s(4) &= 2 \log n + c_4 \enspace ,
+  \end{align*}
+  for constants $c_1, c_2, c_3, c_4$. For $k=\alpha n$ we have
+  \[
+  s(\alpha n) = (\alpha n/2)\log \left(\frac{1}{\beta^2 \alpha}\right)
+  - 2 \log \alpha n
+  \]
+  and $2^{-s(\alpha n)} = 2^{-\Omega(n)}$ for $\alpha < 1/\beta^2$. In
+  each case, \lemref{uel} gives the desired result.
 \end{proof}
 
 \subsection{Analysis of Insertion Sort}
