@@ -191,8 +191,10 @@ As we will see, the following lemma, which is folklore, is surprisingly
 versatile:
 \begin{lem}[Uniform Encoding Lemma]\lemlabel{uel}
   Let $C\from X\nrightarrow \{0,1\}^*$ be a prefix-free partial code. If
-  an element $x\in X$ is chosen uniformly at random, then $\Pr\{|C(x)|\le
-  \log|X|-s\}\le 2^{-s}$.
+  an element $x\in X$ is chosen uniformly at random, then 
+  \[
+  \Pr\{|C(x)|\le \log|X|-s\}\le 2^{-s} \enspace .
+  \]
 \end{lem}
 
 \begin{proof}
@@ -577,9 +579,8 @@ satisfies the requirements of \thmref{urns}.
   $b_1,\ldots,b_n$ that cannot be deduced from the preceding
   information.  In total, this is
   \begin{align*}
-    |C(b)| &\le \log n + \log\binom{n}{t}
-             + (n-t)\log n \\
-           & = \log n + t\log n - t\log t + t\log e + (n-t)\log n
+    |C(b)| &= \log n + \log\binom{n}{t} + (n-t)\log n \\
+           &= \log n + t\log n - t\log t + t\log e + (n-t)\log n
            & \text{(using \eqref{log-n-choose-k})} \\
            & = n \log n + \log n - t\log t + t\log e \\
            & \le  n\log n - s &\text{(by the choice of $t$)} \\
@@ -607,13 +608,15 @@ a \emph{block}.
 \begin{thm}\thmlabel{linear-probing}
   Fix some $x\in\{x_1,\ldots,x_n\}$. Then the probability that the
   block containing $x$ has size $t$ satisfying
-  \[t \log (c/e) - log t \ge s + O(1)\]
+  \[t \log (c/e) - \log t \ge s + O(1)\]
   is at most $2^{-s}$.
 \end{thm}
 
 \begin{proof}
   This is an encoding argument that encodes the sequence
-  \[R = (h(x_1),h(x_2),\ldots,h(x_n)),\]
+  \[
+  R = (h(x_1),h(x_2),\ldots,h(x_n)) \enspace ,
+  \]
   which is drawn uniformly at random from a set of size
   $n^{m}=n^{cn}$.
   
@@ -675,10 +678,10 @@ we present a clever proof, due to Mihai Pătraşcu, that cuckoo hashing
 succeeds with probability $1-O(1/n)$ \cite{patrascu:cuckoo}.
 
 The main object of study in cuckoo hashing is the \emph{cuckoo graph}:
-a random bipartite multigraph $G=(A,B,E)$ where $|A|=|B|=2n$ and
-$|E|=n$.  For each $i\in\{1,\ldots,n\}$, each edge $e_i$ of $E$ is
-obtained by randomly choosing (with replacement) an endpoint in
-$a_i\in A$ and an endpoint in $b_i\in B$.  The cuckoo hashing
+a random bipartite multigraph $G=(A,B,E)$ where $|A|=|B|=m$ for
+$m = 2n$, and $|E|=n$.  For each $i\in\{1,\ldots,n\}$, each edge $e_i$
+of $E$ is obtained by randomly choosing (with replacement) an endpoint
+in $a_i\in A$ and an endpoint in $b_i\in B$.  The cuckoo hashing
 algorithm may fail if this graph contains a long edge-simple path or
 if it contains a component with more edges than vertices.  (An
 edge-simple path is a path that uses each edge of the multiset $E$ at
@@ -749,7 +752,7 @@ correspond to keys, and vertices correspond to array locations.
   and finally the remaining $2n - 2(t + 1)$ endpoints of edges in the
   graph. Such a code has length
   \begin{align*}
-    |C(G)| &\leq (t - 1)(\log n + \log m) + 2\log n + (2n - 2(t + 1))\log m + O(\log t) \\
+    |C(G)| &= (t - 1)(\log n + \log m) + 2\log n + (2n - 2(t + 1))\log m + O(\log t) \\
            &= \log m^{2n} - 2\log m - t + O(\log t) \\
            &\leq \log m^{2n} - 2\log n + O(1) \enspace .
   \end{align*}
@@ -786,42 +789,52 @@ is based on V\"{o}cking's use of witness trees to analyze 2-choice
 hashing~\cite{vocking:witness}.
 
 Let $G = (V, E)$ be the random multigraph with $V = \{1, \ldots, m\}$,
-where $m = cn$ for some constant $c \geq e$, and
+where $m = cn$ for some constant $c > e$, and
 $E = \{(h(x), g(x)) : x \in X\}$.
 
-\begin{lem}
-  The multigraph $G$ has an edge-simple path of length greater than
-  $s + \log n + O(1)$ with probability at most $2^{-s}$.
-\end{lem}
-\begin{proof}
-  We encode $G$ by presenting its set of edges. Since each endpoint of
-  an edge of $G$ is independently chosen uniformly at random from $m$
-  choices, then $G$ is chosen uniformly at random from a set of size
-  $m^{2n}$.
-
-  Suppose some vertex $v$ is the endpoint of an edge-simple path of
-  length $t$. We encode this path by presenting the $t$ edges in
-  order, including their orientation; then, the $t + 1$ vertices,
-  starting from $v$; and finally, the remaining $2n - 2t$ endpoints of
-  edges in the graph. Our code has length
-  \begin{align*}
-    |C(G)| &= t\log 2n + (t + 1)\log m + (2n - 2t)\log m \\
-           &= 2n \log m + t \log 2n - t \log m + \log m + O(1) \\
-           &= \log m^{2n} + t \log \frac{2n}{m} + \log m + O(1) \\
-           &\leq \log m^{2n} - t \log (c/2) + \log n + O(1) \\
-           &\leq \log m^{2n} - s \enspace ,
-  \end{align*}
-  as long as $t \log (c/2) \geq s + \log n + O(1)$, so apply the
-  Uniform Encoding Lemma.
-\end{proof}
+%\begin{lem}
+%  The multigraph $G$ has an edge-simple path of length greater than
+%  $s + \log n + O(1)$ with probability at most $2^{-s}$.
+%\end{lem}
+%\begin{proof}
+%  We encode $G$ by presenting its set of edges. Since each endpoint of
+%  an edge of $G$ is independently chosen uniformly at random from $m$
+%  choices, then $G$ is chosen uniformly at random from a set of size
+%  $m^{2n}$.
+%
+%  Suppose some vertex $v$ is the endpoint of an edge-simple path of
+%  length $t$. We encode this path by presenting the $t$ edges in
+%  order, including their orientation; then, the $t + 1$ vertices,
+%  starting from $v$; and finally, the remaining $2n - 2t$ endpoints of
+%  edges in the graph. Our code has length
+%  \begin{align*}
+%    |C(G)| &= t\log 2n + (t + 1)\log m + (2n - 2t)\log m \\
+%           &= 2n \log m + t \log 2n - t \log m + \log m + O(1) \\
+%           &= \log m^{2n} + t \log \frac{2n}{m} + \log m + O(1) \\
+%           &\leq \log m^{2n} - t \log (c/2) + \log n + O(1) \\
+%           &\leq \log m^{2n} - s \enspace ,
+%  \end{align*}
+%  as long as $t \log (c/2) \geq s + \log n + O(1)$, so apply the
+%  Uniform Encoding Lemma.
+%\end{proof}
 
 \begin{lem}\lemlabel{two-choice-two-cycles}
-  With probability $1 - O(1/n)$, $G$ has no subgraph with more edges
-  than vertices.
+  $G$ has a subgraph with more edges than vertices with probability
+  $O(1/n)$.
 \end{lem}
 \begin{proof}
-  Again, the proof is similar to that of \lemref{cuckoo-failure}, with
-  an additional application of the union bound.
+  The proof is similar to that of \lemref{cuckoo-failure}, with an
+  additional application of the union bound. More specifically, we can
+  encode $G$ by giving the same encoding as in
+  \lemref{cuckoo-failure}, with an additional bit for each edge $uv$
+  in the encoding, indicating whether $u = h(x)$ and $v = g(x)$, or
+  $u = g(x)$ and $v = h(x)$. Our code thus has length
+  \begin{align*}
+    |C(G)| &= (t - 1)(\log n + \log m) + 2 \log n + (2n - 2(t + 1))\log m + t + O(\log t) \\
+    &= 2n \log m - 2 \log n - t \log c + t + O(\log t) \\
+    &\le \log m^{2n} - 2 \log n + O(1) \enspace ,
+  \end{align*}
+  since $\log c > 1$.
 \end{proof}
 
 \begin{lem}\lemlabel{two-choice-component-size}
@@ -1081,9 +1094,12 @@ The following generalization of the Uniform Encoding Lemma fills this
 need:
 
 \begin{lem}[Non-Uniform Encoding Lemma]\lemlabel{nuel}  
-  Let $C\from X\to\{0,1\}^*$ be a prefix code and let $x\in X$ be
-  drawn randomly where $p_x$ denotes the probability of drawing $x$.
-  Then $\Pr\{ |C(x)| \le \log(1/p_x)-s\} \le 2^{-s}$.
+  Let $C\from X\nrightarrow\{0,1\}^*$ be a prefix-free partial code and let
+  $x\in X$ be drawn randomly where $p_x$ denotes the probability of
+  drawing $x$.  Then 
+  \[
+  \Pr\{ |C(x)| \le \log(1/p_x)-s\} \le 2^{-s} \enspace .
+  \]
 \end{lem}
 
 \begin{proof}
