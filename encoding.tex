@@ -873,7 +873,6 @@ other elements. Then, we say that the age of $x$ is $a(x) = t$.
 \begin{proof}
   Suppose that some element $x$ has $a(x) = t$. This leads to a binary
   \emph{witness tree} $T$ of height $t$ as follows.
-
   The root of $T$ is the element $x$. When $x$ was inserted into the
   hash table, it had to choose between the lists $h(x)$ and $g(x)$,
   both of which contained at least $t - 1$ elements; in particular,
@@ -891,14 +890,12 @@ other elements. Then, we say that the age of $x$ is $a(x) = t$.
   $T$. From above, this means that some component of $G$ has a
   cycle. If this happens twice, then $G$ has a subgraph with more
   edges than vertices. By \lemref{two-choice-two-cycles}, this happens
-  with probability $O(1/n)$.
-
-  So with probability $1 - O(1/n)$, $T$ has at most one subtree
-  removed, so $T$ has at least $2^t$ nodes. If we choose
-  $t \ge \log \log n + d$, then $C$ has at least $2^d \log n$ nodes,
-  which we know from \lemref{two-choice-component-size} happens with
-  probability $O(1/n)$ for a sufficiently large choice of the constant
-  $d$.
+  with probability $O(1/n)$. If instead this happens at most once,
+  then $T$ has at most one subtree removed, so $T$ has at least $2^t$
+  nodes. If we choose $t \ge \log \log n + d$, then $C$ has at least
+  $2^d \log n$ nodes, which we know from
+  \lemref{two-choice-component-size} happens with probability $O(1/n)$
+  for a sufficiently large choice of the constant $d$.
 \end{proof}
 
 \subsection{Robin-Hood Hashing}
@@ -953,7 +950,7 @@ Raghavan \cite[Theorem~5.3]{motwani.raghavan:randomized}, Pinsker
   \begin{align*}
     s(k) & = 3k\log n - (5/2)k\log n - (1/2)k\log k - \beta k - 2 \log k \\
          & = (1/2)k(\log n - \log k - 2 \beta) - 2\log k \\
-         & = (1/2)k\log\left(\frac{n}{\beta^2 k}\right) - 2 \log k \enspace .
+         & = (1/2)k\log\left(\frac{n}{2^{\beta^2} k}\right) - 2 \log k \enspace .
   \end{align*}
   Note that
   \[
@@ -969,11 +966,12 @@ Raghavan \cite[Theorem~5.3]{motwani.raghavan:randomized}, Pinsker
   \end{align*}
   for constants $c_1, c_2, c_3, c_4$. For $k=\alpha n$ we have
   \[
-  s(\alpha n) = (\alpha n/2)\log \left(\frac{1}{\beta^2 \alpha}\right)
+  s(\alpha n) = (\alpha n/2)\log \left(\frac{1}{2^{\beta^2} \alpha}\right)
   - 2 \log \alpha n
   \]
-  and $2^{-s(\alpha n)} = 2^{-\Omega(n)}$ for $\alpha < 1/\beta^2$. In
-  each case, \lemref{uel} gives the desired result.
+  and $2^{-s(\alpha n)} = 2^{-\Omega(n)}$ for
+  $\alpha < (1/2)^{\beta^2}$. In each case, \lemref{uel} gives the
+  desired result.
 \end{proof}
 
 \subsection{Analysis of Insertion Sort}
@@ -1076,16 +1074,189 @@ here follows the same outline as Vitanyi's analysis of bubble sort
   of size $O(n^{3/2})$.
 \end{rem}
 
-\subsection{Permutation Statistics}
+\subsection{Permutations and Binary Search Trees}
 
-We consider the use of encoding arguments to study statistics of
-equiprobable permutations of $\{1, 2, \ldots, n\}$.
+A \emph{permutation} $\sigma$ of size $n$ is a sequence of $n$
+distinct integers, sometimes denoted
+\[
+\sigma = (\sigma(1), \ldots, \sigma(n)) \enspace .
+\]
+Except when explicitly stated, we will assume that the set of integers
+involved in a permutation of size $n$ is precisely $\{1, \ldots,
+n\}$. The number of such permutations is $n!$.
 
 \subsubsection{Records}
 
-Figure out where to move Shannon-Fano code stuff here.  
+A \emph{(max) record} in a permutation $\sigma$ of size $n$ is some
+$1 \leq i \leq n$ such that
+\[
+\sigma(i) = \max\{\sigma(1), \ldots, \sigma(i - 1)\} \enspace .
+\]
+It is easy to see that the probability that $\sigma(i)$ is a record is
+exactly $1/i$, so the expected number of records in a uniformly random
+permutation is
+\[
+H_n = \sum_{i = 1}^n \frac{1}{i} = \ln n + O(1) \enspace ,
+\]
+the $n$\textsuperscript{th} harmonic number. It is harder to establish
+concentration with non-negligible probability. To do this, one first
+needs to show the independence of certain random variables, which
+quickly becomes tedious. We instead give an encoding argument to show
+concentration of the number of records inspired by a technique used by
+Lucier \emph{et al.} to study the height of random binary search trees
+\cite{lucier.jiang.li:quicksort}.
 
-\subsubsection{The Height of Random Binary Search Tree}
+First, we describe an incremental and recursive manner of encoding a
+permutation $\sigma$: begin by providing the first value of the
+permutation $\sigma(1)$; followed by the indices of the permutation
+for which $\sigma$ takes on a value strictly smaller than $\sigma(1)$,
+including an explicit encoding of the induced permutation on these
+elements; and a recursive encoding of the permutation induced on
+elements strictly larger than $\sigma(1)$.
+
+If $\sigma$ contains $k$ elements strictly smaller than $\sigma(1)$,
+then the cost of this encoding is given by the recurrence
+\[
+S(n) = \log n + \log \binom{n - 1}{k} + \log k! + S(n - k - 1) \enspace ,
+\]
+with $S(0) = 0$ and $S(1) = 0$. This solves to $S(n) = \log n!$, so
+the encoding described above is no better than a fixed-length encoding
+for $\sigma$. We can readily modify this encoding to obtain a result
+about the concentration of records in a random permutation.
+
+\begin{thm}\thmlabel{records}
+  A uniformly random permutation of size $n$ has at least $c \log n$
+  records with probability at most
+  \[
+  2^{-c (1 - H(1/c)) \log n + O(\log \log n)} \enspace ,
+  \]
+  for $c > 2$.
+\end{thm}
+\begin{proof}
+  We encode a permutation $\sigma$ chosen uniformly at random from a
+  set of size $n!$.
+
+  Suppose that $\sigma$ has $t$ records $r_1 < r_2 < \cdots < r_t$,
+  where $t \geq c \log n$ for some fixed $c > 2$. First, give a bit
+  string $x = (x_1, \ldots, x_t) \in \{0, 1\}^t$, where $x_i = 0$ if
+  and only if $r_{i + 1}$ lies in the first half of the interval
+  $[r_{i}, n]$. Let $d_i$ denote the number of values of $\sigma$
+  which are greater than $r_i$. If $x_i = 1$, then
+  \[
+  d_{i + 1} \leq (1/2) d_i \enspace ,
+  \]
+  and therefore,
+  \[
+  1 \leq (1/2)^{n_1(x)} n \iff n_1(x) \leq \log n \enspace .
+  \]
+  In other words, $x$ is a sparse bit string, and $n_1(x)/t \leq 1/c$.
+
+  To begin our encoding of $\sigma$, we encode the bit string $x$ by
+  giving the set of $n_1(x)$ ones in $x$; followed by the incremental
+  recursive encoding of $\sigma$ from earlier. In this case, our
+  knowledge of the value of $x_i$ halves the size of the space of
+  options for encoding the record $r_{i + 1}$. In other words, our
+  knowledge of $x$ allows us to encode each record using roughly one
+  less bit per record. More precisely, since the encoding from above
+  recurses $t$ times on decreasing values $n_1 > \cdots > n_t$, then
+  the number of bits spent encoding records is at most
+  \begin{align*}
+    \sum_{i = 1}^t \log \lceil n_i/2 \rceil &\leq \sum_{i = 1}^t \log (n_i/2 + 1)
+                                              \leq \sum_{i = 1}^t \log (n_i/2) + \sum_{i = 1}^t O(1/n_i) \\
+                                            &\leq \sum_{i = 1}^t \log (n_i/2) + H_t = \sum_{i = 1}^t \log n_i - t + O(\log \log n) \enspace .
+  \end{align*}
+  Thus, the total length of the code is
+  \begin{align*}
+    |C(\sigma)| &\leq \binom{t}{n_1(x)} + \log n! - t + O(\log \log n) \\
+                &\leq \log n! - t \left(1 - H\left(\frac{n_1(x)}{t}\right)\right) + O(\log \log n) \\ %& \text{(by \eqref{log-n-choose-k})}\\
+                &\leq \log n! - c \left(1 - H\left(\frac{1}{c}\right)\right)\log n + O(\log \log n) \enspace . \qedhere
+  \end{align*}
+\end{proof}
+
+\subsubsection{The Height of a Random Binary Search Tree}
+
+Every permutation $\sigma$ determines a binary search tree
+$\text{BST}(\sigma)$ created through the sequential insertion of the
+keys $\sigma(1), \ldots, \sigma(n)$. Specifically, if $\sigma_L$
+(respectively, $\sigma_R$) denotes the permutation of elements
+strictly smaller (respectively, strictly larger) than $\sigma(1)$,
+then $\text{BST}(\sigma)$ has $\sigma(1)$ as its root, with
+$\text{BST}(\sigma_L)$ and $\text{BST}(\sigma_R)$ as left and right
+children. For any $\sigma$, the value $\sigma(1)$ is called its pivot.
+
+Lucier \emph{et al.}~\cite{lucier.jiang.li:quicksort} use an encoding
+argument via Kolmogorov complexity to study the height of
+$\text{BST}(\sigma)$. They show that for a uniformly chosen
+permutation $\sigma$, the tree $\text{BST}(\sigma)$ has height at most
+$c \log n$ with probability $1 - O(1/n)$ for $c = 15.498...$; we can
+extend our result on records to obtain a tighter result.
+
+For a node $u$, let $s(u)$ denote the number of nodes in the tree
+rooted at $u$. Then, $u$ is called balanced if
+$s(u_L), s(u_R) > s(u)/4$, where $u_L$ and $u_R$ are the left and
+right subtrees of $u$ respectively. In other words, a node is said to
+be balanced if it occurs in the middle half of its subrange.
+
+\begin{thm}\thmlabel{bst-height}
+  Let $\sigma$ be a uniformly random permutation of size $n$. Then,
+  $\text{BST}(\sigma)$ has height $O(\log n)$ with high probability.
+\end{thm}
+\begin{proof}
+  Suppose that the tree $\text{BST}(\sigma)$ has a root-to-leaf path
+  $Y = y_1 \ldots y_t$ of length $t \geq c \log n$ for some fixed $c >
+  2/\log (4/3)$.
+
+  Our encoding for $\sigma$ has two parts. The first part includes an
+  encoding of the value $y_t$, and a bit string $x = x_1 \ldots x_t$,
+  where $x_i = 1$ if and only if $y_i$ is balanced. From our
+  definition, if $y_i$ is balanced, then
+  \[
+  s(y_{i + 1}) \leq (3/4) s(y_i) \enspace ,
+  \]
+  and since $n_1(x)$ counts the number of balanced nodes along $Y$,
+  then
+  \[
+  1 \leq (3/4)^{n_1(x)} n \iff n_1(x) \leq \log_{4/3} n \enspace .
+  \]
+
+  The second part of our encoding is recursive: first, encode the
+  value of the root $r$ using $\log \lceil n/2 \rceil$ bits. If the
+  path $Y$ goes to the left of $r$, then specify the $n - r - 1$
+  values in the right subtree of $r$, including an explicit encoding
+  of the permutation induced by these values; and recursively encode
+  the permutation of values in the left subtree of $r$. If, instead,
+  $Y$ goes to the right of $r$, we proceed symmetrically.
+ 
+  The first part of our encoding uses at most
+  \[
+  \log n + t H\left(\frac{1}{c \log (4/3)}\right)
+  \]
+  bits. The same analysis as performed in \thmref{records} shows that
+  the second part of our encoding has length at most
+  \[
+  \log n! - t + O(\log \log n) \enspace .
+  \]
+  Applying \lemref{uel}, we see that $\text{BST}(\sigma)$ has height
+  at most $c \log n$ with probability $1 - O(1/n)$ for
+  $c > 2/\log (4/3)$ satisfying
+  \[
+  c \left(1 - H\left(\frac{1}{c \log (4/3)}\right)\right) > 1 \enspace ,
+  \]
+  and a computer-aided calculation shows that $c = 8.12669...$ is the
+  minimal solution so this inequality.
+\end{proof}
+
+\begin{rem}
+  Devroye~\cite{devroye:records} shows how the length of the path to
+  the key $i$ in $\text{BST}(\sigma)$ relates to the number of records
+  in $\sigma$. Specifically, he notes that the number of records in
+  $\sigma$ is the number of nodes along the rightmost path in
+  $\text{BST}(\sigma)$. Since the height of a tree is the length of
+  its longest root-to-leaf path, we obtain as a corollary that the
+  number of records in a uniformly random permutation is $O(\log n)$
+  with high probability; the result from \thmref{records} only
+  improves upon the implied constant.
+\end{rem}
 
 \subsubsection{Hoare's Find Algorithm}
 
