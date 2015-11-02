@@ -318,7 +318,7 @@ us to state the following cleaner version of \thmref{runs-i}:
   $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$ is at most $2^{-s}$.
 \end{customthm}
 
-\subsection{Encoding Sparse Bit Strings}
+\subsection{Encoding Sparse Bit Strings}\seclabel{sparse-bit-strings}
 
 At this point we should also point out an extremely useful trick that
 we can use for encoding sparse bit strings. For any $\alpha\in(0,1)$,
@@ -329,8 +329,8 @@ $n_0(x)$ 0's,
   |C_\alpha(x)| = \lceil n_1(x)\log(1/\alpha) + n_0(x)\log(1/(1-\alpha)) \rceil \enspace .
   \eqlabel{sparse-bitstring-i}
 \end{equation}
-This code is the so-called Shannon-Fano code for Bernoulli$(\alpha)$
-bitstrings of length $n$
+This code is the so-called Shannon-Fano code for
+$\mathrm{Bernoulli}(\alpha)$ bit strings of length $n$
 \cite{fano:transmission,shannon:mathematical}.
 
 Again, as we will see in \secref{weights}, we can omit the ceiling in
@@ -338,10 +338,10 @@ the expression for $|C_\alpha(x)|$.  This is true for any value of
 $n$. In particular, for $n=1$, it gives us a ``code'' for encoding a
 single bit where the cost of encoding a 1 is $\log(1/\alpha)$ and the
 cost of encoding a 0 is $\log(1/(1-\alpha))$.  Indeed, the ``code''
-for bitstrings of length $n>1$ is just what we get when we apply this
-1-bit code to each bit of the bitstring.
+for bit strings of length $n>1$ is just what we get when we apply this
+1-bit code to each bit of the bit string.
 
-If we wish to encode bitstrings of length $n$ and we know in advance
+If we wish to encode bit strings of length $n$ and we know in advance
 that the strings have exactly $k$ 1 bits, then we can optimize this
 process by taking $\alpha=k/n$, in which case we obtain a fixed length
 code of length
@@ -365,10 +365,11 @@ bounds on it that we derive below are illustrated in \figref{entropy}.
   \figlabel{entropy}
 \end{figure}
 
-Notice that we have already encountered a quantity that can be expressed
-in terms of the binary entropy.  From \eqref{sparse-bitstring-ii},
-a bitstring of length $n$ that has exactly $k$ 1 bits can be encoded
-with a fixed length code of length $nH(k/n)$.
+Notice that we have already encountered a quantity that can be
+expressed in terms of the binary entropy.  From
+\eqref{sparse-bitstring-ii}, a bit string of length $n$ that has
+exactly $k$ 1 bits can be encoded with a fixed length code of length
+$nH(k/n)$.
 
 The binary entropy function can be difficult to work with, so it is
 helpful to have some manageable approximations.  One of these is derived
@@ -399,42 +400,45 @@ Since we now have the pieces we need, we give an encoding argument
 for a well-known and extremely useful result typically attributed to
 Chernoff \cite{X}.
 
-\begin{thm}\label{chernoff-basic}
-  Let $x=(x_1,\ldots,x_n)\in\{0,1\}^n$ be chosen uniformly at
-  random.Then
+\begin{thm}\thmlabel{chernoff-basic}
+  Let $x\in\{0,1\}^n$ be chosen uniformly at random.Then
   \[  \Pr\{n_1(x) \le n(1-\epsilon)/2\} < e^{-\epsilon^2n/2} \]
 \end{thm}
 
 \begin{proof}
-Encode the bitstring $x$ using a Shannon-Fano code, $C_\alpha$, with
-$\alpha=(1-\epsilon)/2$.  Then the length of the codeword for $x$ is
-\[
-     |C_\alpha(x)| = n_1(x)\log(1/\alpha) + n_0(x)\log (1/(1-\alpha))  \enspace .
-\]
-Since $\alpha < 1/2$, $\log(1/\alpha) > \log(1/(1-\alpha))$, so
-$|C_\alpha(x)|$ is maximal when $n_1(x)$ is maximal.  Under the conditions
-of the theorem, this happens when $n_1(x)=\alpha n$.  Therefore,
-\begin{align*}
-  |C_\alpha(x)| & \le \alpha n\log(1/\alpha) + (1-\alpha)n\log(1/(1-\alpha))\\
-                & = n H(\alpha) \\
-                & \le n\left(1-\frac{\epsilon^2}{2\ln 2}\right) \enspace ,
-\end{align*}
-where the second inequality is an application of \eqref{entropy-ii}.
-Now, $x$ was chosen uniformly at random from a set of size $2^n$.
-Therefore, this encoding saves:
-\[  
-    s = n-\left(n\left(1-\frac{\epsilon^2}{2\ln 2}\right)\right)
-      = \frac{\epsilon^2n}{2\ln 2} 
-\]
-bits.  By the Uniform Encoding Lemma, the probability that this happens
-is at most
-\[
-     2^{-s} = e^{-\epsilon^2n/2} \enspace . \qedhere
-\]
+  Encode the bit string $x$ using a Shannon-Fano code, $C_\alpha$,
+  with $\alpha=(1-\epsilon)/2$.  Then the length of the codeword for
+  $x$ is
+  \[
+  |C_\alpha(x)| = n_1(x)\log(1/\alpha) + n_0(x)\log (1/(1-\alpha))
+  \enspace .
+  \]
+  Since $\alpha < 1/2$, $\log(1/\alpha) > \log(1/(1-\alpha))$, so
+  $|C_\alpha(x)|$ is maximal when $n_1(x)$ is maximal.  Under the
+  conditions of the theorem, this happens when $n_1(x)=\alpha n$.
+  Therefore,
+  \begin{align*}
+    |C_\alpha(x)| & \le \alpha n\log(1/\alpha) + (1-\alpha)n\log(1/(1-\alpha))\\
+    & = n H(\alpha) \\
+    & \le n\left(1-\frac{\epsilon^2}{2\ln 2}\right) \enspace ,
+  \end{align*}
+  where the second inequality is an application of \eqref{entropy-ii}.
+  Now, $x$ was chosen uniformly at random from a set of size $2^n$.
+  Therefore, this encoding saves:
+  \[  
+  s = n-\left(n\left(1-\frac{\epsilon^2}{2\ln 2}\right)\right) =
+  \frac{\epsilon^2n}{2\ln 2}
+  \]
+  bits.  By the Uniform Encoding Lemma, the probability that this
+  happens is at most
+  \[
+  2^{-s} = e^{-\epsilon^2n/2} \enspace . \qedhere
+  \]
 \end{proof}
 In \secref{chernoff}, after developing a Non-Uniform Encoding Lemma,
 we will extend this argument to binary strings where each bit is set
-independently to 1 or 0 with probabilities $p$ and $1-p$, respectively.
+independently to 1 or 0 with probabilities $p$ and $1-p$,
+respectively.
 
 \subsection{Factorials and Binomial Coefficients}
 \seclabel{stirling}
@@ -1088,7 +1092,7 @@ n\}$. The number of such permutations is $n!$.
 \subsubsection{Records}
 
 A \emph{(max) record} in a permutation $\sigma$ of size $n$ is some
-$1 \leq i \leq n$ such that
+value $\sigma(i)$ with $1 \leq i \leq n$ such that
 \[
 \sigma(i) = \max\{\sigma(1), \ldots, \sigma(i - 1)\} \enspace .
 \]
@@ -1207,8 +1211,8 @@ be balanced if it occurs in the middle half of its subrange.
   2/\log (4/3)$.
 
   Our encoding for $\sigma$ has two parts. The first part includes an
-  encoding of the value $y_t$, and a bit string $x = x_1 \ldots x_t$,
-  where $x_i = 1$ if and only if $y_i$ is balanced. From our
+  encoding of the value $y_t$, and a bit string $x = (x_1, \ldots,
+  x_t)$, where $x_i = 1$ if and only if $y_i$ is balanced. From our
   definition, if $y_i$ is balanced, then
   \[
   s(y_{i + 1}) \leq (3/4) s(y_i) \enspace ,
@@ -1266,10 +1270,11 @@ be balanced if it occurs in the middle half of its subrange.
 
 Thus far, we have been lucky to study applications that could always
 be modelled as choosing some element $x$ uniformly at random from a
-set $X$. To encompass even more applications, it is helpful to have
-an Encoding Lemma that deals with non-uniform distributions over $X$.
+set $X$. To encompass even more applications, it is helpful to have an
+Encoding Lemma that deals with non-uniform distributions over $X$.
 The following generalization of the Uniform Encoding Lemma fills this
-need:
+need, originally proven by Barron
+\cite[Theorem~3.1]{barron:dissertation}:
 
 \begin{lem}[Non-Uniform Encoding Lemma]\lemlabel{nuel}  
   Let $C\from X\nrightarrow\{0,1\}^*$ be a prefix-free partial code and let
@@ -1284,14 +1289,14 @@ need:
   We use Chernoff's trick, Markov's Inequality, and Kraft's Inequality,
   as follows: 
   \begin{align*}
-     \Pr\{ |C(x)| \le\log(1/p_x)-s \} 
-      & = \Pr\{|C(x)| -\log(1/p_x) \le -s \} \\
-      & = \Pr\{\log(1/p_x)-|C(x)| \ge s \} \\
-      & = \Pr\left\{2^{\log(1/p_x)-|C(x)|} \ge 2^s \right\} & \text{(Chernoff's trick)} \\
-      & \le \frac{\E\left[2^{\log(1/p_x)-|C(x)|}\right]}{2^s} & \text{(Markov's Inequality)} \\
-      & = \frac{\sum_{x\in X}p_x\cdot 2^{\log(1/p_x)-|C(x)|}}{2^s} \\
-      & = \frac{\sum_{x\in X}2^{-|C(x)|}}{2^s} \\
-      & \le \frac{1}{2^s} & \text{(Kraft's Inequality).}  & \qedhere
+    \Pr\{ |C(x)| \le\log(1/p_x)-s \}
+    & = \Pr\{|C(x)| -\log(1/p_x) \le -s \} \\
+    & = \Pr\{\log(1/p_x)-|C(x)| \ge s \} \\
+    & = \Pr\left\{2^{\log(1/p_x)-|C(x)|} \ge 2^s \right\} & \text{(Chernoff's trick)} \\
+    & \le \frac{\E\left\{2^{\log(1/p_x)-|C(x)|}\right\}}{2^s} & \text{(Markov's Inequality)} \\
+    & = \frac{1}{2^s} \left(\sum_{x\in X : C(x) \neq \bot} p_x\cdot 2^{\log(1/p_x)-|C(x)|}\right) \\
+    & = \frac{1}{2^s} \left(\sum_{x\in X : C(x) \neq \bot }2^{-|C(x)|}\right) \\
+    & \le \frac{1}{2^s} & \text{(Kraft's Inequality).}  & \qedhere
   \end{align*}
 \end{proof}
 
@@ -1299,84 +1304,75 @@ Notice that the Non-Uniform Encoding Lemma is a strict generalization
 of the Uniform Encoding Lemma; take $p_x=1/|X|$ for all $x\in X$
 and we obtain the Uniform Encoding Lemma.
 
-The \emph{Shannon-Fano code} \cite{fano:transmission,shannon:mathematical}
-for a finite set $X$ is prefix-free code that is constructed by a top-down
-algorithm from a probability distribution over the elements of $X$. An
-important property of the Shannon-Fano code is that it is \emph{locally
-optimal}: If $C\from X\to\{0,1\}^*$ is a Shannon-Fano code, then for every $x\in X$,
+As in \secref{sparse-bit-strings}, we will be interested in using a
+Shannon-Fano code to encode $\mathrm{Bernoulli}(\alpha)$ bit strings of
+length $n$. Recall that for such a string $x$, this code has length
 \[
-    |C(x)| \le \left\lceil\log(1/p_x)\right\rceil \enspace 
+n_1(x) \log (1/\alpha) + n_0(x) \log(1/(1 - \alpha)) \enspace ,
 \]
-where, as before, $p_x$ denotes the probability of $x$.
-
-When designing efficient encoding schemes it helps, at least
-informally, to think of $\log(1/p)$ as the cost of encoding a 1 bit and
-$\log(1/(1-p))$ as the cost of encoding a 0 bit.  For example, $p=1/n$
-
-We will find it particularly useful to apply Shannon-Fano codes to
-$\mathrm{Bernoulli}(p)$ strings consisting of indepenent random bits that
-are each set to 1 with probability $p$ and 0 with probability $1-p$.
-A particular binary string $x=x_1,\ldots,x_n$, occurs as
-a $\mathrm{Bernoulli}(p)$ string with
-probability exactly
-\[
-   p_x= p^{r_1}(1-p)^{r_0} \enspace ,
-\]
-where $r_1$ and $r_0$ are the numbers of 1 and 0 bits in $x$, respectively. In this case, the Shannon-Fano code for $x$ has length at most
-\[
-    |C(x)|\le \left\lceil r_1\log (1/p) + r_0\log(1/(1-p)) \right\rceil \enspace .
-\]
-
+since we are not concerned with ceilings.
 
 \section{Applications of the Non-Uniform Encoding Lemma}
 \seclabel{applications-ii}
 
-\subsection{Chernoff's Bounds}
+\subsection{Chernoff Bounds}
 \seclabel{chernoff}
 
-The following theorem is the so-called \emph{additive version} of the
-Chernoff bound on the tail of a binomial random variable:
+We will now prove the so-called \emph{additive version} of the
+Chernoff bound on the tail of a binomial random
+variable. \thmref{chernoff-basic} established the special case of this
+result for $\mathrm{Bernoulli}(1/2)$ bit strings.
 
 \begin{thm}\thmlabel{chernoff}
-  If $B$ is a $\mathrm{binomial}(n,p)$ random variable, then $\Pr\{B\ge
-  (p+\epsilon)n\} \le 2^{-nD(p+\epsilon||p)}$, where 
+  If $B$ is a $\mathrm{Binomial}(n,p)$ random variable, then
+  \[
+  \Pr\{B\le(p-\epsilon)n\} \le 2^{-nD(p+\epsilon \| p)} \enspace ,
+  \]
+  where 
   \[ 
-    D(\hat p||p)=\hat p\log(\hat p/p) + (1-\hat p)\log((1-\hat p)/(1-p)) 
-  \] is
-  the Kullbach-Liebler divergence between Bernoulli random variables
-  with probabilities $\hat p$ and $p$.
+  D(p \| q)= p\log \frac{p}{q} + (1-p)\log \frac{1 - p}{1 - q}
+  \]
+  is the \emph{Kullbach-Liebler divergence} or \emph{relative entropy}
+  between $\mathrm{Bernoulli}(p)$ and $\mathrm{Bernoulli}(q)$ random
+  variables.
 \end{thm}
 
 \begin{proof}
-By definition, $B=\sum_{i=1}^nx_i$, where $x_1,\ldots,x_n$ are independent $\mathrm{Bernoulli}(p)$ random variables.   We will use an encoding argument on the bitstring $x=x_1,\ldots,x_n$.
-
-We can encode $x$ by using a Shannon-Fano code for the probability
-$p+\epsilon$.  If $B=\hat pn$, then this takes
-\[
-   b = n(\hat p\log(1/(p+\epsilon))+ (1-\hat p)\log(1/(1-p-\epsilon)))
-\]
-bits.
-
-On the other hand,
-\[
-    p_x = p^{\hat pn}(1-p)^{(1-\hat p)n} \enspace ,
-\]
-and
-\[
-    \log (1/p_x) = n(\hat p\log(1/p)+ (1-\hat p)\log(1/(1-p)) \enspace .
-\]
-For $\hat p\ge p+\epsilon$, the savings from this code is
-\begin{align*}
-  \log(1/p_x) - b
-    & =  n(\hat p\log((p+\epsilon)/p) + (1-\hat p)\log((1-p-\epsilon)/(1-p))) \\
-    & \ge  n((p+\epsilon)\log((p+\epsilon)/p) + (1-p-\epsilon)\log((1-p-\epsilon)/(1-p)))\\
-    & =  nD(p+\epsilon||p)
-\end{align*}
-bits.  Therefore, the probability that $B\ge (p+\epsilon)n$ is at most $2^{-nD(p+\epsilon||p)}$.
+  By definition, $B=\sum_{i=1}^n x_i$, where $x_1,\ldots,x_n$ are
+  independent $\mathrm{Bernoulli}(p)$ random variables.  We will use
+  an encoding argument on the bit string $x=(x_1,\ldots,x_n)$. The
+  proof is almost identical to that of \thmref{chernoff-basic}---now,
+  we encode $x$ using a Shannon-Fano code $C_\alpha$, with $\alpha = p
+  - \epsilon$. Such a code has length
+  \[
+  |C_\alpha(x)| = n_1(x) \log (1/\alpha) + n_0(x) \log (1/(1 - \alpha)) \enspace .
+  \]
+  Here, $|C_\alpha(x)| = \log (1/q)$, where $q = (p -
+  \epsilon)^{n_1(x)} (1 - p + \epsilon)^{n_0(x)}$ is the probability
+  that $x$ appears if each bit is set with probability $p -
+  \epsilon$. On the other hand, $x$ occurs with probability exactly
+  \[
+  p_x = p^{n_1(x)} (1 - p)^{n_0(x)} \enspace ,
+  \]
+  so
+  \begin{align*}
+    \frac{q}{p_x} &= \left(\frac{p - \epsilon}{p}\right)^{n_1(x)} \left(\frac{1 - p + \epsilon}{1 - p}\right)^{n - n_1(x)} \\
+    &= \left(1 - \frac{\epsilon}{p}\right)^{n_1(x)} \left(1 -
+      \frac{\epsilon}{1 - p + \epsilon}\right)^{n_1(x) - n} \enspace ,
+  \end{align*}
+  and $q/p_x$ decreases as a function of $n_1(x)$. Therefore, if
+  $n_1(x) \le (p - \epsilon)n$, then
+  \[
+  \frac{q}{p_x} \ge \left(\left(\frac{p - \epsilon}{p}\right)^{p -
+      \epsilon} \left(\frac{1 - p + \epsilon}{1 - p}\right)^{1 - p +
+      \epsilon}\right)^n = 2^{n D(p - \epsilon \| p)} \enspace ,
+  \]
+  and
+  \[
+  |C_\alpha(x)| = \log (1/p_x) - \log (q/p_x) \leq \log (1/p_x) - n
+  D(p - \epsilon \| p) \enspace . \qedhere
+  \]
 \end{proof}
-
-It is also possible to derive the multiplicative form of the Chernoff
-bound this way. This is left an exercise to the reader.
 
 \subsection{Percolation on the Torus}
 
