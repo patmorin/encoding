@@ -1207,8 +1207,8 @@ be balanced if it occurs in the middle half of its subrange.
 \end{thm}
 \begin{proof}
   Suppose that the tree $\text{BST}(\sigma)$ has a root-to-leaf path
-  $Y = y_1 \ldots y_t$ of length $t \geq c \log n$ for some fixed $c >
-  2/\log (4/3)$.
+  $Y = (y_1, \ldots, y_t)$ of length $t \geq c \log n$ for some fixed
+  $c > 2/\log (4/3)$.
 
   Our encoding for $\sigma$ has two parts. The first part includes an
   encoding of the value $y_t$, and a bit string $x = (x_1, \ldots,
@@ -1272,9 +1272,9 @@ Thus far, we have been lucky to study applications that could always
 be modelled as choosing some element $x$ uniformly at random from a
 set $X$. To encompass even more applications, it is helpful to have an
 Encoding Lemma that deals with non-uniform distributions over $X$.
-The following generalization of the Uniform Encoding Lemma fills this
-need, originally proven by Barron
-\cite[Theorem~3.1]{barron:dissertation}:
+The following generalization of the Uniform Encoding Lemma, which was
+originally proven by Barron \cite[Theorem~3.1]{barron:dissertation},
+serves this purpose:
 
 \begin{lem}[Non-Uniform Encoding Lemma]\lemlabel{nuel}  
   Let $C\from X\nrightarrow\{0,1\}^*$ be a prefix-free partial code and let
@@ -1330,7 +1330,7 @@ result for $\mathrm{Bernoulli}(1/2)$ bit strings.
   \]
   where 
   \[ 
-  D(p \| q)= p\log \frac{p}{q} + (1-p)\log \frac{1 - p}{1 - q}
+  D(p \| q)= p\log (p/q) + (1-p)\log ((1 - p)/(1 - q))
   \]
   is the \emph{Kullbach-Liebler divergence} or \emph{relative entropy}
   between $\mathrm{Bernoulli}(p)$ and $\mathrm{Bernoulli}(q)$ random
@@ -1376,114 +1376,181 @@ result for $\mathrm{Bernoulli}(1/2)$ bit strings.
 
 \subsection{Percolation on the Torus}
 
-The following is a version of Peierls' argument that proves that
-percolation occurs on the torus if the edge survival rate is greater
-than $2/3$:
+\begin{figure}
+  \centering
+  \begin{subfigure}[t]{0.4\textwidth}
+    \includegraphics{torusrare}
+    \caption{When $p = 0.33 < 1/3$, long cycles are rare. Dotted lines show
+      missing edges in the dual.}
+    \figlabel{torusrare}
+  \end{subfigure}
+  \quad\quad
+  \begin{subfigure}[t]{0.4\textwidth}
+    \includegraphics{torusdense}
+    \caption{When $p = 0.67 > 2/3$, there is likely only one large
+      component.}
+  \end{subfigure}
+  \caption{Random subgraphs of the $20 \times 20$ torus grid graph.}
+  \figlabel{peierls}
+\end{figure}
+
+Percolation theory studies the emergence of large components in random
+graphs. We give an encoding argument proving that percolation occurs
+on the torus when edge survival rate is at least $2/3$. Our line of
+reasoning follows what is known as a \emph{Peierls argument}. For a
+visualization of this phenomenon, see \figref{peierls}. For more
+precise results, including a general study of percolation theory, see
+the book by Grimmett~\cite{grimmett:percolation}.
+
+When $\sqrt{n}$ is an integer, the \emph{$\sqrt{n} \times \sqrt{n}$
+  torus grid graph} is defined to be the graph with vertex set $\{1,
+\ldots, \sqrt{n}\}^2$, where $(i, j)$ is adjacent to $(k, \ell)$ if
+\begin{itemize}
+\item $|i - k| \equiv 1 \pmod{\sqrt{n}}$ and $|j - \ell| = 0$, or
+\item $|i - k| = 0$ and $|j - \ell| \equiv 1 \pmod{\sqrt{n}}$.
+\end{itemize}
 
 \begin{thm}
-  Let $G$ be the $\sqrt n\times\sqrt n$ torus and let $G'$ be the graph
-  obtained by sampling each edge of $G$ independently with probability
-  $p<1/3$.  Then the probability that $G'$ contains a simple cycle of
-  length at least $t=(s+\log n+O(1))/\log(1/(3p))$ is at most $2^{-s}$.
+  Let $G$ be the subgraph of the $\sqrt{n} \times \sqrt{n}$ torus grid
+  graph in which each edge is chosen with probability $p < 1/3$. Then,
+  the probability that $G$ contains a cycle of length at least
+  \[
+  \frac{s + \log n}{\log (1/(3p))}
+  \]
+  is at most $2^{-s}$.
 \end{thm}
 
 \begin{proof}
-  Let $x$ be the bitstring of length $r=2n$ that encodes the existence
-  of the edges in $G'$.  Suppose such a cycle, $C$, exists in $G'$
-  and its length is $t'$.  Then we can encode $G'$ by specifying a
-  single vertex, $u$, on $C$; the sequence of $t'$ steps (directions)
-  that the cycle moves along from there; and then the rest of $G$ using
-  a variable length code with parameter $p$.
+  Let $A$ be the bitstring of length $2n$ encoding the existence of
+  edges in $G$. Suppose that $G$ contains a cycle $C'$ of length $t
+  \geq (s + \log n)/\log (1/(3p))$. Encode $A$ by giving a single
+  vertex $u$ in $C'$; the sequence of directions that the cycle moves
+  along from $u$; and a Shannon-Fano code with parameter $p$ for the
+  remaining edges of $G$.
 
-  When specifying the cycle, there are four possibilities for the first
-  step, but only three possibilities for each the subsequent step. Therefore,
-  all the steps in the cycle can be specified using $\lceil 2+(t'-1)\log
-  3\rceil$ bits.
-
-  The total lenght of the codeword is then
-  \[
-      b = \log n + t'\log 3 + (r_1-t')\log(1/p) + r_0\log(1/(1-p)) + O(1) 
-  \]
-  bits, where $r_1$ is the number of edges in $G'$ and $r_0=r-r_1$
-  is the number of missing edges in $G'$.  But then,
-  \[
-     p_x = p^{r_1}(1-p)^{r_0}
-  \]
-  so 
-  \[
-     \log(1/p_x) = r_1\log(1/p) + r_0\log(1/(1-p)) \enspace .
-  \]
-  Therefore, $\log(1/p_x)-b = t'(\log(1/p)-\log 3) - \log n - O(1)\ge
-  s$, for $t'\ge t$.  Applying the Non-Uniform Encoding Lemma completes
-  the proof.
+  Note that there are four possibilities for the direction of the
+  first step taken by $C'$ from $u$, but only three for each
+  subsequent choice. Thus, this sequence can be specified by $\lceil 2
+  + (t - 1) \log 3 \rceil$ bits. Again, we will later show how this
+  ceiling can be omitted. The total length of our code is then
+  \begin{align*}
+    |C(G)| &= \log n + t \log 3 + (n_1(A) - t) \log (1/p) +
+    n_0(A) \log (1/(1 - p)) \\
+    &= \log (1/p_G) + \log n - t \log (1/(3p)) \\
+    &\leq \log (1/p_G) - s
+  \end{align*}
+  by our choice of $t$. We finish by applying \lemref{nuel}.
 \end{proof}
 
-Since the torus is self-dual, this implies that if we keep each edge of the torus with probability greater than $2/3$ then, with high probability, there is only one component whose size is $\omega(\log^2 n)$.  This is because, having more than one such component would imply the existence of a dual cycle of missing edges whose length is $\omega(\log n)$.  The preceding theorem shows that, with high probability, no such dual cycle exists.
+
+\begin{thm}
+  Let $G$ denote the subgraph of the $\sqrt{n} \times \sqrt{n}$ torus
+  grid graph in which each edge is chosen with probability at least
+  $2/3$. Then, $G$ has at most one component of size
+  $\omega(\log^2 n)$ with high probability.
+\end{thm}
+\begin{proof}
+  Suppose that $G$ has at least two such components. Then, there is a
+  cycle of faces separating these components whose length is
+  $\omega(\log n)$. Since the torus grid graph is self-dual, then such
+  a cycle corresponds to a cycle of $\omega(\log n)$ missing edges in
+  the dual graph, as in \figref{torusrare}. From the previous
+  result, we know that this does not happen with high probability.
+\end{proof}
 
 
 \subsection{Triangles in $G_{n,p}$}
 
-The expected number of triangles (cycles of length 3) in $G_{n,p}$
-is easily seen to be $p^3\binom{n}{3}$.  For $p=(6k)^{1/3}/n$, this
+The expected number of triangles (cycles of length 3) in $G_{n,p}$ is
+easily seen to be $p^3\binom{n}{3}$.  For $p=(6k)^{1/3}/n$, this
 expectation is $k-O(1/n)$.  Unfortunately, even when $k$ is a large
 constant, it still takes some work to show that there is a constant
-probability that $G_{n,p}$ contains at least one triangle. Indeed, this
-typically requires the use of the second moment method, which involves
-computing the variance of the number of triangles in $G_{n,p}$.
+probability that $G_{n,p}$ contains at least one triangle. Indeed,
+this typically requires the use of the second moment method, which
+involves computing the variance of the number of triangles in
+$G_{n,p}$. To show that $G_{n, p}$ has a triangle with exponential
+probability is even more complicated, and a proof of this result would
+still typically rely on an advanced probabilistic
+inequality~\cite{alon:probabilistic}.
 
 Here we show how this can be accomplished with an encoding argument.
 
-\begin{thm}
-  For $p=c/n$, $G_{n,p}$ contains at least one triangle with probability
-  at least $1-2^{-\Omega(c^3)}$.
+\begin{thm}\thmlabel{triangles-up}
+  For $p=c/n$, $G \in G_{n,p}$ contains at least one triangle with
+  probability at least $1-2^{-\Omega(c^3)}$.
 \end{thm}
 
 \begin{proof}
-   Without loss of generality assume that $G$'s vertex set is
-   $V=\{1,\ldots,n\}$.  In this argument, we will produce an encoding
-   of $G$'s adjacency matrix, $x$.
+  Without loss of generality assume that $G$'s vertex set is
+  $V=\{1,\ldots,n\}$.  In this argument, we will produce an encoding
+  of $G$'s adjacency matrix, $A$.
 
-   Refer to \figref{triangles}.  If $G$ contains no triangles, then we
-   look at the number of 1's in the $n/2\times n/2$ submatrix
-   determined by rows $1,\ldots,n/2$ and columns $n/2+1,\ldots,n$.
-   There are two cases to consider (which result in codewords
-   beginning with 10 or 11, respectively):
+  Refer to \figref{triangles}.  If $G$ contains no triangles, then we
+  look at the number of 1's in the $n/2\times n/2$ submatrix
+  determined by rows $1,\ldots,n/2$ and columns $n/2+1,\ldots,n$.
+  There are two cases to consider:
+  
+  \begin{figure}
+    \centering{\includegraphics{triangles}}
+    \caption{The random graph $G_{n,c/n}$ contains triangles when $c$
+      is large enough.  The highlighted 0 bits in the last five rows
+      can be deduced from pairs of 1 bits in the first 5 rows.}
+    \figlabel{triangles} 
+  \end{figure}
 
-   \begin{figure}
-     \centering{\includegraphics{triangles}}
-     \caption{The random graph $G_{n,c/n}$ contains triangles when $c$ is
-       large enough.  The highlighted 0 bits in the last five rows can
-       be deduced from pairs of 1 bits in the first 5 rows.}
-     \figlabel{triangles} 
-   \end{figure}
+  \begin{enumerate}\setcounter{enumi}{-1}
+  \item The number of 1's in the submatrix is less than $cn/8$.  In
+    this case, the number of 1's in this submatrix is much less than
+    the expected number, $cn/4$.  Here one can apply the same argument
+    used to prove Chernoff's Bounds (\thmref{chernoff}) or simply
+    apply Chernoff's bounds. We leave this as an exercise to the
+    reader.
 
-   \begin{enumerate}\setcounter{enumi}{-1}
-     \item The number of 1's in the submatrix is less than $cn/8$.
-      In this case, the number of 1's in this submatrix is much less than
-      the expected number, $cn/4$.  Here one can apply the same argument
-      used to prove Chernoff's Bounds (\thmref{chernoff}) or simply
-      apply Chernoff's bounds. We leave this as an exercise to the reader.
+  \item The number of 1's in the submatrix is greater than $cn/8$.
+    Notice that, for $i<j<k$ if $M_{i,j}=1$ and $M_{i,k}=1$, then the
+    fact that there are no triangles implies that $M_{j,k}=0$.
 
-     \item The number of 1's in the submatrix is greater than $cn/8$.
-      Notice that, for $i<j<k$ if $M_{i,j}=1$ and $M_{i,k}=1$, then the
-      fact that there are no triangles implies tha $M_{j,k}=0$.
-
-      Let $m_i$ be the number of 1's in the $i$th row of the submatrix.
-      By specifying rows $1,\ldots,n/2$, we eliminate the need to specify
-      \[
-          m = \sum_{i=1}^{n/2}\binom{m_i}{2} \ge (n/2)\binom{c/4}{2} = \Omega(c^2n) \enspace ,
-      \]
-      zeros in rows $n/2+1,\ldots,n$.
-      Using a Shannon-Fano code to specify the first $n/2$ rows and the bits of the remaining rows that can not be deduced from the first $n/2$ rows, we obtain a codeword of length 
-      \[
-          b = r_1\log(1/p) + (r_0-m)\log(1/(1-p))  + O(1)
-      \]
-      which results in a savings of
-      \[
-          s = \log(1/p_x) - b = m\log(1/(1-p)) -O(1) \ge \Omega(c^2n)\log(1/(1-p)) - O(1) = \Omega(c^3) \enspace .
-      \]
-   \end{enumerate}
+    Let $m_i$ be the number of 1's in the $i$th row of the submatrix.
+    By specifying rows $1,\ldots,n/2$, we eliminate the need to
+    specify
+    \[
+    m = \sum_{i=1}^{n/2}\binom{m_i}{2} \ge (n/2)\binom{c/4}{2} =
+    \Omega(c^2n) \enspace ,
+    \]
+    zeros in rows $n/2+1,\ldots,n$.  Using a Shannon-Fano code with
+    parameter $p$ to specify the first $n/2$ rows and the bits of the
+    remaining rows that can not be deduced from the first $n/2$ rows,
+    we obtain a codeword of length
+    \[
+    |C(G)| = n_1(A) \log(1/p) + (n_0(A)-m)\log(1/(1-p))
+    \]
+    which results in a savings of
+    \[
+    s = \log(1/p_G) - |C(G)| = m\log(1/(1-p)) -O(1) \ge
+    \Omega(c^2n)\log(1/(1-p)) - O(1) = \Omega(c^3) \enspace . \qedhere
+    \]
+  \end{enumerate}
 \end{proof}
+
+\begin{thm}\thmlabel{triangles-down}
+  When $p = 1/(\alpha n)$, $G \in G_{n, p}$ has no triangle with
+  probability at least $1 - \alpha^{-3}$.
+\end{thm}
+\begin{proof}
+  Suppose that $G$ contains a triangle. We encode the adjacency matrix
+  $A$ of $G$. First, we specify the triangle's vertices; and finish
+  with a Shannon-Fano code with parameter $p$ for the remaining
+  vertices of the graph. This code has length
+  \begin{align*}
+    |C(G)| &= 3 \log n + (n_1(A) - 3) \log (1/p) + n_0(A) \log (1/(1 - p)) \\
+    &= \log (1/p_G) + 3 \log n - 3 \log (1/p) \\
+    &= \log (1/p_G) - 3 \log \alpha \\
+    &= \log (1/p_G) - \log \alpha^3 \enspace . \qedhere
+  \end{align*}
+\end{proof}
+
+Together, \thmref{triangles-up} and \thmref{triangles-down} establish
+that $1/n$ is a threshold function for triangle-freeness.
 
 
 \subsection{The Components of $G_{n,p}$}
