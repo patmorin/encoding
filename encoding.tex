@@ -4,6 +4,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[noend]{algorithmic}
 \usepackage{subcaption}
+\usepackage{enumitem}
 
 \newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
 
@@ -30,7 +31,7 @@
   This expository article surveys ``encoding arguments.'' In their
   most most basic form an encoding argument proves an upper bound on
   the probability of an event using the fact a uniformly random choice
-  from a set of size $N$ can not be encoded with fewer than $\log N$
+  from a set of size $N$ can not be encoded with fewer than $\log_2 N$
   bits on average.
 
   We survey many applications of this basic argument, give a
@@ -52,6 +53,8 @@
 
 \section{Introduction}
 \setlength{\baselineskip}{15.84pt}
+Since we are overwhelmingly concerned with binary encoding, we will agree now that the base of logarithms in $\log x$ is $2$, except when explicitly stated otherwise.
+
 There is no doubt that probability theory plays a fundamental role
 in computer science: Some of the fastest and simplest fundamental
 algorithms and data structures are randomized; average-case analysis of
@@ -144,8 +147,8 @@ This section presents the necessary background on prefix-free codes and binomial
 
 \subsection{Prefix-free Codes and the Uniform Encoding Lemma}
 
-A \emph{code}, $C\from X\to \{0,1\}^*$ is a one-to-one function from a set
-$X$ to the set of binary strings.  The elements of the range of $C$ are
+The expression $\{0, 1\}^*$ denotes the set of all finite length binary bit strings. A \emph{code} $C\from X\to \{0,1\}^*$ is a one-to-one function from a set
+$X$ to the set of finite length binary strings.  The elements of the range of $C$ are
 called $C$'s \emph{codewords}.  In most cases, there are some elements of
 the set $X$ that are not of interest to us.  In these cases, we consider
 partial codes. A \emph{partial code} $C\from X\nrightarrow \{0,1\}^*$ is
@@ -165,7 +168,7 @@ child. (See \figref{bintree}.)
   \centering{\includegraphics{bintree}}
   \caption{A prefix-free code for the set
     $X=\{\mathtt{a},\mathtt{b},\mathtt{c},\mathtt{d},\mathtt{e},\mathtt{f}\}$
-    and the corresponding leaf-labelled binary tree. (Which can also be viewed as a prefix-free partial code for the set $\{\mathtt{a},\mathtt{b},\mathtt{c},\ldots,\mathtt{z}\}$.)}
+    and the corresponding leaf-labelled binary tree. (Which can also be viewed as a partial prefix-free code for the set $\{\mathtt{a},\mathtt{b},\mathtt{c},\ldots,\mathtt{z}\}$.)}
   \figlabel{bintree}
 \end{figure}
 
@@ -190,7 +193,7 @@ We will use this type of \emph{fixed-length code} implicitly in many arguments.
 As we will see, the following lemma, which is folklore, is surprisingly
 versatile:
 \begin{lem}[Uniform Encoding Lemma]\lemlabel{uel}
-  Let $C\from X\nrightarrow \{0,1\}^*$ be a prefix-free partial code. If
+  Let $C\from X\nrightarrow \{0,1\}^*$ be a partial prefix-free code. If
   an element $x\in X$ is chosen uniformly at random, then 
   \[
   \Pr\{|C(x)|\le \log|X|-s\}\le 2^{-s} \enspace .
@@ -385,13 +388,13 @@ close to zero.
 
 For $\alpha$ close to $1/2$ (so that $H(\alpha)$ is close to 1), we
 obtain a good approximation from the Taylor series expansion at $1/2$. In
-particular, for $\alpha=(1-\epsilon)/2$,
+particular, for $\alpha=(1-\eps)/2$,
 \begin{align}
    H(\alpha) & = 1-\frac{1}{2\ln 2}\sum_{i=1}^{\infty}\frac{(1-2\alpha)^{2i}}{i(2i-1)} 
             \notag \\ 
-        & = 1-\frac{1}{2\ln 2}\sum_{i=1}^{\infty}\frac{\epsilon^{2i}}{i(2i-1)} 
+        & = 1-\frac{1}{2\ln 2}\sum_{i=1}^{\infty}\frac{\eps^{2i}}{i(2i-1)} 
              \notag \\ 
-        & < 1-\frac{\epsilon^2}{2\ln 2} \enspace .\eqlabel{entropy-ii}
+        & < 1-\frac{\eps^2}{2\ln 2} \enspace .\eqlabel{entropy-ii}
 \end{align}
 
 \subsection{Basic Chernoff Bounds}
@@ -402,12 +405,12 @@ Chernoff \cite{X}.
 
 \begin{thm}\thmlabel{chernoff-basic}
   Let $x\in\{0,1\}^n$ be chosen uniformly at random.Then
-  \[  \Pr\{n_1(x) \le n(1-\epsilon)/2\} < e^{-\epsilon^2n/2} \]
+  \[  \Pr\{n_1(x) \le n(1-\eps)/2\} < e^{-\eps^2n/2} \]
 \end{thm}
 
 \begin{proof}
   Encode the bit string $x$ using a Shannon-Fano code, $C_\alpha$,
-  with $\alpha=(1-\epsilon)/2$.  Then the length of the codeword for
+  with $\alpha=(1-\eps)/2$.  Then the length of the codeword for
   $x$ is
   \[
   |C_\alpha(x)| = n_1(x)\log(1/\alpha) + n_0(x)\log (1/(1-\alpha))
@@ -420,19 +423,19 @@ Chernoff \cite{X}.
   \begin{align*}
     |C_\alpha(x)| & \le \alpha n\log(1/\alpha) + (1-\alpha)n\log(1/(1-\alpha))\\
     & = n H(\alpha) \\
-    & \le n\left(1-\frac{\epsilon^2}{2\ln 2}\right) \enspace ,
+    & \le n\left(1-\frac{\eps^2}{2\ln 2}\right) \enspace ,
   \end{align*}
   where the second inequality is an application of \eqref{entropy-ii}.
   Now, $x$ was chosen uniformly at random from a set of size $2^n$.
   Therefore, this encoding saves:
   \[  
-  s = n-\left(n\left(1-\frac{\epsilon^2}{2\ln 2}\right)\right) =
-  \frac{\epsilon^2n}{2\ln 2}
+  s = n-\left(n\left(1-\frac{\eps^2}{2\ln 2}\right)\right) =
+  \frac{\eps^2n}{2\ln 2}
   \]
   bits.  By the Uniform Encoding Lemma, the probability that this
   happens is at most
   \[
-  2^{-s} = e^{-\epsilon^2n/2} \enspace . \qedhere
+  2^{-s} = e^{-\eps^2n/2} \enspace . \qedhere
   \]
 \end{proof}
 In \secref{chernoff}, after developing a Non-Uniform Encoding Lemma,
@@ -448,7 +451,7 @@ be helpful to remind the reader of a few inequalities that can be
 derived from Stirling's Approximation of $n!$.  Recall that Stirling's
 Approximation states that
 \begin{equation}
-  n! = \left(\frac{n}{e}\right)^n\sqrt{2\pi n}\left(1+O\left(\frac{1}{n}\right)\right) 
+  n! = \left(\frac{n}{e}\right)^n\sqrt{2\pi n}\left(1+O\left(\frac{1}{n}\right)\right) \enspace .
    \eqlabel{stirling}
 \end{equation}
 
@@ -457,8 +460,7 @@ using a fixed-length code.  The length of the codewords in such a code is
 \begin{align}
   \log n!
   & \le n\log n - n\log e + (1/2)\log n + \log(1+O(1/n)) \notag \\
-  & \le n\log n - n\log e + (1/2)\log n + O(1/n)
-  & \text{(since $1+x \le e^x$)} \notag \\
+  & \le n\log n - n\log e + (1/2)\log n + O(1/n) \tag{since $1+x \le e^x$} \\
   & \le n\log n - n\log e + O(\log n) \eqlabel{stirling-loose}
   \enspace .
 \end{align}
@@ -481,7 +483,7 @@ prove an upper-bound on $\binom{n}{k}$.)
 \seclabel{applications-i}
 
 We now start with some applications of the Uniform Encoding Lemma. In
-each case, we will design and analyze a prefix-free partial code
+each case, we will design and analyze a partial prefix-free code
 $C\from X\nrightarrow \{0, 1\}^*$, where $X$ is to be understood from
 the context.
 
@@ -518,16 +520,17 @@ done using an encoding argument.
            & = \binom{n}{2} + 1 + t\log n - (1/2)(t^2 - t) \\
            & \le \binom{n}{2} + 1 - (1/2)(t^2 - t - 2t \log n) \enspace .
   \end{align*}
-  The function $f(x) = x^2 - x - 2x \log n$ is increasing for
+  The function $f(x) = (1/2)(x^2 - x - 2x \log n)$ is increasing for
   $x \geq \log n + 1/2$, so
   \begin{align*}
     f(t) &\ge f(3\log n + \sqrt{2s}) \\
-    &= 9 \log^2 n + 2 \sqrt{2s} \log n + 2s - 3 \log n - \sqrt{2s} - 6 \log^2 n - 2 \sqrt{2s} \log n \\
-    &= 3 \log^2 n - 3 \log n - \sqrt{2s} \enspace .
+    &= (1/2)(9 \log^2 n + 2 \sqrt{2s} \log n + 2s - 3 \log n - \sqrt{2s} - 6 \log^2 n - 2 \sqrt{2s} \log n) \\
+    &= (1/2)(3 \log^2 n - 3 \log n - \sqrt{2s}) + s \enspace .
   \end{align*}
   Therefore, our code has length
   \begin{align*}
-    |C(G)| & \le \binom{n}{2} + 1 - (1/2)(3 \log^2 n - 3 \log n - \sqrt{2s}) - s \\
+    |C(G)| & \le \binom{n}{2} + 1 + f(3 \log n + \sqrt{2s}) \\
+	   & \le \binom{n}{2} + 1 - (1/2)(3 \log^2 n - 3 \log n - \sqrt{2s}) - s \\
            & \le \binom{n}{2} - s \enspace ,
   \end{align*}
   since $n \ge 3$. Applying the Uniform Encoding Lemma completes the
@@ -563,16 +566,16 @@ balls.
   than $t$ balls is at most $2^{-s}$.
 \end{thm}
 
-Before proving \thmref{urns}, we note that, for any constant $\epsilon
+Before proving \thmref{urns}, we note that, for any constant $\eps
 >0$ and all sufficiently large $n$, taking
 \[
-t \ge \frac{(1+\epsilon)\log n}{\log\log n}
+t \ge \frac{(1+\eps)\log n}{\log\log n}
 \] 
 satisfies the requirements of \thmref{urns}.
 
 \begin{proof}
   For each $i\in\{1,\ldots,n\}$, let $b_i$ denote the index of the urn
-  in which the $i$th ball lands. Notice that the sequence
+  in which the $i$\textsuperscript{th} ball lands. Notice that the sequence
   $b = (b_1,\ldots,b_n)$ is chosen uniformly at random from a set of
   size $n^n$, and it is this choice that will be used in our encoding
   argument.
@@ -585,9 +588,9 @@ satisfies the requirements of \thmref{urns}.
   \begin{align*}
     |C(b)| &= \log n + \log\binom{n}{t} + (n-t)\log n \\
            &= \log n + t\log n - t\log t + t\log e + (n-t)\log n
-           & \text{(using \eqref{log-n-choose-k})} \\
+            \tag{using \eqref{log-n-choose-k}} \\
            & = n \log n + \log n - t\log t + t\log e \\
-           & \le  n\log n - s &\text{(by the choice of $t$)} \\
+           & \le  n\log n - s \tag{by the choice of $t$} \\
            & = \log n^n - s \enspace .
   \end{align*}
   bits. We conclude the proof by applying the Uniform Encoding Lemma.
@@ -663,14 +666,10 @@ a \emph{block}.
 \begin{proof}
   Let $S$ denote the size of the largest block in such a hash
   table. From \thmref{linear-probing}, any fixed $x_i$ is contained in
-  a block of size at least
-  \[
-  \frac{s}{\log (c/e)} + d
-  \]
-  with probability at most $2^{-s}$, for some constant $d$. Then,
+  a block of size at least $2s/\log (c/e) + d$ with probability at most $2^{-s}$, for some constant $d$. Then,
   \begin{align*}
     \E\{S\} &= \sum_{s \ge 1} \Pr\{S \ge s\} = \sum_{i=1}^d \Pr\{S \ge s\} + \sum_{s \ge 1} \Pr\{S \ge s + d\} \\
-            &\le d + \sum_{s \ge 1} 2^{-s \log (c/e)} = d + \sum_{s \ge 1} \left(\frac{c}{e}\right)^{-s} = O(1) \enspace . \qedhere
+            &\le d + \sum_{s \ge 1} 2^{-s \log (c/e)/2} = d + \sum_{s \ge 1} \left(\frac{c}{e}\right)^{-s/2} = O(1) \enspace . \qedhere
   \end{align*}
 \end{proof}
 
@@ -692,7 +691,7 @@ edge-simple path is a path that uses each edge of the multiset $E$ at
 most once.)
 
 \begin{lem}\lemlabel{cuckoo-path-length}
-  The cuckoo graph has an edge-simple path of length greater than
+  The cuckoo graph has an edge-simple path of length at least
   $s + \log n + O(1)$ with probability at most $2^{-s}$.
 \end{lem}
 \begin{proof}
@@ -710,7 +709,7 @@ most once.)
   \begin{align*}
     |C(G)| &= t \log n + 1 + (t + 1) \log m + (2n - 2t) \log m\\
            &= 2n \log m + t \log n - t \log m + \log m + O(1) \\
-           &= \log m^{2n} - t + \log n + O(1) \\
+           &= \log m^{2n} - t + \log n + O(1) \tag{since $m = 2n$} \\
            &\leq \log m^{2n} - s
   \end{align*}
   for $t \geq s + \log n + O(1)$. We finish by applying the Uniform
@@ -787,40 +786,14 @@ collisions, or the maximum number of elements in any urn.
 Perhaps surprisingly, the simple change of having two choices instead
 of only one results in an exponential improvement over the strategy of
 \secref{urns}. Indeed, 2-choice hashing was first studied by Azar
-\emph{et al.}, who showed that the expected maximum size of an urn is
-$\log \log n + O(1)$~\cite{azar:multiplechoice}. Our encoding argument
+\emph{et al.}~\cite{azar:multiplechoice}, who showed that the expected maximum size of an urn is
+$\log \log n + O(1)$. Our encoding argument
 is based on V\"{o}cking's use of witness trees to analyze 2-choice
 hashing~\cite{vocking:witness}.
 
 Let $G = (V, E)$ be the random multigraph with $V = \{1, \ldots, m\}$,
 where $m = cn$ for some constant $c > e$, and
 $E = \{(h(x), g(x)) : x \in X\}$.
-
-%\begin{lem}
-%  The multigraph $G$ has an edge-simple path of length greater than
-%  $s + \log n + O(1)$ with probability at most $2^{-s}$.
-%\end{lem}
-%\begin{proof}
-%  We encode $G$ by presenting its set of edges. Since each endpoint of
-%  an edge of $G$ is independently chosen uniformly at random from $m$
-%  choices, then $G$ is chosen uniformly at random from a set of size
-%  $m^{2n}$.
-%
-%  Suppose some vertex $v$ is the endpoint of an edge-simple path of
-%  length $t$. We encode this path by presenting the $t$ edges in
-%  order, including their orientation; then, the $t + 1$ vertices,
-%  starting from $v$; and finally, the remaining $2n - 2t$ endpoints of
-%  edges in the graph. Our code has length
-%  \begin{align*}
-%    |C(G)| &= t\log 2n + (t + 1)\log m + (2n - 2t)\log m \\
-%           &= 2n \log m + t \log 2n - t \log m + \log m + O(1) \\
-%           &= \log m^{2n} + t \log \frac{2n}{m} + \log m + O(1) \\
-%           &\leq \log m^{2n} - t \log (c/2) + \log n + O(1) \\
-%           &\leq \log m^{2n} - s \enspace ,
-%  \end{align*}
-%  as long as $t \log (c/2) \geq s + \log n + O(1)$, so apply the
-%  Uniform Encoding Lemma.
-%\end{proof}
 
 \begin{lem}\lemlabel{two-choice-two-cycles}
   $G$ has a subgraph with more edges than vertices with probability
@@ -846,9 +819,9 @@ $E = \{(h(x), g(x)) : x \in X\}$.
   with probability $O(1/n)$.
 \end{lem}
 \begin{proof}
-  Suppose $G$ has a connected component $C$ with $t - 1$ edges and at
+  Suppose $G$ has a connected component $X$ with $t - 1$ edges and at
   most $t$ vertices. We encode the edge set of $G$ by providing the
-  set of vertices in a spanning tree of $C$, and we choose to root
+  set of vertices in a spanning tree of $X$, and we choose to root
   this tree at the first vertex described in this set; then the shape
   of this tree; and the labels of the $t - 1$ edges encountered in an
   inorder traversal of this tree; and finally the remaining
@@ -857,14 +830,14 @@ $E = \{(h(x), g(x)) : x \in X\}$.
   of $G$. In total, our code has length
   \begin{align*}
     |C(G)| &= \log \binom{m}{t} + (t - 2) \log t + (t - 1) \log n + 2 (n - t + 1) \log m \\
-           &\le 2n \log m + t\log m - t\log t + t\log e + (t-2)\log t + (t-1)\log n - 2(t-1)\log m & \text{(by \eqref{log-n-choose-k})} \\
-           &\le 2n \log m - t\log c + t\log e - 2\log t + \log n + O(1) \\
+           &\le 2n \log m + t\log m - t\log t + t\log e + (t-2)\log t + (t-1)\log n - 2(t-1)\log m \tag{by \eqref{log-n-choose-k}} \\
+           &\le 2n \log m - t\log c + t\log e - 2\log t + \log n + O(1) \tag{since $m = cn$} \\
            &\le \log m^{2n} - s \enspace ,
   \end{align*}
   as long as $t$ is such that
   \[t \log (c/e) + 2\log t \geq s + \log n + O(1) \enspace .\]
   In particular, if we choose $s = \log n$, applying \lemref{uel}
-  tells us that $C$ has size at least $(2/\log (c/e))\log n + O(1)$
+  tells us that $X$ has size at least $(2/\log (c/e))\log n + O(1)$
   with probability $O(1/n)$.
 \end{proof}
 
@@ -884,9 +857,7 @@ other elements. Then, we say that the age of $x$ is $a(x) = t$.
   element $x_g$ with $a(x_g) = t - 1$. The elements $x_h$ and $x_g$
   become left and right children of $x$ in $T$. The process continues
   recursively. If some element appears more than once on a level, we
-  only recurse on its leftmost occurence.
-
-  Note that each vertex of $T$ corresponds to the edge $(h(x), g(x))$
+  only recurse on its leftmost occurence. Note that each vertex of $T$ corresponds to the edge $(h(x), g(x))$
   of $G$. Moreover, the subgraph of $G$ induced by the edges
   $\{(h(x), g(x)) : x \in T\}$ is connected.
 
@@ -896,7 +867,7 @@ other elements. Then, we say that the age of $x$ is $a(x) = t$.
   edges than vertices. By \lemref{two-choice-two-cycles}, this happens
   with probability $O(1/n)$. If instead this happens at most once,
   then $T$ has at most one subtree removed, so $T$ has at least $2^t$
-  nodes. If we choose $t \ge \log \log n + d$, then $C$ has at least
+  nodes. If we choose $t = \ceil{\log \log n + d}$, then $T$ has at least
   $2^d \log n$ nodes, which we know from
   \lemref{two-choice-component-size} happens with probability $O(1/n)$
   for a sufficiently large choice of the constant $d$.
@@ -910,7 +881,7 @@ Soon.
 \subsection{Bipartite Expanders}
 
 Consider a random bipartite multigraph $G=(A,B,E)$ where $|A|=|B|=n$
-and the $3n$ edges in $E$ are obtained as follows:  Each vertex $u\in A$
+and the $3n$ edges in $E$ are obtained as follows:  each vertex $u\in A$
 chooses 3 random neighbours, $x(u)$, $y(u)$, and $z(u)$, in $B$, with
 replacement.  All choices of edges are independent. For a set $A'\subseteq
 A$, the \emph{neighbourhood} of $A'$, denoted $N(A')$, is the subset of
@@ -919,13 +890,11 @@ vertices in $B$ that are adjacent to at least one element of $A'$.
 The following theorem shows that $G$ is an expander.  The proof of
 this theorem usually involves a messy sum that contains binomial
 coefficients and probabilities.  See, for example, Motwani and
-Raghavan \cite[Theorem~5.3]{motwani.raghavan:randomized}, Pinsker
-\cite[Lemma 1]{pinsker:on}, or Hoory, Linial, and Wigderson
-\cite[Lemma~1.9]{hoory.linial.ea:expander}.
+Raghavan~\cite[Theorem~5.3]{motwani.raghavan:randomized}, Pinsker~\cite[Lemma 1]{pinsker:on}, or Hoory, Linial, and Wigderson~\cite[Lemma~1.9]{hoory.linial.ea:expander}.
 
 \begin{thm}
   There exists a constant $\alpha >0$ such that, with probability at
-  least $O(n^{-1/2})$, $|N(A')| \ge 3|A'|/2$ for all $A'\subset A$
+  least $O(n^{-1/2})$, $|N(A')| \ge 3|A'|/2$ for all $A'\subseteq A$
   with $|A'|\le \alpha n$.
 \end{thm}
 
@@ -954,7 +923,7 @@ Raghavan \cite[Theorem~5.3]{motwani.raghavan:randomized}, Pinsker
   \begin{align*}
     s(k) & = 3k\log n - (5/2)k\log n - (1/2)k\log k - \beta k - 2 \log k \\
          & = (1/2)k(\log n - \log k - 2 \beta) - 2\log k \\
-         & = (1/2)k\log\left(\frac{n}{2^{\beta^2} k}\right) - 2 \log k \enspace .
+         & = (1/2)k\log\left(\frac{n}{2^{2\beta} k}\right) - 2 \log k \enspace .
   \end{align*}
   Note that
   \[
@@ -970,11 +939,11 @@ Raghavan \cite[Theorem~5.3]{motwani.raghavan:randomized}, Pinsker
   \end{align*}
   for constants $c_1, c_2, c_3, c_4$. For $k=\alpha n$ we have
   \[
-  s(\alpha n) = (\alpha n/2)\log \left(\frac{1}{2^{\beta^2} \alpha}\right)
+  s(\alpha n) = (\alpha n/2)\log \left(\frac{1}{2^{2\beta} \alpha}\right)
   - 2 \log \alpha n
   \]
   and $2^{-s(\alpha n)} = 2^{-\Omega(n)}$ for
-  $\alpha < (1/2)^{\beta^2}$. In each case, \lemref{uel} gives the
+  $\alpha < (1/2)^{2\beta} \approx 0.002$. In each case, \lemref{uel} gives the
   desired result.
 \end{proof}
 
@@ -1094,7 +1063,7 @@ n\}$. The number of such permutations is $n!$.
 A \emph{(max) record} in a permutation $\sigma$ of size $n$ is some
 value $\sigma(i)$ with $1 \leq i \leq n$ such that
 \[
-\sigma(i) = \max\{\sigma(1), \ldots, \sigma(i - 1)\} \enspace .
+\sigma(i) = \max\{\sigma(1), \ldots, \sigma(i)\} \enspace .
 \]
 It is easy to see that the probability that $\sigma(i)$ is a record is
 exactly $1/i$, so the expected number of records in a uniformly random
@@ -1114,19 +1083,21 @@ First, we describe an incremental and recursive manner of encoding a
 permutation $\sigma$: begin by providing the first value of the
 permutation $\sigma(1)$; followed by the indices of the permutation
 for which $\sigma$ takes on a value strictly smaller than $\sigma(1)$,
-including an explicit encoding of the induced permutation on these
-elements; and a recursive encoding of the permutation induced on
-elements strictly larger than $\sigma(1)$.
+including an explicit encoding of the induced permutation on the
+elements at those indices; and a recursive encoding of the permutation
+induced on the elements strictly larger than $\sigma(1)$.
 
 If $\sigma$ contains $k$ elements strictly smaller than $\sigma(1)$,
-then the cost of this encoding is given by the recurrence
+then the size $S$ of the decision space above satisfies the recurrence
 \[
-S(n) = \log n + \log \binom{n - 1}{k} + \log k! + S(n - k - 1) \enspace ,
+S(n) = n \binom{n - 1}{k} k! \cdot S(n - k - 1) \enspace ,
 \]
-with $S(0) = 0$ and $S(1) = 0$. This solves to $S(n) = \log n!$, so
-the encoding described above is no better than a fixed-length encoding
-for $\sigma$. We can readily modify this encoding to obtain a result
-about the concentration of records in a random permutation.
+with $S(0) = 1$ and $S(1) = 1$. This solves to $S(n) = n!$, so the
+encoding described above is no better than a fixed-length encoding for
+$\sigma$.
+
+We can readily modify the encoding above to obtain a result about the
+concentration of records in a random permutation.
 
 \begin{thm}\thmlabel{records}
   A uniformly random permutation of size $n$ has at least $c \log n$
@@ -1140,30 +1111,21 @@ about the concentration of records in a random permutation.
   We encode a permutation $\sigma$ chosen uniformly at random from a
   set of size $n!$.
 
-  Suppose that $\sigma$ has $t$ records $r_1 < r_2 < \cdots < r_t$,
-  where $t \geq c \log n$ for some fixed $c > 2$. First, give a bit
-  string $x = (x_1, \ldots, x_t) \in \{0, 1\}^t$, where $x_i = 0$ if
-  and only if $r_{i + 1}$ lies in the first half of the interval
-  $[r_{i}, n]$. Let $d_i$ denote the number of values of $\sigma$
-  which are greater than $r_i$. If $x_i = 1$, then
-  \[
-  d_{i + 1} \leq (1/2) d_i \enspace ,
-  \]
-  and therefore,
-  \[
-  1 \leq (1/2)^{n_1(x)} n \iff n_1(x) \leq \log n \enspace .
-  \]
-  In other words, $x$ is a sparse bit string, and $n_1(x)/t \leq 1/c$.
+  Suppose that $\sigma$ has $t \geq c\log n$ records $r_1 < r_2 <
+  \cdots < r_t$, for some fixed $c > 2$. First, give a bit string $x =
+  x_1 \cdots x_t \in \{0, 1\}^t$, where $x_i = 0$ if and only if $r_i$
+  lies in the first half of the interval $[r_{i - 1}, n]$. It follows
+  that $n_1(x) \leq \log n$. In other words, $x$ is a sparse bit string, and $n_1(x)/t \leq 1/c$.
 
   To begin our encoding of $\sigma$, we encode the bit string $x$ by
   giving the set of $n_1(x)$ ones in $x$; followed by the incremental
   recursive encoding of $\sigma$ from earlier. In this case, our
   knowledge of the value of $x_i$ halves the size of the space of
-  options for encoding the record $r_{i + 1}$. In other words, our
-  knowledge of $x$ allows us to encode each record using roughly one
-  less bit per record. More precisely, since the encoding from above
-  recurses $t$ times on decreasing values $n_1 > \cdots > n_t$, then
-  the number of bits spent encoding records is at most
+  options for encoding the record $r_i$. In other words, our knowledge
+  of $x$ allows us to encode each record using roughly one less bit
+  per record. More precisely, since the encoding from above recurses
+  $t$ times on decreasing values $n_1 > \cdots > n_t$, then the number
+  of bits spent encoding records is at most
   \begin{align*}
     \sum_{i = 1}^t \log \lceil n_i/2 \rceil &\leq \sum_{i = 1}^t \log (n_i/2 + 1)
                                               \leq \sum_{i = 1}^t \log (n_i/2) + \sum_{i = 1}^t O(1/n_i) \\
@@ -1172,9 +1134,17 @@ about the concentration of records in a random permutation.
   Thus, the total length of the code is
   \begin{align*}
     |C(\sigma)| &\leq \binom{t}{n_1(x)} + \log n! - t + O(\log \log n) \\
-                &\leq \log n! - t \left(1 - H\left(\frac{n_1(x)}{t}\right)\right) + O(\log \log n) \\ %& \text{(by \eqref{log-n-choose-k})}\\
-                &\leq \log n! - c \left(1 - H\left(\frac{1}{c}\right)\right)\log n + O(\log \log n) \enspace . \qedhere
+                &\leq \log n! - t (1 - H(n_1(x)/t)) + O(\log \log n) \tag{by \eqref{log-n-choose-k}}\\
+                &\leq \log n! - c (1 - H(1/c))\log n + O(\log \log n) \enspace .
   \end{align*}
+  This last inequality holds since the function $x H(a/x)$ has
+  derivative
+  \[
+  \frac{d}{d x} x H(a/x) = \log \frac{1}{1 - a/x} \enspace ,
+  \]
+  which is positive as long as $0 < a/x < 1$, and so increases as a
+  function of $x$. Applying \lemref{uel}, we obtain the desired
+  result.
 \end{proof}
 
 \subsubsection{The Height of a Random Binary Search Tree}
@@ -1186,7 +1156,7 @@ keys $\sigma(1), \ldots, \sigma(n)$. Specifically, if $\sigma_L$
 strictly smaller (respectively, strictly larger) than $\sigma(1)$,
 then $\text{BST}(\sigma)$ has $\sigma(1)$ as its root, with
 $\text{BST}(\sigma_L)$ and $\text{BST}(\sigma_R)$ as left and right
-children. For any $\sigma$, the value $\sigma(1)$ is called its pivot.
+subtrees. For any $\sigma$, the value $\sigma(1)$ is called its pivot.
 
 Lucier \emph{et al.}~\cite{lucier.jiang.li:quicksort} use an encoding
 argument via Kolmogorov complexity to study the height of
@@ -1225,15 +1195,14 @@ be balanced if it occurs in the middle half of its subrange.
 
   The second part of our encoding is recursive: first, encode the
   value of the root $r$ using $\log \lceil n/2 \rceil$ bits. If the
-  path $Y$ goes to the left of $r$, then specify the $n - r - 1$
-  values in the right subtree of $r$, including an explicit encoding
+  path $Y$ goes to the left of $r$, then specify the values in the right subtree of $r$, including an explicit encoding
   of the permutation induced by these values; and recursively encode
   the permutation of values in the left subtree of $r$. If, instead,
   $Y$ goes to the right of $r$, we proceed symmetrically.
  
   The first part of our encoding uses at most
   \[
-  \log n + t H\left(\frac{1}{c \log (4/3)}\right)
+  \log n + t H\left(\frac{n_1(x)}{t}\right)
   \]
   bits. The same analysis as performed in \thmref{records} shows that
   the second part of our encoding has length at most
@@ -1264,6 +1233,7 @@ be balanced if it occurs in the middle half of its subrange.
 
 \subsubsection{Hoare's Find Algorithm}
 
+\subsection{$k$-SAT and the Lov\'{a}sz Local Lemma}
 
 \section{The Non-Uniform Encoding Lemma and Shannon-Fano Codes}
 \seclabel{nuel}
@@ -1271,13 +1241,27 @@ be balanced if it occurs in the middle half of its subrange.
 Thus far, we have been lucky to study applications that could always
 be modelled as choosing some element $x$ uniformly at random from a
 set $X$. To encompass even more applications, it is helpful to have an
-Encoding Lemma that deals with non-uniform distributions over $X$.
-The following generalization of the Uniform Encoding Lemma, which was
-originally proven by Barron \cite[Theorem~3.1]{barron:dissertation},
-serves this purpose:
+Encoding Lemma that deals with non-uniform distributions over $X$. First, recall the following useful classic results:
+\begin{thm}[Markov's Inequality]
+For any non-negative random variable $X$ with finite expectation, and any $a > 0$,
+\[
+\Pr\{X \geq a\} \leq (1/a) \E\{X\} \enspace .
+\]
+\end{thm}
 
+We will say that a real-valued function $\ell : X \to \R$ \emph{satisfies Kraft's condition} if
+\[
+\sum_{x \in X} 2^{-\ell(x)} \leq 1 \enspace .
+\]
+\begin{lem}[Kraft's Inequality]
+If $C : X \nrightarrow \{0,1\}^*$ is a partial prefix-free code, then $|C(\cdot)|$ satisfies Kraft's condition. Conversely, for any function $\ell : X \to \N$ satisfying Kraft's condition, there exists a prefix-free code $C : X \to \{0, 1\}^*$ such that $|C(x)| = \ell(x)$ for all $x \in X$.
+\end{lem}
+
+The following generalization of the Uniform Encoding Lemma, which was
+originally proven by Barron~\cite[Theorem~3.1]{barron:dissertation},
+serves this purpose:
 \begin{lem}[Non-Uniform Encoding Lemma]\lemlabel{nuel}  
-  Let $C\from X\nrightarrow\{0,1\}^*$ be a prefix-free partial code and let
+  Let $C\from X\nrightarrow\{0,1\}^*$ be a partial prefix-free code and let
   $x\in X$ be drawn randomly where $p_x$ denotes the probability of
   drawing $x$.  Then 
   \[
@@ -1286,18 +1270,18 @@ serves this purpose:
 \end{lem}
 
 \begin{proof}
-  We use Chernoff's trick, Markov's Inequality, and Kraft's Inequality,
+  We use Chernoff's trick, Markov's inequality, and Kraft's inequality,
   as follows: 
   \begin{align*}
     \Pr\{ |C(x)| \le\log(1/p_x)-s \}
     & = \Pr\{|C(x)| -\log(1/p_x) \le -s \} \\
     & = \Pr\{\log(1/p_x)-|C(x)| \ge s \} \\
-    & = \Pr\left\{2^{\log(1/p_x)-|C(x)|} \ge 2^s \right\} & \text{(Chernoff's trick)} \\
-    & \le \frac{\E\left\{2^{\log(1/p_x)-|C(x)|}\right\}}{2^s} & \text{(Markov's Inequality)} \\
+    & = \Pr\left\{2^{\log(1/p_x)-|C(x)|} \ge 2^s \right\}  \tag{Chernoff's trick} \\
+    & \le \frac{\E\left\{2^{\log(1/p_x)-|C(x)|}\right\}}{2^s} \tag{Markov's inequality} \\
     & = \frac{1}{2^s} \left(\sum_{x\in X : C(x) \neq \bot} p_x\cdot 2^{\log(1/p_x)-|C(x)|}\right) \\
-    & = \frac{1}{2^s} \left(\sum_{x\in X : C(x) \neq \bot }2^{-|C(x)|}\right) \\
-    & \le \frac{1}{2^s} & \text{(Kraft's Inequality).}  & \qedhere
+    & = \frac{1}{2^s} \left(\sum_{x\in X : C(x) \neq \bot }2^{-|C(x)|}\right) \enspace .
   \end{align*}
+  By Kraft's inequality, $\sum_{x \in X : C(x) \neq \bot} 2^{-|C(x)|} \leq 1$, and the result is obtained.
 \end{proof}
 
 Notice that the Non-Uniform Encoding Lemma is a strict generalization
@@ -1305,7 +1289,7 @@ of the Uniform Encoding Lemma; take $p_x=1/|X|$ for all $x\in X$
 and we obtain the Uniform Encoding Lemma.
 
 As in \secref{sparse-bit-strings}, we will be interested in using a
-Shannon-Fano code to encode $\mathrm{Bernoulli}(\alpha)$ bit strings of
+Shannon-Fano code $C_\alpha$ to encode $\mathrm{Bernoulli}(\alpha)$ bit strings of
 length $n$. Recall that for such a string $x$, this code has length
 \[
 n_1(x) \log (1/\alpha) + n_0(x) \log(1/(1 - \alpha)) \enspace ,
@@ -1326,7 +1310,7 @@ result for $\mathrm{Bernoulli}(1/2)$ bit strings.
 \begin{thm}\thmlabel{chernoff}
   If $B$ is a $\mathrm{Binomial}(n,p)$ random variable, then
   \[
-  \Pr\{B\le(p-\epsilon)n\} \le 2^{-nD(p+\epsilon \| p)} \enspace ,
+  \Pr\{B\le(p-\eps)n\} \le 2^{-nD(p-\eps \| p)} \enspace ,
   \]
   where 
   \[ 
@@ -1343,38 +1327,99 @@ result for $\mathrm{Bernoulli}(1/2)$ bit strings.
   an encoding argument on the bit string $x=(x_1,\ldots,x_n)$. The
   proof is almost identical to that of \thmref{chernoff-basic}---now,
   we encode $x$ using a Shannon-Fano code $C_\alpha$, with $\alpha = p
-  - \epsilon$. Such a code has length
+  - \eps$. Such a code has length
   \[
-  |C_\alpha(x)| = n_1(x) \log (1/\alpha) + n_0(x) \log (1/(1 - \alpha)) \enspace .
+  |C_{p - \eps}(x)| = n_1(x) \log (1/(p - \eps)) + n_0(x) \log (1/(1 - p + \eps)) \enspace .
   \]
-  Here, $|C_\alpha(x)| = \log (1/q)$, where $q = (p -
-  \epsilon)^{n_1(x)} (1 - p + \epsilon)^{n_0(x)}$ is the probability
-  that $x$ appears if each bit is set with probability $p -
-  \epsilon$. On the other hand, $x$ occurs with probability exactly
-  \[
-  p_x = p^{n_1(x)} (1 - p)^{n_0(x)} \enspace ,
-  \]
-  so
+  Now, $x$ appears with probability $p_x = p^{n_1(x)} (1 - p)^{n_0(x)}$, so
   \begin{align*}
-    \frac{q}{p_x} &= \left(\frac{p - \epsilon}{p}\right)^{n_1(x)} \left(\frac{1 - p + \epsilon}{1 - p}\right)^{n - n_1(x)} \\
-    &= \left(1 - \frac{\epsilon}{p}\right)^{n_1(x)} \left(1 -
-      \frac{\epsilon}{1 - p + \epsilon}\right)^{n_1(x) - n} \enspace ,
+    |C_{p - \eps}(x)| &= \log(1/p_x) + n_1(x) \log \frac{p}{p - \eps} + (n - n_1(x)) \log \frac{1 - p}{1 - p + \eps} \\
+    &= \log (1/p_x) + n_1(x) \log \left(1 + \frac{\eps}{p - \eps}\right) + (n_1(x) - n) \log \left(1 + \frac{\eps}{1 - p}\right) ,
   \end{align*}
-  and $q/p_x$ decreases as a function of $n_1(x)$. Therefore, if
-  $n_1(x) \le (p - \epsilon)n$, then
-  \[
-  \frac{q}{p_x} \ge \left(\left(\frac{p - \epsilon}{p}\right)^{p -
-      \epsilon} \left(\frac{1 - p + \epsilon}{1 - p}\right)^{1 - p +
-      \epsilon}\right)^n = 2^{n D(p - \epsilon \| p)} \enspace ,
-  \]
-  and
-  \[
-  |C_\alpha(x)| = \log (1/p_x) - \log (q/p_x) \leq \log (1/p_x) - n
-  D(p - \epsilon \| p) \enspace . \qedhere
-  \]
+  and $|C_{p - \eps}(x)|$ increases as a function of $n_1(x)$. Therefore, if
+  $n_1(x) \le (p - \eps)n$, then
+  \begin{align*}
+    |C_{p - \eps}(x)| &\le \log (1/p_x) + n (p - \eps) \log \frac{p}{p - \eps} + n (1 - p + \eps) \log \frac{1 - p}{1 - p + \eps} \\
+            &= \log (1/p_x) - n D(p - \eps \| p) .
+  \end{align*}
+  The Chernoff bound is obtained by applying \lemref{nuel}.
 \end{proof}
 
 \subsection{Percolation on the Torus}
+
+Percolation theory studies the emergence of large components in random
+graphs. We give an encoding argument proving that percolation occurs
+on the torus when edge survival rate is greater than $2/3$. Our line
+of reasoning follows what is known as a \emph{Peierls argument}. For
+more precise results, including a general study of percolation theory,
+see the book by Grimmett~\cite{grimmett:percolation}.
+
+  When $\sqrt{n}$ is an integer, the \emph{$\sqrt{n} \times \sqrt{n}$
+    torus grid graph} is defined to be the graph with vertex set
+  $\{1, \ldots, \sqrt{n}\}^2$, where $(i, j)$ is adjacent to
+  $(k, \ell)$ if
+  \begin{itemize}[topsep=0pt]
+    \item $|i - k| \equiv 1 \pmod{\sqrt{n}}$ and $|j - \ell| = 0$, or
+    \item $|i - k| = 0$ and $|j - \ell| \equiv 1 \pmod{\sqrt{n}}$.
+  \end{itemize}
+
+\begin{thm}
+  Let $G$ be the subgraph of the $\sqrt{n} \times \sqrt{n}$ torus grid
+  graph in which each edge is chosen with probability $p < 1/3$. Then,
+  the probability that $G$ contains a cycle of length at least
+  \[\frac{s + \log n + O(1)}{\log (1/(3p))}\]
+  is at most $2^{-s}$.
+\end{thm}
+\begin{proof}
+  Let $A$ be the bitstring of length $2n$ encoding the existence of
+  edges in $G$. Suppose that $G$ contains a cycle $C'$ of length
+  $t \geq (s + \log n + O(1))/\log (1/(3p))$. Encode $A$ by giving a
+  single vertex $u$ in $C'$; the sequence of directions that the cycle
+  moves along from $u$; and a Shannon-Fano code with parameter $p$ for
+  the remaining edges of $G$.
+
+  Note that there are four possibilities for the direction of the
+  first step taken by $C'$ from $u$, but only three for each
+  subsequent choice. Thus, this sequence can be specified by
+  $2 + (t - 1) \log 3$ bits. The total length of our
+  code is then
+  \begin{align*}
+    |C(G)| &= \log n + 2 + (t - 1) \log 3 + (n_1(A) - t) \log (1/p) +
+             n_0(A) \log (1/(1 - p)) \\
+           &= \log (1/p_G) + \log n - t \log (1/(3p)) + O(1) \\
+           &\leq \log (1/p_G) - s
+  \end{align*}
+  by our choice of $t$. We finish by applying \lemref{nuel}.
+\end{proof}
+
+The torus grid graph can be drawn in the obvious way without crossings
+on the surface of a torus. This graph drawing gives rise to a dual
+graph, in which each vertex corresponds to a face in the primal
+drawing, and two vertices are adjacent if and only their primal faces
+are incident to the same edge. In this sense, the torus grid graph is
+self-dual.
+
+The obvious drawing of the torus grid graph also induces drawings for
+any of its subgraphs. Such a subgraph also has a dual, where each
+vertex corresponds to a face in the dual torus grid graph, and two
+vertices are adjacent if and only if their corresponding faces are
+incident to the same edge of the original subgraph.
+
+\begin{thm}
+  Let $G$ denote the subgraph of the $\sqrt{n} \times \sqrt{n}$ torus
+  grid graph in which each edge is chosen with probability greater
+  than $2/3$. Then, $G$ has at most one component of size
+  $\omega(\log^2 n)$ with high probability.
+\end{thm}
+\begin{proof}
+  See \figref{peierls} for a visualization of this phenomenon. Suppose
+  that $G$ has at least two components of size $\omega(\log^2
+  n)$. Then, there is a cycle of faces separating these components
+  whose length is $\omega(\log n)$. From the discussion above, such a
+  cycle corresponds to a cycle of $\omega(\log n)$ missing edges in
+  the dual graph, as in \figref{peierlsrare}. From the previous
+  result, we know that this does not happen with high probability.
+\end{proof}
 
 \begin{figure}
   \centering
@@ -1382,7 +1427,7 @@ result for $\mathrm{Bernoulli}(1/2)$ bit strings.
     \includegraphics{torusrare}
     \caption{When $p = 0.33 < 1/3$, long cycles are rare. Dotted lines show
       missing edges in the dual.}
-    \figlabel{torusrare}
+    \figlabel{peierlsrare}
   \end{subfigure}
   \quad\quad
   \begin{subfigure}[t]{0.4\textwidth}
@@ -1394,76 +1439,11 @@ result for $\mathrm{Bernoulli}(1/2)$ bit strings.
   \figlabel{peierls}
 \end{figure}
 
-Percolation theory studies the emergence of large components in random
-graphs. We give an encoding argument proving that percolation occurs
-on the torus when edge survival rate is at least $2/3$. Our line of
-reasoning follows what is known as a \emph{Peierls argument}. For a
-visualization of this phenomenon, see \figref{peierls}. For more
-precise results, including a general study of percolation theory, see
-the book by Grimmett~\cite{grimmett:percolation}.
-
-When $\sqrt{n}$ is an integer, the \emph{$\sqrt{n} \times \sqrt{n}$
-  torus grid graph} is defined to be the graph with vertex set $\{1,
-\ldots, \sqrt{n}\}^2$, where $(i, j)$ is adjacent to $(k, \ell)$ if
-\begin{itemize}
-\item $|i - k| \equiv 1 \pmod{\sqrt{n}}$ and $|j - \ell| = 0$, or
-\item $|i - k| = 0$ and $|j - \ell| \equiv 1 \pmod{\sqrt{n}}$.
-\end{itemize}
-
-\begin{thm}
-  Let $G$ be the subgraph of the $\sqrt{n} \times \sqrt{n}$ torus grid
-  graph in which each edge is chosen with probability $p < 1/3$. Then,
-  the probability that $G$ contains a cycle of length at least
-  \[
-  \frac{s + \log n}{\log (1/(3p))}
-  \]
-  is at most $2^{-s}$.
-\end{thm}
-
-\begin{proof}
-  Let $A$ be the bitstring of length $2n$ encoding the existence of
-  edges in $G$. Suppose that $G$ contains a cycle $C'$ of length $t
-  \geq (s + \log n)/\log (1/(3p))$. Encode $A$ by giving a single
-  vertex $u$ in $C'$; the sequence of directions that the cycle moves
-  along from $u$; and a Shannon-Fano code with parameter $p$ for the
-  remaining edges of $G$.
-
-  Note that there are four possibilities for the direction of the
-  first step taken by $C'$ from $u$, but only three for each
-  subsequent choice. Thus, this sequence can be specified by $\lceil 2
-  + (t - 1) \log 3 \rceil$ bits. Again, we will later show how this
-  ceiling can be omitted. The total length of our code is then
-  \begin{align*}
-    |C(G)| &= \log n + t \log 3 + (n_1(A) - t) \log (1/p) +
-    n_0(A) \log (1/(1 - p)) \\
-    &= \log (1/p_G) + \log n - t \log (1/(3p)) \\
-    &\leq \log (1/p_G) - s
-  \end{align*}
-  by our choice of $t$. We finish by applying \lemref{nuel}.
-\end{proof}
-
-
-\begin{thm}
-  Let $G$ denote the subgraph of the $\sqrt{n} \times \sqrt{n}$ torus
-  grid graph in which each edge is chosen with probability at least
-  $2/3$. Then, $G$ has at most one component of size
-  $\omega(\log^2 n)$ with high probability.
-\end{thm}
-\begin{proof}
-  Suppose that $G$ has at least two such components. Then, there is a
-  cycle of faces separating these components whose length is
-  $\omega(\log n)$. Since the torus grid graph is self-dual, then such
-  a cycle corresponds to a cycle of $\omega(\log n)$ missing edges in
-  the dual graph, as in \figref{torusrare}. From the previous
-  result, we know that this does not happen with high probability.
-\end{proof}
-
-
 \subsection{Triangles in $G_{n,p}$}
 
 The expected number of triangles (cycles of length 3) in $G_{n,p}$ is
-easily seen to be $p^3\binom{n}{3}$.  For $p=(6k)^{1/3}/n$, this
-expectation is $k-O(1/n)$.  Unfortunately, even when $k$ is a large
+easily seen to be $p^3\binom{n}{3}$.  For $p=(6c)^{1/3}/n$, this
+expectation is $k-O(1/n)$.  Unfortunately, even when $c$ is a large
 constant, it still takes some work to show that there is a constant
 probability that $G_{n,p}$ contains at least one triangle. Indeed,
 this typically requires the use of the second moment method, which
@@ -1502,8 +1482,8 @@ Here we show how this can be accomplished with an encoding argument.
   \item The number of 1's in the submatrix is less than $cn/8$.  In
     this case, the number of 1's in this submatrix is much less than
     the expected number, $cn/4$.  Here one can apply the same argument
-    used to prove Chernoff's Bounds (\thmref{chernoff}) or simply
-    apply Chernoff's bounds. We leave this as an exercise to the
+    used to prove Chernoff's bound (\thmref{chernoff}) or simply
+    apply Chernoff's bound. We leave this as an exercise to the
     reader.
 
   \item The number of 1's in the submatrix is greater than $cn/8$.
