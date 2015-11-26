@@ -229,7 +229,7 @@ a run of significantly more than $\log n$ one bits.  (See \figref{runs-i}.)
 
 \begin{proof}
   We will prove this theorem by constructing a partial prefix-free
-  code for strings having a run of $t$ or more 1's.  For such a string
+  code for strings having a run of $t$ or more ones.  For such a string
   string $x=(x_1,\ldots,x_n)$ let $i$ be the minimum index such that
   $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$. The codeword, $C(x)$, for $x$ is
   the binary string that consists of the
@@ -245,7 +245,7 @@ a run of significantly more than $\log n$ one bits.  (See \figref{runs-i}.)
   It is easy to check that, for any such $x$, we can reconstruct
   $(x_1,\ldots,x_n)$ from $C(x)$, so $C$ is indeed a partial code
   whose domain is the set of binary strings of length $n$ having a run
-  of $t$ or more 1's.  It is also easy to see that $C$ is prefix free,
+  of $t$ or more ones.  It is also easy to see that $C$ is prefix free,
   since all codewords are unique and have the same length.
 
   Now, $x$ was chosen uniformly at random from a set of size $2^{n}$.
@@ -263,17 +263,17 @@ used in most encoding arguments:
 \begin{enumerate}
 \item The arguments usually show that a particular \emph{bad event} is
   unlikely. In \thmref{runs-i} the bad event is the occurrence of a
-  substring of $t$ consecutive 1's.
+  substring of $t$ consecutive ones.
 
 \item The code is partial prefix-free code whose domain contains the
   set of bad events. In this case, the code $C$ is only capable of
-  encoding strings containing a run of $t$ consecutive 1's.
+  encoding strings containing a run of $t$ consecutive ones.
 
 \item The code usually begins with a concise description of the bad
   event, and is then followed by a straightforward encoding of the
   information that is not implied by the bad event. In
   \thmref{runs-i}, the bad event is completely described by the index
-  $i$ at which the run of $t$ 1 bits begins, and this implies that the
+  $i$ at which the run of $t$ one bits begins, and this implies that the
   bits $x_i,\ldots,x_{i+t-1}$ are all equal to 1, so these bits do not
   need to be specified in the second part of the codeword.
 \end{enumerate}
@@ -323,8 +323,8 @@ us to state the following cleaner version of \thmref{runs-i}:
 At this point we should also point out an extremely useful trick that
 we can use for encoding sparse bit strings. For any $\alpha\in(0,1)$,
 there exists a code $C_\alpha\from \{0,1\}^n\rightarrow \{0,1\}^*$
-such that, for any bit string $x\in\{0,1\}^n$ having $n_1(x)$ 1's and
-$n_0(x)$ 0's,
+such that, for any bit string $x\in\{0,1\}^n$ having $n_1(x)$ ones and
+$n_0(x)$ zeros,
 \begin{equation}
   |C_\alpha(x)| = \lceil n_1(x)\log(1/\alpha) + n_0(x)\log(1/(1-\alpha)) \rceil \enspace .
   \eqlabel{sparse-bitstring-i}
@@ -342,7 +342,7 @@ for bit strings of length $n>1$ is just what we get when we apply this
 1-bit code to each bit of the bit string.
 
 If we wish to encode bit strings of length $n$ and we know in advance
-that the strings have exactly $k$ 1 bits, then we can optimize this
+that the strings have exactly $k$ one bits, then we can optimize this
 process by taking $\alpha=k/n$, in which case we obtain a fixed length
 code of length
 \begin{equation}
@@ -368,7 +368,7 @@ bounds on it that we derive below are illustrated in \figref{entropy}.
 Notice that we have already encountered a quantity that can be
 expressed in terms of the binary entropy.  From
 \eqref{sparse-bitstring-ii}, a bit string of length $n$ that has
-exactly $k$ 1 bits can be encoded with a fixed length code of length
+exactly $k$ one bits can be encoded with a fixed length code of length
 $nH(k/n)$.
 
 The binary entropy function can be difficult to work with, so it is
@@ -465,7 +465,7 @@ using a fixed-length code.  The length of the codewords in such a code is
 We are sometimes interested in codes for the $\binom{n}{k}$ subsets of
 $k$ elements from a set of size $n$.  Note that there is an easy
 bijection between such subsets and binary string of length $n$ having
-exactly $k$ 1's. Therefore, we can represent these using the
+exactly $k$ ones. Therefore, we can represent these using the
 Shannon-Fano code $C_{k/n}$ and each of our codewords will have length
 $nH(k/n)$.  In particular, this implies that
 \begin{equation}
@@ -588,7 +588,7 @@ satisfies the requirements of \thmref{urns}.
             \tag{using \eqref{log-n-choose-k}} \\
            & = n \log n + \log n - t\log t + t\log e \\
            & \le  n\log n - s \tag{by the choice of $t$} \\
-           & = \log n^n - s \enspace .
+           & = \log n^n - s
   \end{align*}
   bits. We conclude the proof by applying the Uniform Encoding Lemma.
 \end{proof}
@@ -1331,13 +1331,13 @@ result for $\mathrm{Bernoulli}(1/2)$ bit strings.
   Now, $x$ appears with probability $p_x = p^{n_1(x)} (1 - p)^{n_0(x)}$, so
   \begin{align*}
     |C_{p - \eps}(x)| &= \log(1/p_x) + n_1(x) \log \frac{p}{p - \eps} + (n - n_1(x)) \log \frac{1 - p}{1 - p + \eps} \\
-    &= \log (1/p_x) + n_1(x) \log \left(1 + \frac{\eps}{p - \eps}\right) + (n_1(x) - n) \log \left(1 + \frac{\eps}{1 - p}\right) ,
+    &= \log (1/p_x) + n_1(x) \log \left(1 + \frac{\eps}{p - \eps}\right) + (n_1(x) - n) \log \left(1 + \frac{\eps}{1 - p}\right) \enspace ,
   \end{align*}
   and $|C_{p - \eps}(x)|$ increases as a function of $n_1(x)$. Therefore, if
   $n_1(x) \le (p - \eps)n$, then
   \begin{align*}
     |C_{p - \eps}(x)| &\le \log (1/p_x) + n (p - \eps) \log \frac{p}{p - \eps} + n (1 - p + \eps) \log \frac{1 - p}{1 - p + \eps} \\
-            &= \log (1/p_x) - n D(p - \eps \| p) .
+            &= \log (1/p_x) - n D(p - \eps \| p) \enspace .
   \end{align*}
   The Chernoff bound is obtained by applying \lemref{nuel}.
 \end{proof}
@@ -1448,9 +1448,7 @@ involves computing the variance of the number of triangles in
 $G_{n,p}$. To show that $G_{n, p}$ has a triangle with exponential
 probability is even more complicated, and a proof of this result would
 still typically rely on an advanced probabilistic
-inequality~\cite{alon:probabilistic}.
-
-Here we show how this can be accomplished with an encoding argument.
+inequality~\cite{alon:probabilistic}. Here we show how this can be accomplished with an encoding argument.
 
 \begin{thm}\thmlabel{triangles-up}
   For $p=c/n$, $G \in G_{n,p}$ contains at least one triangle with
@@ -1463,8 +1461,8 @@ Here we show how this can be accomplished with an encoding argument.
   of $G$'s adjacency matrix, $A$.
 
   Refer to \figref{triangles}.  If $G$ contains no triangles, then we
-  look at the number of 1's in the $n/2\times n/2$ submatrix
-  determined by rows $1,\ldots,n/2$ and columns $n/2+1,\ldots,n$.
+  look at the number of ones in the $n/2\times n/2$ submatrix $M$
+  determined by rows $1,\ldots,n/2$ and columns $n/2+1,\ldots,n$. Note that $n_1(M)$, the number of ones in $M$, is a $\mathrm{Binomial}(n^2/4, c/n)$ random variable.
   There are two cases to consider:
   
   \begin{figure}
@@ -1476,35 +1474,32 @@ Here we show how this can be accomplished with an encoding argument.
   \end{figure}
 
   \begin{enumerate}\setcounter{enumi}{-1}
-  \item The number of 1's in the submatrix is less than $cn/8$.  In
-    this case, the number of 1's in this submatrix is much less than
+  \item The number of ones in $M$ is less than $cn/8$.  In
+    this case, the number of ones in this submatrix is much less than
     the expected number, $cn/4$.  Here one can apply the same argument
     used to prove Chernoff's bound (\thmref{chernoff}) or simply
     apply Chernoff's bound. We leave this as an exercise to the
     reader.
 
-  \item The number of 1's in the submatrix is greater than $cn/8$.
-    Notice that, for $i<j<k$ if $M_{i,j}=1$ and $M_{i,k}=1$, then the
-    fact that there are no triangles implies that $M_{j,k}=0$.
+  \item The number of ones in the submatrix is greater than $cn/8$.
+    Notice that, for $i<j<k$ if $A_{i,j}=1$ and $A_{i,k}=1$, then the
+    fact that there are no triangles implies that $A_{j,k}=0$.
 
-    Let $m_i$ be the number of 1's in the $i$th row of the submatrix.
+    Let $m_i$ be the number of ones in the $i$th row of the submatrix.
     By specifying rows $1,\ldots,n/2$, we eliminate the need to
     specify
     \[
-    m = \sum_{i=1}^{n/2}\binom{m_i}{2} \ge (n/2)\binom{c/4}{2} =
+    m = \sum_{i=1}^{n/2}\binom{m_i}{2} \ge (n/2) \binom{2 n_1(M)/n}{2} \ge (n/2)\binom{c/4}{2} =
     \Omega(c^2n) \enspace ,
     \]
-    zeros in rows $n/2+1,\ldots,n$.  Using a Shannon-Fano code with
-    parameter $p$ to specify the first $n/2$ rows and the bits of the
-    remaining rows that can not be deduced from the first $n/2$ rows,
-    we obtain a codeword of length
+    zeros in rows $n/2+1,\ldots,n$. We thus encode $G$ by giving a Shannon-Fano code with parameter $p$ for the first $n/2$ rows of $A$; and a Shannon-Fano code with parameter $p$ for the rest of $A$, excluding the bits which can be deduced from the preceding information. Such a code has length
     \[
     |C(G)| = n_1(A) \log(1/p) + (n_0(A)-m)\log(1/(1-p))
     \]
     which results in a savings of
     \[
-    s = \log(1/p_G) - |C(G)| = m\log(1/(1-p)) -O(1) \ge
-    \Omega(c^2n)\log(1/(1-p)) - O(1) = \Omega(c^3) \enspace . \qedhere
+    s = \log(1/p_G) - |C(G)| = m\log(1/(1-p)) \ge
+    \Omega(c^2n)\log(1/(1-p)) = \Omega(c^3) \enspace . \qedhere
     \]
   \end{enumerate}
 \end{proof}
@@ -1583,9 +1578,9 @@ that $1/n$ is a threshold function for triangle-freeness.
 \begin{proof}
   We encode the adjacency matrix, $x$, of $G_{n,p}$ as follows.
   If $G_{n,p}$ does not contain such a partition, then the encoding is
-  zero bit followed by the obvious encoding.
+  0 bit followed by the obvious encoding.
 
-  Otherwise, the encoding is a one bit, followed by the list of $k$
+  Otherwise, the encoding is a 1 bit, followed by the list of $k$
   vertices, followed by the remaining $\binom{n}{2}-k(n-k)$ bits of the
   adjacency matrix that are not implied by the information already given.
   These latter bits are encoded using a Shannon--Fano code that is
