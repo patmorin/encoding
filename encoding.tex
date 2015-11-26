@@ -1117,11 +1117,12 @@ elements at those indices; and a recursive encoding of the permutation
 induced on the elements strictly larger than $\sigma(1)$.
 
 If $\sigma$ contains $k$ elements strictly smaller than $\sigma(1)$,
-then the size $S$ of the decision space above satisfies the recurrence
+then the length $S$ of the codeword for $\sigma$ satisfies the
+recurrence
 \[
-  S(n) = n \binom{n - 1}{k} k! \cdot S(n - k - 1) \enspace ,
+  S(n) = \log n + \log \binom{n - 1}{k} + \log k! + S(n - k - 1) \enspace ,
 \]
-with $S(0) = 1$ and $S(1) = 1$. This solves to $S(n) = n!$, so the
+with $S(0) = 0$ and $S(1) = 0$. This solves to $S(n) = \log n!$, so the
 encoding described above is no better than a fixed-length encoding for
 $\sigma$.
 
@@ -1266,6 +1267,49 @@ be balanced if it occurs in the middle half of its subrange.
 
 \subsection{$k$-SAT and the Lov\'{a}sz Local Lemma}
 
+A \emph{variable} $x$ is either $\textsf{true}$ or
+$\textsf{false}$. The negation of $x$ is denoted $\neg x$. A
+\emph{literal} is either a variable or its negation. A
+\emph{conjunction} of literals is an ``and'' of literals, denoted
+$\land$. A \emph{disjunction} of literals is an ``or'' of literals,
+denoted $\lor$. A \emph{formula} is an expression including
+conjunctions and disjunctions of literals. A \emph{clause} is a
+disjunction of literals, \emph{i.e.} the ``or'' of a set of variables
+or their negations, \emph{e.g.}
+\[
+  x_1 \lor \neg x_2 \lor x_3 \enspace .
+\]
+A formula is said to be \emph{satisfiable} if there exists an
+assignment of values to its variables so that the full expression
+evaluates to $\textsf{true}$. The formulas we are concerned with are
+conjunctions of clauses, which are said to be in \emph{conjunctive
+  normal form} (CNF). Any satisfiable truth assignment to the
+variables in a CNF formula induces a truth assignment for each of its
+clauses. More specifically, when each clause has $k$ literals, we call
+it a $k$-CNF formula.
+
+The $k$-SAT decision problem asks to determine whether or not a given
+$k$-CNF formula is satisfiable. In general, this problem is
+hard. Indeed, any satisfiable truth assignment to the variables in a
+CNF formula induces a truth assignment for each of its clauses; the
+converse is true if each clause is pairwise disjoint, and as we will
+show, even if each clause is only nearly pairwise disjoint.
+
+TALK ABOUT HOW THIS ANALYSIS COMES FROM FORTNOW (AND MAYBE TAO) BUT
+ORIGINALLY PROVEN BY MOSER.
+
+DESCRIBE MOSER'S ALGORITHM.
+
+\begin{thm}
+  Let $a \in \{\textsf{true}, \textsf{false}\}^n$ and
+  $b_i \in \{\textsf{true}, \textsf{false}\}^{k}$ for each
+  $1 \le i \le s$ be chosen uniformly at random. Given a $k$-CNF
+  formula $\varphi$ with $m$ clauses and $n$ variables such that each
+  clause shares a variable with at most $r$ other clauses, the
+  probability that THE ALGORITHM$(a, b_1, \ldots, b_s)$ produces a
+  satisfiable truth assignment for $\varphi$ is at most $2^{-s}$.
+\end{thm}
+
 \section{The Non-Uniform Encoding Lemma and Shannon-Fano Codes}
 \seclabel{nuel}
 
@@ -1376,13 +1420,13 @@ result for $\mathrm{Bernoulli}(1/2)$ bit strings.
   Now, $x$ appears with probability
   $p_x = p^{n_1(x)} (1 - p)^{n_0(x)}$, so
   \begin{align*}
-    |C_{p - \eps}(x)| &= \log(1/p_x) + n_1(x) \log \frac{p}{p - \eps} + (n - n_1(x)) \log \frac{1 - p}{1 - p + \eps} \\
+    |C_{p - \eps}(x)| &= \log(1/p_x) + n_1(x) \log (p/(p - \eps)) + (n - n_1(x)) \log ((1 - p)/(1 - p + \eps)) \\
                       &= \log (1/p_x) + n_1(x) \log \left(1 + \frac{\eps}{p - \eps}\right) + (n_1(x) - n) \log \left(1 + \frac{\eps}{1 - p}\right) \enspace ,
   \end{align*}
   and $|C_{p - \eps}(x)|$ increases as a function of
   $n_1(x)$. Therefore, if $n_1(x) \le (p - \eps)n$, then
   \begin{align*}
-    |C_{p - \eps}(x)| &\le \log (1/p_x) + n (p - \eps) \log \frac{p}{p - \eps} + n (1 - p + \eps) \log \frac{1 - p}{1 - p + \eps} \\
+    |C_{p - \eps}(x)| &\le \log (1/p_x) - n (p - \eps) \log ((p - \eps)/p) - n (1 - p + \eps) \log ((1 - p + \eps)/(1 - p)) \\
                       &= \log (1/p_x) - n D(p - \eps \| p) \enspace .
   \end{align*}
   The Chernoff bound is obtained by applying \lemref{nuel}.
@@ -1579,85 +1623,7 @@ that $1/n$ is a threshold function for triangle-freeness.
 
 \subsection{The Components of $G_{n,p}$}
 
-[The following result is really boring. It's easier to prove just using linearity of expectation and Markov's Inequality.]
-
-\begin{thm}
-  For $p=\alpha/n$, the probability that $G_{n,p}$ contains a component of size at least $t$ is at most $blah$.
-\end{thm}
-
-\begin{proof}
-  We use an encoding argument on the bits of the adjacency matrix, $x$,
-  of $G$.
-
-  If $G$ does contain a component of size $t$ or greater, then we
-  find, within this component, a tree, $T$, of size exactly $t$.  The
-  codeword then consists of a list of the vertices in $T$ as they are
-  encountered during an preorder traversal, a description of the shape
-  of $T$, and then finally, a Shannon-Fano code that gives the
-  $\binom{n}{2}-t+1$ bits of the adjacency matrix corresponding to the
-  edges not in $T$.
-
-  The shape of $T$ can be described using $2n$ bits by tracing the
-  execution of the traversal of $T$, using a 1 to indicate that the
-  traversal takes a step deeper into the tree and a 0 to indicate that
-  the traversal moves up in the tree.
-
-  In total, this results in a codeword of length
-  \[   
-    b \le 2 + t\log n + 2t + (r_1-t+1)\log(1/p) + r_0\log(1/(1-p))  \enspace . 
-  \]
-  On the other hand
-  \[   
-     \log (1/p_x) = r_1\log(1/p) + r_0\log(1/(1-p)) \enspace ,
-  \]
-  so
-  \begin{align*}
-     s & = \log(1/p_x) - b \\
-       & =  (t-1)\log(1/p) - t\log n - 2t - 2 \\
-       & = t(\log(1/p)-\log n - 2) - \log n - 2 \\
-       & = t\log(1/(4\alpha)) - \log n - 2 \\
-  \end{align*}
-\end{proof}
-
-[This is also really boring\ldots]
-
-\begin{lem}
-  The probability that $G_{n,p}$ has a partition of $(U,W)$ of its vertex
-  set such that $|U|=k$ and there is no edge with one endpoint in $U$
-  and one endpoint in $W$ is at most $2n^k\cdot (1-p)^{k(n-k)}$.
-\end{lem}
-
-\begin{proof}
-  We encode the adjacency matrix, $x$, of $G_{n,p}$ as follows.
-  If $G_{n,p}$ does not contain such a partition, then the encoding is
-  0 bit followed by the obvious encoding.
-
-  Otherwise, the encoding is a 1 bit, followed by the list of $k$
-  vertices, followed by the remaining $\binom{n}{2}-k(n-k)$ bits of the
-  adjacency matrix that are not implied by the information already given.
-  These latter bits are encoded using a Shannon--Fano code that is
-  optimized for $p$.
-
-  If $G$ has $r_1$ edges and $r_0=\binom{n}{2}-r_1$ non-edges, then the codeword has length
-  \begin{align*}
-      b & = 1 + k\log n + r_1\log(1/p) + (r_0-k(n-k))\log(1/(1-p)) \enspace .
-  \end{align*}
-  On the other hand,
-  \[
-      \log p_x = r_1\log(1/p) + r_0\log(1/(1-p)) \enspace ,
-  \]
-  so the savings obtained by this encoding is 
-  \[
-      s = \log p_x - b = k(n-k)\log(1/(1-p)) - k\log n - 1 \enspace ,
-  \]
-  and the result follows from the Non-Uniform Encoding Lemma.
-\end{proof}
-
-
-
-
-\subsection{}
-
+Maybe omit? It's pretty boring.
 
 \section{Weight Functions}
 \seclabel{weights}
