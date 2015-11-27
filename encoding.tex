@@ -1279,17 +1279,22 @@ denoted $\lor$. A \emph{formula} is an expression including
 conjunctions and disjunctions of literals. A \emph{clause} is a
 disjunction of literals, \emph{i.e.} the ``or'' of a set of variables
 or their negations, \emph{e.g.}
-\[
-  x_1 \lor \neg x_2 \lor x_3 \enspace .
-\]
+\begin{align}
+  x_1 \lor \neg x_2 \lor x_3 \enspace . \eqlabel{clause-example}
+\end{align}
 Two clauses will be said to intersect if their sets of variables
 intersect. The truth value which a formula $\varphi$ evaluates to
 under the assignment of values $a$ to its variables will be denoted
 $\varphi(a)$, and such a formula is said to be \emph{satisfiable} if
-$\varphi(a) = \textsf{true}$ for some $a$. The formulas we are
-concerned with are conjunctions of clauses, which are said to be in
-\emph{conjunctive normal form} (CNF). More specifically, when each
-clause has $k$ literals, we call it a $k$-CNF formula.
+$\varphi(a) = \textsf{true}$ for some $a$. For example, the clause in
+\eqref{clause-example} is satisfied for all truth assignments except
+\[
+(x_1, x_2, x_3) = (\textsf{false}, \textsf{true}, \textsf{false}) \enspace .
+\]
+The formulas we are concerned with are conjunctions of clauses, which
+are said to be in \emph{conjunctive normal form} (CNF). More
+specifically, when each clause has $k$ literals, we call it a $k$-CNF
+formula.
 
 The $k$-SAT decision problem asks to determine whether or not a given
 $k$-CNF formula is satisfiable. In general, this problem is
@@ -1328,9 +1333,13 @@ DESCRIBE MOSER'S ALGORITHM.
 %  chosen uniformly at random.
 %
   Given a $k$-CNF formula $\varphi$ with $m$ clauses and $n$ variables
-  such that each clause intersects at most $r$ other clauses, the
-  probability that $\textsc{Solve}(\varphi)$ calls $\textsc{Fix}$ at
-  least $t$ times is at most $2^{-s}$.
+  such that each clause intersects at most $r = 2^k/e$ other clauses,
+  the probability that $\textsc{Solve}(\varphi)$ calls $\textsc{Fix}$
+  at least $t$ times, for $t$ satisfying
+  \[
+  t \log (t/m) \ge s \enspace ,
+  \]
+  is at most $2^{-s}$.
 \end{thm}
 \begin{proof}
   Suppose that $\textsc{Solve}(\varphi)$ calls $\textsc{Fix}$ $t$
@@ -1339,7 +1348,22 @@ DESCRIBE MOSER'S ALGORITHM.
   \in \{\textsf{true}, \textsf{false}\}^k$ be the local truth
   assignments produced in each call to $\textsc{Fix}$.
 
-  The key observation is that if
+  The key observation is that if some clause $C$ is not satisfied,
+  then we can deduce $k$ bits of $a$, the initial truth assignment.
+
+  ETC ETC ETC.
+
+  \begin{align*}
+    |C(a, b_1, \ldots, b_t)| &= \log \binom{m}{t} + t \log r + n \\
+    &= n + tk + \log \binom{m}{t} + t(\log r - k) \\
+    &= n + tk + \log \binom{m}{t} - t \log e \tag{since $r = 2^k/e$} \\
+    &\le n + tk + t \log m - t \log t \tag{by \eqref{log-n-choose-k}} \\
+    &= n + tk - t \log (t/m) \\
+    &\le n + tk - s \enspace . \tag{by choice of $t$}
+  \end{align*}
+  The result is obtained by applying \lemref{nuel}. In particular, the
+  algorithm finds a satisfying truth assignment with high probability
+  for $t = \ceil{(1 + \eps) m}$ for any $\eps > 0$.
 \end{proof}
 
 \section{The Non-Uniform Encoding Lemma and Shannon-Fano Codes}
