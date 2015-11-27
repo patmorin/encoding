@@ -1,5 +1,5 @@
 \documentclass{patmorin}
-
+ 
 \usepackage{pat}
 \usepackage[utf8]{inputenc}
 \usepackage[noend]{algorithmic}
@@ -29,7 +29,7 @@
   This expository article surveys ``encoding arguments.'' In their
   most most basic form an encoding argument proves an upper bound on
   the probability of an event using the fact a uniformly random choice
-  from a set of size $N$ can not be encoded with fewer than $\log_2 N$
+  from a set of size $n$ can not be encoded with fewer than $\log_2 n$
   bits on average.
 
   We survey many applications of this basic argument, give a
@@ -174,7 +174,9 @@ by tracing the root-to-leaf path leading to $x$ and outputting a 0
   \centering{\includegraphics{bintree}}
   \caption{A prefix-free code for the set
     $X=\{\mathtt{a},\mathtt{b},\mathtt{c},\mathtt{d},\mathtt{e},\mathtt{f}\}$
-    and the corresponding leaf-labelled binary tree. (Which can also be viewed as a partial prefix-free code for the set $\{\mathtt{a},\mathtt{b},\mathtt{c},\ldots,\mathtt{z}\}$.)}
+    and the corresponding leaf-labelled binary tree. (Which can also
+    be viewed as a partial prefix-free code for the set
+    $\{\mathtt{a},\mathtt{b},\mathtt{c},\ldots,\mathtt{z}\}$.)}
   \figlabel{bintree}
 \end{figure}
 
@@ -214,7 +216,8 @@ surprisingly versatile:
   random from $X$, the probability that it is the preimage of one of
   these short codewords is at most
   \[
-    \frac{2^k}{|X|} = \frac{2^{\log|X|-s}}{|X|} = 2^{-s} \enspace . \qedhere 
+  \frac{2^k}{|X|} = \frac{2^{\log|X|-s}}{|X|} = 2^{-s} \enspace
+  . \qedhere
   \]
 \end{proof}
 
@@ -295,7 +298,7 @@ Note that \thmref{runs-i} also has an easy proof using the union
 bound: If we let $\mathcal{E}_i$ denote the event
 $x_i=x_{i+1}=\cdots x_{i+t}=1$, then
 \begin{align*}
-  \Pr \bigcup_{i=0}^{n-t-1} \mathcal{E}_i  
+  \Pr \bigcup_{i=0}^{n-t-1} \mathcal{E}_i
   & \le \sum_{i=0}^{n-t-1} \Pr\mathcal{E}_i & \text{(using the union bound)}\\
   & = \sum_{i=0}^{n-t-1} 2^{-t} & \text{(using the independence of the $x_i$'s)}\\
   & \le n2^{-t} & \text{(the sum has $n-t\le n$ identical terms)}\\
@@ -1279,36 +1282,65 @@ or their negations, \emph{e.g.}
 \[
   x_1 \lor \neg x_2 \lor x_3 \enspace .
 \]
-A formula is said to be \emph{satisfiable} if there exists an
-assignment of values to its variables so that the full expression
-evaluates to $\textsf{true}$. The formulas we are concerned with are
-conjunctions of clauses, which are said to be in \emph{conjunctive
-  normal form} (CNF). Any satisfiable truth assignment to the
-variables in a CNF formula induces a truth assignment for each of its
-clauses. More specifically, when each clause has $k$ literals, we call
-it a $k$-CNF formula.
+Two clauses will be said to intersect if their sets of variables
+intersect. The truth value which a formula $\varphi$ evaluates to
+under the assignment of values $a$ to its variables will be denoted
+$\varphi(a)$, and such a formula is said to be \emph{satisfiable} if
+$\varphi(a) = \textsf{true}$ for some $a$. The formulas we are
+concerned with are conjunctions of clauses, which are said to be in
+\emph{conjunctive normal form} (CNF). More specifically, when each
+clause has $k$ literals, we call it a $k$-CNF formula.
 
 The $k$-SAT decision problem asks to determine whether or not a given
 $k$-CNF formula is satisfiable. In general, this problem is
 hard. Indeed, any satisfiable truth assignment to the variables in a
 CNF formula induces a truth assignment for each of its clauses; the
 converse is true if each clause is pairwise disjoint, and as we will
-show, even if each clause is only nearly pairwise disjoint.
+see, even if each clause is only nearly pairwise disjoint.
 
 TALK ABOUT HOW THIS ANALYSIS COMES FROM FORTNOW (AND MAYBE TAO) BUT
 ORIGINALLY PROVEN BY MOSER.
 
 DESCRIBE MOSER'S ALGORITHM.
 
+\noindent{$\textsc{Solve}(\varphi)$}
+\begin{algorithmic}[1]
+  \STATE{$a \gets $ uniformly random truth assignment in $\{\textsf{true}, \textsf{false}\}^n$}
+  \WHILE{$\varphi(a) = \textsf{false}$}
+    \STATE{$C \gets $ an unsatisfied clause in $\varphi$}
+    \STATE{$a \gets \textsc{Fix}(\varphi, a, C)$}
+  \ENDWHILE
+\end{algorithmic}
+
+\noindent{$\textsc{Fix}(\varphi, a, C)$}
+\begin{algorithmic}[1]
+  \STATE{$b \gets $ uniformly random truth assignment in $\{\textsf{true}, \textsf{false}\}^k$}
+  \STATE{replace the assignments in $a$ for variables in $C$ with the values in $b$}
+  \WHILE{$\varphi(a) = \textsf{false}$}
+    \STATE{$D \gets $ an unsatisfied clause in $\varphi$ intersecting $C$}
+    \STATE{$a \gets \textsc{Fix}(\varphi, a, D)$}
+  \ENDWHILE
+\end{algorithmic}
+
 \begin{thm}
-  Let $a \in \{\textsf{true}, \textsf{false}\}^n$ and
-  $b_i \in \{\textsf{true}, \textsf{false}\}^{k}$ for each
-  $1 \le i \le s$ be chosen uniformly at random. Given a $k$-CNF
-  formula $\varphi$ with $m$ clauses and $n$ variables such that each
-  clause shares a variable with at most $r$ other clauses, the
-  probability that THE ALGORITHM$(a, b_1, \ldots, b_s)$ produces a
-  satisfiable truth assignment for $\varphi$ is at most $2^{-s}$.
+%  Let $a \in \{\textsf{true}, \textsf{false}\}^n$ and $b_i \in
+%  \{\textsf{true}, \textsf{false}\}^{k}$ for each $1 \le i \le s$ be
+%  chosen uniformly at random.
+%
+  Given a $k$-CNF formula $\varphi$ with $m$ clauses and $n$ variables
+  such that each clause intersects at most $r$ other clauses, the
+  probability that $\textsc{Solve}(\varphi)$ calls $\textsc{Fix}$ at
+  least $t$ times is at most $2^{-s}$.
 \end{thm}
+\begin{proof}
+  Suppose that $\textsc{Solve}(\varphi)$ calls $\textsc{Fix}$ $t$
+  times. Let $a \in \{\textsf{true}, \textsf{false}\}^n$ be the
+  initial truth assignment for $\varphi$, and let $b_1, \ldots, b_t
+  \in \{\textsf{true}, \textsf{false}\}^k$ be the local truth
+  assignments produced in each call to $\textsc{Fix}$.
+
+  The key observation is that if
+\end{proof}
 
 \section{The Non-Uniform Encoding Lemma and Shannon-Fano Codes}
 \seclabel{nuel}
