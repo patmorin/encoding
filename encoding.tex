@@ -5,6 +5,7 @@
 \usepackage[noend]{algorithmic}
 \usepackage{subcaption}
 \usepackage{enumitem}
+\usepackage{url}
 
 \newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
 
@@ -1271,29 +1272,30 @@ be balanced if it occurs in the middle half of its subrange.
 \subsection{$k$-SAT and the Lov\'{a}sz Local Lemma}
 
 A \emph{variable} $x$ is either $\textsf{true}$ or
-$\textsf{false}$. The negation of $x$ is denoted $\neg x$. A
+$\textsf{false}$. The negation of $x$ is denoted by $\neg x$. A
 \emph{literal} is either a variable or its negation. A
-\emph{conjunction} of literals is an ``and'' of literals, denoted
+\emph{conjunction} of literals is an ``and'' of literals, denoted by
 $\land$. A \emph{disjunction} of literals is an ``or'' of literals,
-denoted $\lor$. A \emph{formula} is an expression including
-conjunctions and disjunctions of literals. A \emph{clause} is a
-disjunction of literals, \emph{i.e.} the ``or'' of a set of variables
-or their negations, \emph{e.g.}
+denoted by $\lor$. A \emph{formula} is an expression including
+conjunctions and disjunctions of literals, and the set of variables
+involved in this formula is called the \emph{support} of $\varphi$. A
+\emph{clause} is a disjunction of literals, \emph{i.e.} the ``or'' of
+a set of variables or their negations, \emph{e.g.}
 \begin{align}
   x_1 \lor \neg x_2 \lor x_3 \enspace . \eqlabel{clause-example}
 \end{align}
-Two clauses will be said to intersect if their sets of variables
-intersect. The truth value which a formula $\varphi$ evaluates to
-under the assignment of values $\alpha$ to its variables will be
-denoted $\varphi(\alpha)$, and such a formula is said to be
-\emph{satisfiable} if $\varphi(\alpha) = \textsf{true}$ for some
-$\alpha$. For example, the clause in \eqref{clause-example} is
-satisfied for all truth assignments except
+Two clauses will be said to intersect if their supports intersect. The
+truth value which a formula $\varphi$ evaluates to under the
+assignment of values $\alpha$ to its support will be denoted
+$\varphi(\alpha)$, and such a formula is said to be \emph{satisfiable}
+if $\varphi(\alpha) = \textsf{true}$ for some $\alpha$. For example,
+the clause in \eqref{clause-example} is satisfied for all truth
+assignments except
 \[
 (x_1, x_2, x_3) = (\textsf{false}, \textsf{true}, \textsf{false}) \enspace ,
 \]
 and indeed, any clause is satisfied by any but one truth assignment
-for its variables. The formulas we are concerned with are conjunctions
+for its support. The formulas we are concerned with are conjunctions
 of clauses, which are said to be in \emph{conjunctive normal form}
 (CNF). More specifically, when each clause has $k$ literals, we call
 it a $k$-CNF formula.
@@ -1303,30 +1305,45 @@ $k$-CNF formula is satisfiable. In general, this problem is
 hard. Indeed, any satisfiable truth assignment to the variables in a
 CNF formula induces a truth assignment for each of its clauses; the
 converse is true if each clause is pairwise disjoint, and as we will
-see, even if each clause is only nearly pairwise disjoint.
+see, even if each clause is only nearly pairwise disjoint, \emph{i.e.}
+their intersection has size less than $2^k/e$.
 
-TALK ABOUT HOW THIS ANALYSIS COMES FROM FORTNOW (AND MAYBE TAO) BUT
-ORIGINALLY PROVEN BY MOSER.
+This result has been well known as a consequence of the Lov\'{a}sz
+Local Lemma, whose original proof is non-constructive, and so would
+not produce a satisfying truth assignment as applied to an instance of
+$k$-SAT. Some constructive solutions to $k$-SAT have been known, but
+only for suboptimal clause intersection sizes. Moser and
+Tardos~\cite{moser:locallemma} famously presented the first
+constructive proof of the full Lov\'{a}sz Local Lemma, which also
+gives a construction for $k$-SAT. The analysis which we reproduce in
+this section comes from Fortnow's rephrasing of Moser's proof for
+$k$-SAT using the incompressibility method~\cite{fortnow:ksat}.
 
-DESCRIBE MOSER'S ALGORITHM.
+Moser's algorithm is remarkably naive, and can be described in only a
+few sentences: Pick a uniformly random truth assignment for the
+variables of $\varphi$. For each unsatisfied clause, attempt to fix it
+by producing a new uniformly random truth assignment for its support,
+and recursively fix any intersecting clause which is made unsatisfied
+by this reassignment. We describe this process more carefully in the
+algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
 
-\noindent{$\textsc{Solve}(\varphi)$}
+\noindent{$\textsc{Solve}(\varphi)$}:
 \begin{algorithmic}[1]
   \STATE{$\alpha \gets $ uniformly random truth assignment in $\{\textsf{true}, \textsf{false}\}^n$}
   \WHILE{$\varphi(\alpha) = \textsf{false}$}
-    \STATE{$C \gets $ an unsatisfied clause in $\varphi$}
-    \STATE{$\alpha \gets \textsc{Fix}(\varphi, \alpha, C)$}
+    \STATE{$D \gets $ an unsatisfied clause in $\varphi$}
+    \STATE{$\alpha \gets \textsc{Fix}(\varphi, \alpha, D)$}
   \ENDWHILE
   \RETURN{$\alpha$}
 \end{algorithmic}
 
-\noindent{$\textsc{Fix}(\varphi, \alpha, C)$}
+\noindent{$\textsc{Fix}(\varphi, \alpha, D)$}:
 \begin{algorithmic}[1]
   \STATE{$\beta \gets $ uniformly random truth assignment in $\{\textsf{true}, \textsf{false}\}^k$}
-  \STATE{replace the assignments in $\alpha$ for variables in $C$ with the values in $\beta$}
+  \STATE{replace the assignments in $\alpha$ for $D's$ support with the values in $\beta$}
   \WHILE{$\varphi(\alpha) = \textsf{false}$}
-    \STATE{$D \gets $ an unsatisfied clause in $\varphi$ intersecting $C$}
-    \STATE{$\alpha \gets \textsc{Fix}(\varphi, \alpha, D)$}
+    \STATE{$D' \gets $ an unsatisfied clause in $\varphi$ intersecting $D$}
+    \STATE{$\alpha \gets \textsc{Fix}(\varphi, \alpha, D')$}
   \ENDWHILE
   \RETURN{$\alpha$}
 \end{algorithmic}
@@ -1364,7 +1381,7 @@ DESCRIBE MOSER'S ALGORITHM.
   of this tree describes the order of function calls in the
   algorithm's execution.
 
-  The string $\gamma$ can be recreated from the bottom-up from our
+  The string $\gamma$ can be recovered from the bottom-up from our
   knowledge of the tree $T$ and the final assignment
   $\alpha$. Specifically, let $D_t$ be the clause involved in the last
   node of a pre-order traversal of $T$, so it is the last fixed clause
@@ -1387,6 +1404,10 @@ DESCRIBE MOSER'S ALGORITHM.
   \end{align*}
   The result is obtained by applying \lemref{nuel}.
 \end{proof}
+
+Using a slightly more careful encoding of the shape of the recursion
+tree above, Messner showed that $r < 2^k/e$
+suffices~\cite{messner:ksat}.
 
 \section{The Non-Uniform Encoding Lemma and Shannon-Fano Codes}
 \seclabel{nuel}
