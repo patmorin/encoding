@@ -1284,17 +1284,19 @@ or their negations, \emph{e.g.}
 \end{align}
 Two clauses will be said to intersect if their sets of variables
 intersect. The truth value which a formula $\varphi$ evaluates to
-under the assignment of values $a$ to its variables will be denoted
-$\varphi(a)$, and such a formula is said to be \emph{satisfiable} if
-$\varphi(a) = \textsf{true}$ for some $a$. For example, the clause in
-\eqref{clause-example} is satisfied for all truth assignments except
+under the assignment of values $\alpha$ to its variables will be
+denoted $\varphi(\alpha)$, and such a formula is said to be
+\emph{satisfiable} if $\varphi(\alpha) = \textsf{true}$ for some
+$\alpha$. For example, the clause in \eqref{clause-example} is
+satisfied for all truth assignments except
 \[
-(x_1, x_2, x_3) = (\textsf{false}, \textsf{true}, \textsf{false}) \enspace .
+(x_1, x_2, x_3) = (\textsf{false}, \textsf{true}, \textsf{false}) \enspace ,
 \]
-The formulas we are concerned with are conjunctions of clauses, which
-are said to be in \emph{conjunctive normal form} (CNF). More
-specifically, when each clause has $k$ literals, we call it a $k$-CNF
-formula.
+and indeed, any clause is satisfied by any but one truth assignment
+for its variables. The formulas we are concerned with are conjunctions
+of clauses, which are said to be in \emph{conjunctive normal form}
+(CNF). More specifically, when each clause has $k$ literals, we call
+it a $k$-CNF formula.
 
 The $k$-SAT decision problem asks to determine whether or not a given
 $k$-CNF formula is satisfiable. In general, this problem is
@@ -1310,21 +1312,23 @@ DESCRIBE MOSER'S ALGORITHM.
 
 \noindent{$\textsc{Solve}(\varphi)$}
 \begin{algorithmic}[1]
-  \STATE{$a \gets $ uniformly random truth assignment in $\{\textsf{true}, \textsf{false}\}^n$}
-  \WHILE{$\varphi(a) = \textsf{false}$}
+  \STATE{$\alpha \gets $ uniformly random truth assignment in $\{\textsf{true}, \textsf{false}\}^n$}
+  \WHILE{$\varphi(\alpha) = \textsf{false}$}
     \STATE{$C \gets $ an unsatisfied clause in $\varphi$}
-    \STATE{$a \gets \textsc{Fix}(\varphi, a, C)$}
+    \STATE{$\alpha \gets \textsc{Fix}(\varphi, \alpha, C)$}
   \ENDWHILE
+  \RETURN{$\alpha$}
 \end{algorithmic}
 
-\noindent{$\textsc{Fix}(\varphi, a, C)$}
+\noindent{$\textsc{Fix}(\varphi, \alpha, C)$}
 \begin{algorithmic}[1]
-  \STATE{$b \gets $ uniformly random truth assignment in $\{\textsf{true}, \textsf{false}\}^k$}
-  \STATE{replace the assignments in $a$ for variables in $C$ with the values in $b$}
-  \WHILE{$\varphi(a) = \textsf{false}$}
+  \STATE{$\beta \gets $ uniformly random truth assignment in $\{\textsf{true}, \textsf{false}\}^k$}
+  \STATE{replace the assignments in $\alpha$ for variables in $C$ with the values in $\beta$}
+  \WHILE{$\varphi(\alpha) = \textsf{false}$}
     \STATE{$D \gets $ an unsatisfied clause in $\varphi$ intersecting $C$}
-    \STATE{$a \gets \textsc{Fix}(\varphi, a, D)$}
+    \STATE{$\alpha \gets \textsc{Fix}(\varphi, \alpha, D)$}
   \ENDWHILE
+  \RETURN{$\alpha$}
 \end{algorithmic}
 
 \begin{thm}
@@ -1333,37 +1337,55 @@ DESCRIBE MOSER'S ALGORITHM.
 %  chosen uniformly at random.
 %
   Given a $k$-CNF formula $\varphi$ with $m$ clauses and $n$ variables
-  such that each clause intersects at most $r = 2^k/e$ other clauses,
-  the probability that $\textsc{Solve}(\varphi)$ calls $\textsc{Fix}$
-  at least $t$ times, for $t$ satisfying
-  \[
-  t \log (t/m) \ge s \enspace ,
-  \]
-  is at most $2^{-s}$.
+  such that each clause intersects at most $r \le 2^{k - 3}$ other
+  clauses, the probability that $\textsc{Solve}(\varphi)$ calls
+  $\textsc{Fix}$ at least $t$ times is at most $2^{-t}$.
 \end{thm}
 \begin{proof}
   Suppose that $\textsc{Solve}(\varphi)$ calls $\textsc{Fix}$ $t$
-  times. Let $a \in \{\textsf{true}, \textsf{false}\}^n$ be the
-  initial truth assignment for $\varphi$, and let $b_1, \ldots, b_t
-  \in \{\textsf{true}, \textsf{false}\}^k$ be the local truth
-  assignments produced in each call to $\textsc{Fix}$.
+  times. Let $\alpha \in \{\textsf{true}, \textsf{false}\}^n$ be the
+  initial truth assignment for $\varphi$, and let
+  $\beta_1, \ldots, \beta_t \in \{\textsf{true}, \textsf{false}\}^k$
+  be the local truth assignments produced in each call to
+  $\textsc{Fix}$. The string
+  $\gamma = (\alpha, \beta_1, \ldots, \beta_t)$ is uniformly chosen
+  from a set of size $2^{n + sk}$, and will be the subject of our
+  encoding.
 
-  The key observation is that if some clause $C$ is not satisfied,
-  then we can deduce $k$ bits of $a$, the initial truth assignment.
+  The execution of $\textsc{Solve}(\varphi)$ determines a (rooted
+  ordered) \emph{recursion tree} $T$ on $t + 1$ nodes as follows: the
+  root of $T$ corresponds to the initial call to
+  $\textsc{Solve}(\varphi)$, and its children $D_1, \ldots, D_d$
+  recursively correspond to the sequence of calls to
+  $\textsc{Fix}(\varphi, \alpha, D_1), \ldots, \textsc{Fix}(\varphi,
+  \alpha, D_d)$. In particular, each (non-root) node in the tree is
+  assigned a clause and its uniformly random truth assignment produced
+  during the call to $\textsc{Fix}$. Moreover, a pre-order traversal
+  of this tree describes the order of function calls in the
+  algorithm's execution.
 
-  ETC ETC ETC.
+  The string $\gamma$ can be recreated from the bottom-up from our
+  knowledge of the tree $T$ and the final assignment
+  $\alpha$. Specifically, let $D_t$ be the clause involved in the last
+  node of a pre-order traversal of $T$, so it is the last fixed clause
+  in the execution. Since $D_t$ was not satisfied before its
+  reassignment, this allows us to deduce $k$ values of $\alpha$ before
+  $D_t$ was fixed. Pruning $D_t$ from the tree and continuing in this
+  manner at $D_{t - 1}$, we eventually recover the original truth
+  assignment produced in $\textsc{Solve}(\varphi)$.
 
+  Therefore, to encode $\gamma$, we first give the final truth
+  assignment $\alpha$; and a description of the shape of the tree $T$;
+  and the sequence of at most $m$ clauses which are children of the
+  root of $T$; and the at most $t$ clauses involved in the calls to
+  $\textsc{Fix}$ in a pre-order traversal of $T$. Such a code has
+  length
   \begin{align*}
-    |C(a, b_1, \ldots, b_t)| &= \log \binom{m}{t} + t \log r + n \\
-    &= n + tk + \log \binom{m}{t} + t(\log r - k) \\
-    &= n + tk + \log \binom{m}{t} - t \log e \tag{since $r = 2^k/e$} \\
-    &\le n + tk + t \log m - t \log t \tag{by \eqref{log-n-choose-k}} \\
-    &= n + tk - t \log (t/m) \\
-    &\le n + tk - s \enspace . \tag{by choice of $t$}
+    |C(\gamma)| &= n + 2t + m + t \log r \\
+                &\le n + 2t + m + t(k - 3) \tag{since $r \le 2^{k - 3}$} \\
+                &= n + tk - t \enspace .
   \end{align*}
-  The result is obtained by applying \lemref{nuel}. In particular, the
-  algorithm finds a satisfying truth assignment with high probability
-  for $t = \ceil{(1 + \eps) m}$ for any $\eps > 0$.
+  The result is obtained by applying \lemref{nuel}.
 \end{proof}
 
 \section{The Non-Uniform Encoding Lemma and Shannon-Fano Codes}
