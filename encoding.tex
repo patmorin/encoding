@@ -414,7 +414,7 @@ $1/2$. In particular, for $\alpha=(1-\eps)/2$,
 
 Since we now have the pieces we need, we give an encoding argument for
 a well-known and extremely useful result typically attributed to
-Chernoff \cite{X}.
+Chernoff \cite{chernoff:bound}.
 
 \begin{thm}\thmlabel{chernoff-basic}
   Let $x\in\{0,1\}^n$ be chosen uniformly at random.Then
@@ -1447,6 +1447,8 @@ We will say that a real-valued function $\ell : X \to \R$
   exists a prefix-free code $C : X \to \{0, 1\}^*$ such that
   $|C(x)| = \ell(x)$ for all $x \in X$.
 \end{lem}
+It may be interesting to node that this result also holds when $X$ is
+countably infinite.
 
 The following generalization of the Uniform Encoding Lemma, which was
 originally proven by Barron~\cite[Theorem~3.1]{barron:dissertation},
@@ -1498,8 +1500,9 @@ since we are not concerned with ceilings.
 
 We will now prove the so-called \emph{additive version} of the
 Chernoff bound on the tail of a binomial random
-variable. \thmref{chernoff-basic} established the special case of this
-result for $\mathrm{Bernoulli}(1/2)$ bit strings.
+variable~\cite{chernoff:bound}. \thmref{chernoff-basic} established
+the special case of this result for $\mathrm{Bernoulli}(1/2)$ bit
+strings.
 
 \begin{thm}\thmlabel{chernoff}
   If $B$ is a $\mathrm{Binomial}(n,p)$ random variable, then
@@ -1736,6 +1739,160 @@ Maybe omit? It's pretty boring.
 
 \section{Weight Functions}
 \seclabel{weights}
+
+We finally discuss why it has made sense to omit ceilings in all of
+our encoding arguments.
+
+MAYBE TALK ABOUT WHAT LUCIER ET AL. DID LIKE WITH TAO'S INCREMENTAL
+CODE?
+
+Recall that a real-valued function $\ell : X \to \R$
+\emph{satisfies Kraft's condition} if
+\[
+  \sum_{x \in X} 2^{-\ell(x)} \leq 1 \enspace .
+\]
+
+Observe that neither \lemref{uel}, \lemref{nuel}, nor any application
+of either of these results has required the specification of any
+prefix-free code: we know, by construction, that every such code is
+prefix-free, but we could also deduce from Kraft's inequality that,
+since our described codes satisfy Kraft's condition, a prefix-free
+code with the same codeword lengths exists. Instead, codeword lengths
+satisfying Kraft's condition suffice, and indeed, such codeword
+lengths need not be integers.
+
+Let $[0, \infty]$ denote the set of extended non-negative real
+numbers, supporting all the usual extended artihmetic operations,
+including $1/0 = \infty$.
+\begin{lem}\lemlabel{el}
+  Let $\ell : X \to [0, \infty]$ satisfy Kraft's condition and let
+  $x\in X$ be drawn randomly where $p_x$ denotes the probability of
+  drawing $x$.  Then
+  \[
+    \Pr\{ \ell(x) \le \log(1/p_x)-s\} \le 2^{-s} \enspace .
+  \]
+\end{lem}
+\begin{proof}
+  The proof is identical to that of \lemref{nuel}.
+\end{proof}
+
+The sum of functions $\ell : X \to [0, \infty]$ and $\ell' : X' \to
+[0, \infty]$ is the function $\ell + \ell' : X \times X' \to [0,
+\infty]$, where $(\ell + \ell') (x, x') = \ell(x) + \ell'(x')$. Note
+that for any partial codes $C : X \to \{0, 1\}^* \cup \{\bot\}, C' :
+X' \to \{0, 1\}^* \cup \{\bot\}$, any $x \in X$, and any $x' \in X'$,
+\[
+(|C| + |C'|)(x, x') = |C(x)| + |C'(x')| = |(C \cdot C')|(x, x') \enspace .
+\]
+In other words, the sum of these functions describes the length of
+codewords in composed codes.
+
+\begin{lem}\lemlabel{composition-tight}
+  If $\ell : X \to [0, \infty]$ and $\ell' : X' \to [0,
+  \infty]$ satisfy Kraft's condition, then so does $\ell + \ell'$.
+\end{lem}
+\begin{proof}
+  Kraft's condition still holds:
+  \[
+  \sum_{(x, x') \in X \times X'} 2^{-(\ell + \ell')(x, x')} = \sum_{x
+    \in X} \sum_{x' \in X'} 2^{-\ell(x) - \ell'(x')} = \sum_{x \in X}
+  2^{-\ell(x)} \sum_{x' \in X'} 2^{-\ell'(x')} \leq 1 \enspace
+  . \qedhere
+  \]
+\end{proof}
+This is analogous to the fact that the composition of prefix-free
+codes is prefix-free.
+
+\begin{lem}\lemlabel{fixed-length-tight}
+  For any probability density $p : X \to [0, 1]$, the function
+  $\ell : X \to [0, \infty]$ with $\ell(x) = \log (1/p_x)$
+  satisfies Kraft's condition.
+\end{lem}
+\begin{proof}
+  \[
+  \sum_{x \in X} 2^{-\ell(x)} = \sum_{x \in X} 2^{-\log (1/p_x)} =
+  \sum_{x \in X} p_x = 1 \enspace . \qedhere
+  \]
+\end{proof}
+This tells us that we can ignore the ceiling in every instance of a
+fixed-length code and every instance of a Shannon-Fano code while
+encoding.
+
+We now give a tight notion corresponding to Elias codes.
+\begin{thm}[Beigel~\cite{beigel:elias}]\thmlabel{elias-tight}
+  Fix some $0 < \eps < e - 1$. Let $\ell : \N \to [0, \infty]$ have
+  \[
+  \ell(i) = \log i + \log \log i + \cdots + \underbrace{\log \cdots
+    \log}_{\text{$\log^* i$ times}} i - (\log \log (e - \eps)) \log^*
+  i + O(1) \enspace .
+  \]
+  Then, $\ell$ satisfies Kraft's condition.
+\end{thm}
+\begin{thm}[Beigel~\cite{beigel:elias}]
+  The function $\ell : \N \to [0, \infty]$ with
+  \[
+  \ell(i) = \log i + \log \log i + \cdots + \underbrace{\log \cdots
+    \log}_{\text{$\log^* i$ times}} i - (\log \log e) \log^* i + c
+  \]
+  does not satisfy Kraft's condition for any choice of the constant
+  $c$.
+\end{thm}
+
+It may be worth noting that the function in \thmref{elias-tight}
+corresponds to a Shannon-Fano code for some distribution over the
+natural numbers, and that the lengths of Elias $\gamma$-codes in
+particular correspond to Shannon-Fano codes for a discrete Cauchy
+distribution.
+
+Recall how the result of \thmref{runs-i} carried an artifact of binary
+encoding. Using our new tools, we can now refine this and recover the
+exact result.
+\begin{customthm}{\ref{thm:runs-i}b}\thmlabel{runs-ii}
+  Let $x=(x_1,\ldots,x_n)\in\{0,1\}^n$ be chosen uniformly at random
+  and let $t \ge \log n + s$. Then, the probability that there exists
+  an $i\in\{1,\ldots,n-t+1\}$ such that
+  $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$ is at most $2^{-s}$.
+\end{customthm}
+\begin{proof}
+  Let $\ell : \{0, 1\}^n \to [0, \infty]$ be such that if $x$ contains
+  a run of $t \geq \log n + s$ ones, then $\ell(x) = \log n + n - t$,
+  and otherwise $\ell(x) = \infty$. We will show that $\ell$ satisfies
+  Kraft's condition.
+
+  Recall that $x$ is said to contain a run of $t$ ones if there exists
+  some $i \in \{1, \ldots, n - t + 1\}$ such that $x_i = \cdots = x_{i
+    + t - 1} = 1$.
+
+  Let the function $f : \{1, \ldots, n - t + 1\} \to [0, \infty]$ have
+  $f(i) = \log n$ for all $i$, and
+  $g : \{0, 1\}^{n - t} \to [0, \infty]$ have $g(x) = n - t$ for all
+  $x$. Both of these functions satisfy Kraft's condition by
+  \lemref{fixed-length-tight}. By \lemref{composition-tight}, so does
+  the function
+  \[
+    h = f + g : \{1, \ldots, n - t + 1\} \times \{0, 1\}^{n - t} \to
+    [0, \infty] \enspace ,
+  \]
+  where $h(i, y) = \log n + n - t$ for all $i$ and $y$. Crucially,
+  each element of the set $\{1, \ldots, n - t + 1\} \times \{0, 1\}^{n
+    - t}$ corresponds to an $n$-bit binary string containing a run of
+  $t$ ones: the element $(i, y) \in \{1, \ldots, n - t + 1\} \times
+  \{0, 1\}^{n - t}$, where $y = (y_1, \ldots, y_{n - t})$, corresponds
+  to the binary string
+  \[
+  y_1 \cdots y_{i - 1} \underbrace{1 1 \cdots 1}_{\text{$t$ times}}
+  y_i \cdots y_{n - t} \enspace .
+  \]
+  Therefore, $\ell$ satisfies Kraft's condition. By our choice of
+  $t$, we have that $\ell(x) \leq n - s$ if and only if $x$ contains a
+  run of $t$ ones. We finish by applying \lemref{el}.
+\end{proof}
+
+It is not hard to see how \lemref{el}, \lemref{composition-tight},
+\lemref{fixed-length-tight}, and \thmref{elias-tight} can be used to
+give encoding arguments with real-valued codeword lengths, just as we
+did in the proof above.
+
 
 \section{Summary and Conclusions}
 \seclabel{summary}
