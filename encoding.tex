@@ -466,7 +466,7 @@ helpful to remind the reader of a few inequalities that can be derived
 from Stirling's Approximation of $n!$.  Recall that Stirling's
 Approximation states that
 \begin{equation}
-  n! = \left(\frac{n}{e}\right)^n\sqrt{2\pi n}\left(1+O\left(\frac{1}{n}\right)\right) \enspace .
+  n! = \left(\frac{n}{e}\right)^n\sqrt{2\pi n}\left(1+\Theta\left(\frac{1}{n}\right)\right) \enspace .
   \eqlabel{stirling}
 \end{equation}
 
@@ -475,9 +475,9 @@ using a fixed-length code.  The length of the codewords in such a code
 is
 \begin{align}
   \log n!
-  & \le n\log n - n\log e + (1/2)\log n + \log(1+O(1/n)) \notag \\
-  & \le n\log n - n\log e + (1/2)\log n + O(1/n) \tag{since $1+x \le e^x$} \\
-  & \le n\log n - n\log e + O(\log n) \eqlabel{stirling-loose}
+  & = n\log n - n\log e + (1/2)\log n + \log(1+\Theta(1/n)) \notag \\
+  & = n\log n - n\log e + (1/2)\log n + \Theta(1/n) \notag \\
+  & = n\log n - n\log e + \Theta(\log n) \eqlabel{stirling-loose}
     \enspace .
 \end{align}
 
@@ -814,7 +814,7 @@ is based on V\"{o}cking's use of witness trees to analyze 2-choice
 hashing~\cite{vocking:witness}.
 
 Let $G = (V, E)$ be the random multigraph with $V = \{1, \ldots, m\}$,
-where $m = cn$ for some constant $c > e$, and
+where $m = cn$ for some constant $c > 4$, and
 $E = \{(h(x), g(x)) : x \in X\}$.
 
 \begin{lem}\lemlabel{two-choice-two-cycles}
@@ -837,31 +837,33 @@ $E = \{(h(x), g(x)) : x \in X\}$.
 \end{proof}
 
 \begin{lem}\lemlabel{two-choice-component-size}
-  $G$ has a component of size at least $(2/\log(c/e))\log n + O(1)$
+  $G$ has a component of size at least $(2/\log(c/4))\log n + O(1)$
   with probability $O(1/n)$.
 \end{lem}
 \begin{proof}
   Suppose $G$ has a connected component $X$ with $t - 1$ edges and at
-  most $t$ vertices. We encode the edge set of $G$ by providing the
-  set of vertices in a spanning tree of $X$, and we choose to root
-  this tree at the first vertex described in this set; then the shape
-  of this tree; and the labels of the $t - 1$ edges encountered in an
-  inorder traversal of this tree; and finally the remaining
-  $2(n - t + 1)$ endpoints of edges. By Cayley's formula and since $G$
-  is a multigraph, there are at most $t^{t - 2}$ rooted spanning trees
-  of $G$. In total, our code has length
+  most $t$ vertices. Then $X$ has a spanning tree $T$. Pick an
+  arbitrary vertex of $X$ as the root of $T$. We encode $G$ by
+  specifying first the $t - 1$ edges and $t$ vertices encountered in a
+  pre-order traversal of $T$; then a bit string encoding the shape of
+  $T$; and finally the remaining $2(n - t + 1)$ endpoints of edges.
+
+  We can encode the shape of $T$ using a bit string of length
+  $2(t - 1)$, tracing a pre-order traversal of the tree, where a 0 bit
+  indicates that the path to the next node goes up, and a 1 indicates
+  that the path goes down. In total, our code has length
   \begin{align*}
-    |C(G)| &= \log \binom{m}{t} + (t - 2) \log t + (t - 1) \log n + 2 (n - t + 1) \log m \\
-           &\le 2n \log m + t\log m - t\log t + t\log e + (t-2)\log t + (t-1)\log n - 2(t-1)\log m \tag{by \eqref{log-n-choose-k}} \\
-           &\le 2n \log m - t\log c + t\log e - 2\log t + \log n + O(1) \tag{since $m = cn$} \\
+    |C(G)| &= t \log m + (t - 1) \log n + 2(t - 1) + 2 (n - t + 1) \log m \\
+           &= 2n\log m + t \log c - \log n + 2t - 2 - 2t \log c + 2\log n + 2 \log c \tag{since $m = cn$}\\
+           &= \log m^{2n} - t \log c + 2t + \log n + O(1) \\
            &\le \log m^{2n} - s \enspace ,
   \end{align*}
   as long as $t$ is such that
   \[
-    t \log (c/e) + 2\log t \geq s + \log n + O(1) \enspace .
+    t \geq \frac{s + \log n + O(1)}{\log (c/4)} \enspace .
   \]
   In particular, if we choose $s = \log n$, applying \lemref{uel}
-  tells us that $X$ has size at least $(2/\log (c/e))\log n + O(1)$
+  tells us that $X$ has size at least $(2/\log (c/4))\log n + O(1)$
   with probability $O(1/n)$.
 \end{proof}
 
@@ -896,6 +898,13 @@ other elements. Then, we say that the age of $x$ is $a(x) = t$.
   \lemref{two-choice-component-size} happens with probability $O(1/n)$
   for a sufficiently large choice of the constant $d$.
 \end{proof}
+
+\begin{rem}
+  The arguments in this section can be refined by more carefully
+  encoding the shape of trees using Cayley's formula. We would then
+  recover the same results for hash tables of size $m = cn$ for
+  $c > e$, instead of $c > 4$.
+\end{rem}
 
 \subsection{Robin-Hood Hashing}
 
@@ -974,112 +983,6 @@ Wigderson~\cite[Lemma~1.9]{hoory.linial.ea:expander}.
   gives the desired result.
 \end{proof}
 
-\subsection{Analysis of Insertion Sort}
-
-Recall the insertion-sort algorithm for sorting a list,
-$A_1,\ldots,A_n$ of $n$ elements:
-
-\noindent{$\textsc{InsertionSort}(A_1,\ldots,A_n)$}
-\begin{algorithmic}[1]
-  \FOR{$i\gets 2$ \TO $n$}
-     \STATE{$j \gets i$}
-     \WHILE{$j>1$ \AND $A_{j-1} > A_j$}
-         \STATE{$A_j \leftrightarrow A_{j-1}$
-            \COMMENT{ swap }}
-         \STATE{$j\gets j-1$}
-     \ENDWHILE
-  \ENDFOR
-\end{algorithmic}
-
-A typical question asks the expected number of times Line~4 executes
-if $A_1,\ldots,A_n$ is a uniformly random permutation of $n$ distinct
-elements.  The answer $\binom{n}{2}/2$ is an easy application of
-linearity of expectation: For every one of the $\binom{n}{2}$ pairs
-$p,q\in\{1,\ldots,n\}$ with $p<q$, the values initially stored at
-positions $A_p$ and $A_q$ will eventually be swapped if and only if
-$A_p > A_q$, which happens with probability $1/2$ in a random
-permutation.
-
-A more advanced question is to ask for a concentration result on the
-number of executions of Line~4. This is a harder question to tackle;
-because $>$ is transitive, the $\binom{n}{2}$ events being studied
-have a lot of interdependence. In the following, we show how to obtain
-a concentration result with an encoding argument.  The argument
-presented here follows the same outline as Vitanyi's analysis of
-bubble sort \cite{vitanyi:analysis}, though without all the trappings
-of Kolmogorov complexity.
-
-\begin{thm}\thmlabel{insertion-sort}
-  For a random permutation, $A_1,\ldots,A_n$ of $n$ distinct elements,
-  the probability that Line~4 of \textsc{InsertionSort} executes fewer
-  than $\alpha n^2 - n + 2$ times is at most
-  $2^{n\log(\alpha e^2)+O(\log n)}$.  In particular, for a fixed
-  $\alpha < 1/e^2$, this probability is $2^{-\Omega(n)}$.
-\end{thm}
-
-\begin{proof}
-  Let $\pi$ be the permutation of $\{1,\ldots,n\}$ that defines the
-  sorted order of $A_1,\ldots,A_n$, so that $A_{\pi_j}$ is the element
-  that appears at position $j$ after sorting. Notice that $\pi$ is
-  chosen uniformly at random among all $n!$ permutations of of
-  $\{1,\ldots,n\}$.
-  
-  We encode the permutation $\pi$ by recording the execution of
-  InsertionSort on this permutation. In particular, we record, for
-  each $i\in\{2,\ldots,n\}$, the number of times, $m_i$, that Line~4
-  executes during the $i$th iteration of \textsc{InsertionSort}. With
-  this information, one can run the following version of
-  \textsc{InsertionSort} to recover $\pi$:
-  
-  \noindent{$\textsc{InsertionSortReconstruct}(m_2,\ldots,m_n)$}:
-  \begin{algorithmic}[1]
-    \STATE{$\pi \gets (1,\ldots,n)$}
-    \FOR{$i\gets 2$ \TO $n$}
-       \FOR{$j\gets i \textbf{ down to } i-m_i+1$}
-           \STATE{$\pi_j \leftrightarrow \pi_{j-1}$
-              \COMMENT{ swap }}
-       \ENDFOR
-    \ENDFOR
-  \end{algorithmic}
-   
-  To make this work, we have to be slightly clever with this
-  encoding. Rather than encode $m_2,m_3,\ldots,m_n$ directly, we first
-  encode $m=\sum_{i=2}^{n} m_i$ using $\lceil 2\log n\rceil$ bits
-  (since $m < n^2$). Given $m$, what remains is to describe the
-  partition of $m$ into $n-1$ non-negative integers $m_2,\ldots,m_n$;
-  there are $\binom{m+n-2}{n-2}$ such partitions.\footnote{To see
-    this, draw $m+n-2$ white dots on a line, then choose $n-2$ dots to
-    colour black. This splits the remaining $m$ white dots up into
-    $n-1$ groups, which determine the values of $m_2,\ldots,m_n$.}
-  
-  Therefore, the values of $m_2,\ldots,m_n$ can be encoded using
-  \[
-    b = \lceil 2\log n\rceil + \log\binom{m+n-2}{n-2}
-  \]
-  bits and this is sufficient to recover the permutation that defines
-  $A_1,\ldots,A_n$.  By applying \eqref{log-n-choose-k} to $b$, we
-  obtain
-  \begin{align*}
-    b & \le (n-2)\log(m+n-2) - (n-2)\log(n-2)  + (n-2)\log e + O(\log n) \\
-      & \le n\log(m+n-2) - n\log n   + n\log e + O(\log n) \\
-      & \le n\log(\alpha n^2) - n\log n  + n\log e + O(\log n) \\
-      & = 2n\log n + n\log\alpha - n\log n  + n\log e + O(\log n) \\
-      & = n\log n + n\log\alpha + n\log e + O(\log n) \\
-      & = \log n! + n\log\alpha + 2n\log e + O(\log n) \\
-      & = \log n! + n(\log \alpha e^2) + O(\log n)  \qedhere
-  \end{align*}
-\end{proof}
-
-\begin{rem}
-  Although it doesn't require any advanced probability,
-  \thmref{insertion-sort} is not sharp; it only gives a non-trivial
-  probability when $\alpha < 1/e^2$.  To obtain a sharp bound, one can
-  use the fact that $m_2,\ldots,m_n$ are independent and $m_i$ is
-  uniform over $\{0,\ldots,i-1\}$ and then use the method of bounded
-  differences \cite{mcdiarmid:on} to show that $m$ is concentrated in
-  an interval of size $O(n^{3/2})$.
-\end{rem}
-
 \subsection{Permutations and Binary Search Trees}
 
 A \emph{permutation} $\sigma$ of size $n$ is a sequence of $n$
@@ -1090,6 +993,112 @@ distinct integers, sometimes denoted
 Except when explicitly stated, we will assume that the set of integers
 involved in a permutation of size $n$ is precisely $\{1, \ldots,
 n\}$. The number of such permutations is $n!$.
+
+\subsubsection{Analysis of Insertion Sort}
+
+Recall the insertion-sort algorithm for sorting a list,
+$x_1,\ldots,x_n$ of $n$ elements:
+
+\noindent{$\textsc{InsertionSort}(x_1,\ldots,x_n)$}
+\begin{algorithmic}[1]
+  \FOR{$i\gets 2$ \TO $n$}
+     \STATE{$j \gets i$}
+     \WHILE{$j>1$ \AND $x_{j-1} > x_j$}
+         \STATE{$x_j \leftrightarrow x_{j-1}$
+            \COMMENT{ swap }}
+         \STATE{$j\gets j-1$}
+     \ENDWHILE
+  \ENDFOR
+\end{algorithmic}
+
+A typical question asks the expected number of times Line~4 executes
+if $x_1,\ldots,x_n$ is a uniformly random permutation of $n$ distinct
+elements.  The answer $\binom{n}{2}/2$ is an easy application of
+linearity of expectation: For every one of the $\binom{n}{2}$ pairs
+$p,q\in\{1,\ldots,n\}$ with $p<q$, the values initially stored at
+positions $x_p$ and $x_q$ will eventually be swapped if and only if
+$x_p > x_q$, which happens with probability $1/2$ in a random
+permutation.
+
+A more advanced question is to ask for a concentration result on the
+number of executions of Line~4. This is a harder question to tackle;
+because $>$ is transitive, the $\binom{n}{2}$ events being studied
+have a lot of interdependence. In the following, we show how to obtain
+a concentration result with an encoding argument.  The argument
+presented here follows the same outline as Vit\'{a}nyi's analysis of
+bubble sort \cite{vitanyi:analysis}, though without all the trappings
+of Kolmogorov complexity.
+
+\begin{thm}\thmlabel{insertion-sort}
+  For a random permutation, $x_1,\ldots,x_n$ of $n$ distinct elements,
+  the probability that Line~4 of \textsc{InsertionSort} executes fewer
+  than $\alpha n^2 - n + 2$ times is at most
+  $2^{n\log(\alpha e^2)+O(\log n)}$.  In particular, for a fixed
+  $\alpha < 1/e^2$, this probability is $2^{-\Omega(n)}$.
+\end{thm}
+
+\begin{proof}
+  Let $\sigma$ be the permutation of $\{1,\ldots,n\}$ that defines the
+  sorted order of $x_1,\ldots,x_n$, so that $x_{\sigma(j)}$ is the
+  element that appears at position $j$ after sorting. Notice that
+  $\sigma$ is chosen uniformly at random among all $n!$ permutations
+  of of $\{1,\ldots,n\}$.
+  
+  We encode the permutation $\sigma$ by recording the execution of
+  InsertionSort on this permutation. In particular, we record, for
+  each $i\in\{2,\ldots,n\}$, the number of times, $m_i$, that Line~4
+  executes during the $i$th iteration of \textsc{InsertionSort}. With
+  this information, one can run the following version of
+  \textsc{InsertionSort} to recover $\sigma$:
+  
+  \noindent{$\textsc{InsertionSortReconstruct}(m_2,\ldots,m_n)$}:
+  \begin{algorithmic}[1]
+    \STATE{$\sigma \gets (1,\ldots,n)$}
+    \FOR{$i\gets 2$ \TO $n$}
+       \FOR{$j\gets i \textbf{ down to } i-m_i+1$}
+           \STATE{$\sigma(j) \leftrightarrow \sigma(j-1)$
+              \COMMENT{ swap }}
+       \ENDFOR
+    \ENDFOR
+  \end{algorithmic}
+   
+  To make this work, we have to be slightly clever with this
+  encoding. Rather than encode $m_2,m_3,\ldots,m_n$ directly, we first
+  encode $m=\sum_{i=2}^{n} m_i$ using $2\log n$ bits (since
+  $m < n^2$). Given $m$, what remains is to describe the partition of
+  $m$ into $n-1$ non-negative integers $m_2,\ldots,m_n$; there are
+  $\binom{m+n-2}{n-2}$ such partitions.\footnote{To see this, draw
+    $m+n-2$ white dots on a line, then choose $n-2$ dots to colour
+    black. This splits the remaining $m$ white dots up into $n-1$
+    groups, which determine the values of $m_2,\ldots,m_n$.}
+  
+  Therefore, the values of $m_2,\ldots,m_n$ can be encoded using
+  \[
+    |C(\sigma)| = 2\log n + \log\binom{m+n-2}{n-2}
+  \]
+  bits and this is sufficient to recover the permutation that defines
+  $x_1,\ldots,x_n$.  By applying \eqref{log-n-choose-k}, we obtain
+  \begin{align*}
+    |C(\sigma)| & \le (n-2)\log(m+n-2) - (n-2)\log(n-2)  + (n-2)\log e + O(\log n) \\
+      & \le n\log(m+n-2) - n\log n   + n\log e + O(\log n) \\
+      & \le n\log(\alpha n^2) - n\log n  + n\log e + O(\log n) \\
+      & = 2n\log n + n\log\alpha - n\log n  + n\log e + O(\log n) \\
+      & = n\log n + n\log\alpha + n\log e + O(\log n) \\
+      & = \log n! + n\log\alpha + 2n\log e + O(\log n) \tag{by \eqref{stirling-loose}} \\
+      & = \log n! + n \log (\alpha e^2) + O(\log n) \enspace .  \qedhere
+  \end{align*}
+\end{proof}
+
+
+\begin{rem}
+  Although it doesn't require any advanced probability,
+  \thmref{insertion-sort} is not sharp; it only gives a non-trivial
+  probability when $\alpha < 1/e^2$.  To obtain a sharp bound, one can
+  use the fact that $m_2,\ldots,m_n$ are independent and $m_i$ is
+  uniform over $\{0,\ldots,i-1\}$ and then use the method of bounded
+  differences \cite{mcdiarmid:on} to show that $m$ is concentrated in
+  an interval of size $O(n^{3/2})$.
+\end{rem}
 
 \subsubsection{Records}
 
@@ -1147,8 +1156,8 @@ concentration of records in a random permutation.
 
   Suppose that $\sigma$ has $t \geq c\log n$ records
   $r_1 < r_2 < \cdots < r_t$, for some fixed $c > 2$. First, give a
-  bit string $x = x_1 \cdots x_t \in \{0, 1\}^t$, where $x_i = 0$ if
-  and only if $r_i$ lies in the first half of the interval
+  bit string $x = (x_1, \dots, x_t) \in \{0, 1\}^t$, where $x_i = 0$
+  if and only if $r_i$ lies in the first half of the interval
   $[r_{i - 1}, n]$. It follows that $n_1(x) \leq \log n$. In other
   words, $x$ is a sparse bit string, and $n_1(x)/t \leq 1/c$.
 
@@ -1276,11 +1285,11 @@ $\textsf{false}$. The negation of $x$ is denoted by $\neg x$. A
 \emph{literal} is either a variable or its negation. A
 \emph{conjunction} of literals is an ``and'' of literals, denoted by
 $\land$. A \emph{disjunction} of literals is an ``or'' of literals,
-denoted by $\lor$. A \emph{formula} is an expression including
-conjunctions and disjunctions of literals, and the set of variables
-involved in this formula is called the \emph{support} of $\varphi$. A
-\emph{clause} is a disjunction of literals, \emph{i.e.} the ``or'' of
-a set of variables or their negations, \emph{e.g.}
+denoted by $\lor$. A \emph{formula} $\varphi$ is an expression
+including conjunctions and disjunctions of literals, and the set of
+variables involved in this formula is called the \emph{support} of
+$\varphi$. A \emph{clause} is a disjunction of literals, \emph{i.e.}
+the ``or'' of a set of variables or their negations, \emph{e.g.}
 \begin{align}
   x_1 \lor \neg x_2 \lor x_3 \enspace . \eqlabel{clause-example}
 \end{align}
@@ -1366,7 +1375,7 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
   be the local truth assignments produced in each call to
   $\textsc{Fix}$. The string
   $\gamma = (\alpha, \beta_1, \ldots, \beta_t)$ is uniformly chosen
-  from a set of size $2^{n + sk}$, and will be the subject of our
+  from a set of size $2^{n + tk}$, and will be the subject of our
   encoding.
 
   The execution of $\textsc{Solve}(\varphi)$ determines a (rooted
@@ -1395,8 +1404,9 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
   assignment $\alpha$; and a description of the shape of the tree $T$;
   and the sequence of at most $m$ clauses which are children of the
   root of $T$; and the at most $t$ clauses involved in the calls to
-  $\textsc{Fix}$ in a pre-order traversal of $T$. Such a code has
-  length
+  $\textsc{Fix}$ in a pre-order traversal of $T$. As in
+  \lemref{two-choice-component-size}, the shape of $T$ can be encoded
+  using $2t$ bits. In total, the code has length
   \begin{align*}
     |C(\gamma)| &= n + 2t + m + t \log r \\
                 &\le n + 2t + m + t(k - 3) \tag{since $r \le 2^{k - 3}$} \\
