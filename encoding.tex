@@ -258,10 +258,10 @@ a run of significantly more than $\log n$ one bits.  (See
     \le n-s \enspace .
   \]
   It is easy to check that, for any such $x$, we can reconstruct
-  $(x_1,\ldots,x_n)$ from $C(x)$, so $C$ is indeed a partial code
-  whose domain is the set of binary strings of length $n$ having a run
-  of $t$ or more ones.  It is also easy to see that $C$ is prefix
-  free, since all codewords are unique and have the same length.
+  $(x_1,\ldots,x_n)$ from $C(x)$, so $C$ is a partial code whose
+  domain is the set of binary strings of length $n$ having a run of
+  $t$ or more ones.  It is also easy to see that $C$ is prefix free,
+  since all codewords are unique and have the same length.
 
   Now, $x$ was chosen uniformly at random from a set of size $2^{n}$.
   Therefore, by the Uniform Encoding Lemma, the probability that there
@@ -326,7 +326,7 @@ omit ceilings this way in all our theorems and proofs. This makes
 calculations simpler and provides tighter results.  For now, it allows
 us to state the following cleaner version of \thmref{runs-i}:
 
-\begin{customthm}{\ref{thm:runs-i}b}\thmlabel{runs-ii}
+\begin{customthm}{\ref*{thm:runs-i}b}\thmlabel{runs-ii}
   Let $x=(x_1,\ldots,x_n)\in\{0,1\}^n$ be chosen uniformly at random
   and let $t \ge \log n + s$. Then, the probability that there exists
   an $i\in\{1,\ldots,n-t+1\}$ such that
@@ -346,7 +346,11 @@ $n_0(x)$ zeros,
 \end{equation}
 This code is the so-called Shannon-Fano code for
 $\mathrm{Bernoulli}(\alpha)$ bit strings of length $n$
-\cite{fano:transmission,shannon:mathematical}.
+\cite{fano:transmission,shannon:mathematical}. In general, a
+Shannon-Fano code $C : X \to \{0, 1\}^*$ is really parametrized over
+any probability density $p : X \to [0, 1]$ so that $|C(x)| =
+\ceil{\log (1/p_x)}$, and in particular, the construction of such a
+code is deterministic, even when $X$ is (countably) infinite.
 
 Again, as we will see in \secref{weights}, we can omit the ceiling in
 the expression for $|C_\alpha(x)|$.  This is true for any value of
@@ -494,6 +498,43 @@ $nH(k/n)$.  In particular, this implies that
 where the last inequality is an application of \eqref{entropy-i}. (The
 astute reader will notice that we just used an encoding argument to
 prove an upper-bound on $\binom{n}{k}$.)
+
+\subsection{Encoding the Natural Numbers}
+
+We have so far only explicitly been concerned with codes for finite
+sets. In this section, we give an outline of the design of some
+prefix-free codes for the set of natural numbers. Of course, if $p :
+\N \to [0, 1]$ is a probability density, then the Shannon-Fano code
+for $p$ could serve. However, it seems easier to simply design our
+codes by hand, rather than find appropriate distributions.
+
+A code is prefix-free if and only if a message consisting of a
+sequence of its codewords can be decoded unambiguously as it is read
+from left to right. This idea allows us more easily to design the
+codes in this section, which were originally given by
+Elias~\cite{elias:coding}.
+
+The \emph{unary encoding} of an integer $i \in \N$ begins with $i$ 1
+bits which are punctuated with a 0 bit. This code is not particularly
+useful in itself. The \emph{Elias $\gamma$-code} for $i$ begins with
+the unary encoding of the number of bits in $i$, and then the binary
+encoding of $i$ itself (minus its leading bit). The \emph{Elias
+  $\delta$-code} for $i$ begins with an Elias $\gamma$-code for the
+number of bits in $i$, and then the binary encoding of $i$ itself
+(minus its leading bit). This process can be continued recursively to
+obtain the \emph{Elias $\omega$-code}.
+
+The most important properties of these codes are their codeword
+lengths:
+\begin{align*}
+  |U(i)| &= i + 1 \enspace , \tag{Unary code} \\
+  |E_\gamma(i)| &= 2 \log i + O(1) \enspace , \tag{Elias $\gamma$-code} \\
+  |E_\delta(i)| &= \log i + 2 \log \log i + O(1) \enspace , \tag{Elias $\delta$-code} \\
+  |E_\omega(i)| &= \log i + \log \log i + \dots + \underbrace{\log \cdots \log}_{\text{$\log^* i$ times}}i + O(\log^* i) \enspace . \tag{Elias $\omega$-code}
+\end{align*}
+It may be worth noting that the lengths of Elias $\gamma$-codes
+correspond to the lengths of Shannon-Fano codes for a discrete Cauchy
+distribution.
 
 \section{Applications of the Uniform Encoding Lemma}
 \seclabel{applications-i}
@@ -687,11 +728,11 @@ considered consecutive) sequence of occupied table locations a
 \begin{proof}
   Let $S$ denote the size of the largest block in such a hash
   table. From \thmref{linear-probing}, any fixed $x_i$ is contained in
-  a block of size at least $2s/\log (c/e) + d$ with probability at
-  most $2^{-s}$, for some constant $d$. Then,
+  a block of size at least $2s/\log (c/e) + s_0$ with probability at
+  most $2^{-s}$, for some constant $s_0$. Then,
   \begin{align*}
-    \E\{S\} &= \sum_{s \ge 1} \Pr\{S \ge s\} = \sum_{i=1}^d \Pr\{S \ge s\} + \sum_{s \ge 1} \Pr\{S \ge s + d\} \\
-            &\le d + \sum_{s \ge 1} 2^{-s \log (c/e)/2} = d + \sum_{s \ge 1} \left(\frac{c}{e}\right)^{-s/2} = O(1) \enspace . \qedhere
+    \E\{S\} &= \sum_{s = 1}^\infty \Pr\{S \ge s\} = \sum_{i=1}^{s_0} \Pr\{S \ge s\} + \sum_{s = 1}^\infty \Pr\{S \ge s + s_0\} \\
+            &\le s_0 + \sum_{s = 1}^\infty 2^{-s \log (c/e)/2} = s_0 + \sum_{s = 1}^\infty (c/e)^{-s/2} = O(1) \enspace . \qedhere
   \end{align*}
 \end{proof}
 
@@ -807,9 +848,9 @@ collisions, or the maximum number of elements in any urn.
 
 Perhaps surprisingly, the simple change of having two choices instead
 of only one results in an exponential improvement over the strategy of
-\secref{urns}. Indeed, 2-choice hashing was first studied by Azar
-\emph{et al.}~\cite{azar:multiplechoice}, who showed that the expected maximum size of an urn is
-$\log \log n + O(1)$. Our encoding argument
+\secref{urns}. 2-choice hashing was first studied by Azar \emph{et
+  al.}~\cite{azar:multiplechoice}, who showed that the expected
+maximum size of an urn is $\log \log n + O(1)$. Our encoding argument
 is based on V\"{o}cking's use of witness trees to analyze 2-choice
 hashing~\cite{vocking:witness}.
 
@@ -914,12 +955,12 @@ Soon.
 \subsection{Bipartite Expanders}
 
 Consider a random bipartite multigraph $G=(A,B,E)$ where $|A|=|B|=n$
-and the $3n$ edges in $E$ are obtained as follows: each vertex
-$u\in A$ chooses 3 random neighbours, $x(u)$, $y(u)$, and $z(u)$, in
-$B$, with replacement.  All choices of edges are independent. For a
-set $A'\subseteq A$, the \emph{neighbourhood} of $A'$, denoted
-$N(A')$, is the subset of vertices in $B$ that are adjacent to at
-least one element of $A'$.
+and the $3n$ edges in $E$ are obtained as follows: Each vertex $u\in
+A$ chooses 3 random neighbours, $x(u)$, $y(u)$, and $z(u)$, in $B$,
+with replacement.  All choices of edges are independent. For a set
+$A'\subseteq A$, the \emph{neighbourhood} of $A'$, denoted $N(A')$, is
+the subset of vertices in $B$ that are adjacent to at least one
+element of $A'$.
 
 The following theorem shows that $G$ is an expander.  The proof of
 this theorem usually involves a messy sum that contains binomial
@@ -940,28 +981,19 @@ Wigderson~\cite[Lemma~1.9]{hoory.linial.ea:expander}.
   random from a set of size $n^{3n}$.
 
   If some set $A'$, $|A'|=k\le \alpha n$, violates the conditions of
-  the theorem, then we encode $k$, $A'$, $N(A')$ and then the edges
-  between $A'$ and $N(A')$. Then we encode the rest of $G$, skipping
-  the $3k\log n$ bits devoted to elements in $A'$.  The key savings
-  here comes because $N(A')$ should take $3k\log n$ bits to encode,
-  but can actually be encoded in roughly $3k\log(3k/2)$ bits.
-
-  The total size of the first part of our encoding is, which includes
-  $k$, $A'$ and $N(A')$ is
+  the theorem, then we encode $k$ using an Elias $\delta$-code; the
+  set $A'$; the set $N(A')$; and the edges between $A'$ and
+  $N(A')$. Then we encode the rest of $G$, skipping the $3k\log n$
+  bits devoted to elements in $A'$.  The key savings here comes
+  because $N(A')$ should take $3k\log n$ bits to encode, but can
+  actually be encoded in roughly $3k\log(3k/2)$ bits. Our code then
+  has length
   \begin{align*}
-    h & = 2\log k + \log\binom{n}{k} + \log\binom{n}{3k/2} + 3k\log (3k/2) \\
-      & \le k\log n - k\log k + (3/2)k\log n - (3/2)k\log k + 3k\log k + \beta k + 2 \log k \\
-      & = (5/2)k\log n + (1/2)k\log k + \beta k + 2 \log k  \enspace ,
+    |C(G)| &= 2\log k + \log {n \choose k} + \log {n \choose 3k/2} + 3k \log (3k/2) + (3n - 3k)\log n + O(1) \\
+           &\leq \log n^{3n} - (k/2)\log n + (k/2)\log k + \beta k + 2 \log k + O(1) \tag{by \eqref{log-n-choose-k}}\\
+           &= \log n^{3n} - s(k)
   \end{align*}
-  for $\beta = (3/2) \log (3/2) + (5/2) \log e$. The size of the
-  second part of our encoding is $3n\log n - 3k\log n$.  The savings,
-  $s=s(k)$, we obtain is therefore
-  \begin{align*}
-    s(k) & = 3k\log n - (5/2)k\log n - (1/2)k\log k - \beta k - 2 \log k \\
-         & = (1/2)k(\log n - \log k - 2 \beta) - 2\log k \\
-         & = (1/2)k\log\left(\frac{n}{2^{2\beta} k}\right) - 2 \log k \enspace .
-  \end{align*}
-  Note that
+  bits, where $\beta = (3/2) \log (3/2) + (5/2) \log e$. Note that
   \[
     \frac{d^2}{dk^2} s(k) = \frac{4 - k}{2 k^2} \log e \enspace ,
   \]
@@ -1237,7 +1269,7 @@ be balanced if it occurs in the middle half of its subrange.
     1 \leq (3/4)^{n_1(x)} n \iff n_1(x) \leq \log_{4/3} n \enspace .
   \]
 
-  The second part of our encoding is recursive: first, encode the
+  The second part of our encoding is recursive: First, encode the
   value of the root $r$ using $\log \lceil n/2 \rceil$ bits. If the
   path $Y$ goes to the left of $r$, then specify the values in the
   right subtree of $r$, including an explicit encoding of the
@@ -1247,7 +1279,7 @@ be balanced if it occurs in the middle half of its subrange.
  
   The first part of our encoding uses at most
   \[
-    \log n + t H\left(\frac{n_1(x)}{t}\right)
+    \log n + t H(n_1(x)/t)
   \]
   bits. The same analysis as performed in \thmref{records} shows that
   the second part of our encoding has length at most
@@ -1303,16 +1335,16 @@ assignments except
 \[
 (x_1, x_2, x_3) = (\textsf{false}, \textsf{true}, \textsf{false}) \enspace ,
 \]
-and indeed, any clause is satisfied by any but one truth assignment
-for its support. The formulas we are concerned with are conjunctions
-of clauses, which are said to be in \emph{conjunctive normal form}
+and indeed any clause is satisfied by any but one truth assignment for
+its support. The formulas we are concerned with are conjunctions of
+clauses, which are said to be in \emph{conjunctive normal form}
 (CNF). More specifically, when each clause has $k$ literals, we call
 it a $k$-CNF formula.
 
 The $k$-SAT decision problem asks to determine whether or not a given
-$k$-CNF formula is satisfiable. In general, this problem is
-hard. Indeed, any satisfiable truth assignment to the variables in a
-CNF formula induces a truth assignment for each of its clauses; the
+$k$-CNF formula is satisfiable. In general, this problem is hard. Of
+course, any satisfiable truth assignment to the variables in a CNF
+formula induces a truth assignment for each of its clauses; the
 converse is true if each clause is pairwise disjoint, and as we will
 see, even if each clause is only nearly pairwise disjoint, \emph{i.e.}
 their intersection has size less than $2^k/e$.
@@ -1379,7 +1411,7 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
   encoding.
 
   The execution of $\textsc{Solve}(\varphi)$ determines a (rooted
-  ordered) \emph{recursion tree} $T$ on $t + 1$ nodes as follows: the
+  ordered) \emph{recursion tree} $T$ on $t + 1$ nodes as follows: The
   root of $T$ corresponds to the initial call to
   $\textsc{Solve}(\varphi)$, and its children $D_1, \ldots, D_d$
   recursively correspond to the sequence of calls to
@@ -1416,8 +1448,8 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
 \end{proof}
 
 Using a slightly more careful encoding of the shape of the recursion
-tree above, Messner showed that $r < 2^k/e$
-suffices~\cite{messner:ksat}.
+tree above, Messner and Thierauf~\cite{messner:ksat} gave an encoding
+argument for the above result in which $r < 2^k/e$.
 
 \section{The Non-Uniform Encoding Lemma and Shannon-Fano Codes}
 \seclabel{nuel}
@@ -1447,8 +1479,6 @@ We will say that a real-valued function $\ell : X \to \R$
   exists a prefix-free code $C : X \to \{0, 1\}^*$ such that
   $|C(x)| = \ell(x)$ for all $x \in X$.
 \end{lem}
-It may be interesting to node that this result also holds when $X$ is
-countably infinite.
 
 The following generalization of the Uniform Encoding Lemma, which was
 originally proven by Barron~\cite[Theorem~3.1]{barron:dissertation},
@@ -1513,7 +1543,7 @@ strings.
   \[ 
     D(p \| q)= p\log (p/q) + (1-p)\log ((1 - p)/(1 - q))
   \]
-  is the \emph{Kullbach-Liebler divergence} or \emph{relative entropy}
+  is the \emph{Kullback-Liebler divergence} or \emph{relative entropy}
   between $\mathrm{Bernoulli}(p)$ and $\mathrm{Bernoulli}(q)$ random
   variables.
 \end{thm}
@@ -1733,10 +1763,6 @@ accomplished with an encoding argument.
 Together, \thmref{triangles-up} and \thmref{triangles-down} establish
 that $1/n$ is a threshold function for triangle-freeness.
 
-\subsection{The Components of $G_{n,p}$}
-
-Maybe omit? It's pretty boring.
-
 \section{Weight Functions}
 \seclabel{weights}
 
@@ -1754,12 +1780,12 @@ Recall that a real-valued function $\ell : X \to \R$
 
 Observe that neither \lemref{uel}, \lemref{nuel}, nor any application
 of either of these results has required the specification of any
-prefix-free code: we know, by construction, that every such code is
+prefix-free code: We know, by construction, that every such code is
 prefix-free, but we could also deduce from Kraft's inequality that,
 since our described codes satisfy Kraft's condition, a prefix-free
-code with the same codeword lengths exists. Instead, codeword lengths
-satisfying Kraft's condition suffice, and indeed, such codeword
-lengths need not be integers.
+code with the same codeword lengths exists. Instead, we will see that
+codeword lengths satisfying Kraft's condition suffice, and such
+codeword lengths need not be integers.
 
 Let $[0, \infty]$ denote the set of extended non-negative real
 numbers, supporting all the usual extended artihmetic operations,
@@ -1820,34 +1846,27 @@ encoding.
 
 We now give a tight notion corresponding to Elias codes.
 \begin{thm}[Beigel~\cite{beigel:elias}]\thmlabel{elias-tight}
-  Fix some $0 < \eps < e - 1$. Let $\ell : \N \to [0, \infty]$ have
+  Fix some $0 < \eps < e - 1$. Let $\ell : \N \to \R$ have
   \[
   \ell(i) = \log i + \log \log i + \cdots + \underbrace{\log \cdots
     \log}_{\text{$\log^* i$ times}} i - (\log \log (e - \eps)) \log^*
   i + O(1) \enspace .
   \]
-  Then, $\ell$ satisfies Kraft's condition.
-\end{thm}
-\begin{thm}[Beigel~\cite{beigel:elias}]
-  The function $\ell : \N \to [0, \infty]$ with
+  Then, $\ell$ satisfies Kraft's condition. Moreover, the function
+  $\ell' : \N \to \R$ with
   \[
-  \ell(i) = \log i + \log \log i + \cdots + \underbrace{\log \cdots
+  \ell'(i) = \log i + \log \log i + \cdots + \underbrace{\log \cdots
     \log}_{\text{$\log^* i$ times}} i - (\log \log e) \log^* i + c
   \]
   does not satisfy Kraft's condition for any choice of the constant
   $c$.
 \end{thm}
 
-It may be worth noting that the function in \thmref{elias-tight}
-corresponds to a Shannon-Fano code for some distribution over the
-natural numbers, and that the lengths of Elias $\gamma$-codes in
-particular correspond to Shannon-Fano codes for a discrete Cauchy
-distribution.
 
 Recall how the result of \thmref{runs-i} carried an artifact of binary
 encoding. Using our new tools, we can now refine this and recover the
 exact result.
-\begin{customthm}{\ref{thm:runs-i}b}
+\begin{customthm}{\ref*{thm:runs-i}b}
   Let $x=(x_1,\ldots,x_n)\in\{0,1\}^n$ be chosen uniformly at random
   and let $t \ge \log n + s$. Then, the probability that there exists
   an $i\in\{1,\ldots,n-t+1\}$ such that
@@ -1859,9 +1878,9 @@ exact result.
   and otherwise $\ell(x) = \infty$. We will show that $\ell$ satisfies
   Kraft's condition.
 
-  Recall that $x$ is said to contain a run of $t$ ones if there exists
-  some $i \in \{1, \ldots, n - t + 1\}$ such that $x_i = \cdots = x_{i
-    + t - 1} = 1$.
+  %Recall that $x$ is said to contain a run of $t$ ones if there exists
+  %some $i \in \{1, \ldots, n - t + 1\}$ such that $x_i = \cdots = x_{i
+  %  + t - 1} = 1$.
 
   Let the function $f : \{1, \ldots, n - t + 1\} \to [0, \infty]$ have
   $f(i) = \log n$ for all $i$, and
@@ -1880,8 +1899,8 @@ exact result.
   \{0, 1\}^{n - t}$, where $y = (y_1, \ldots, y_{n - t})$, corresponds
   to the binary string
   \[
-  y_1 \cdots y_{i - 1} \underbrace{1 1 \cdots 1}_{\text{$t$ times}}
-  y_i \cdots y_{n - t} \enspace .
+  (y_1, \dots, y_{i - 1}, \underbrace{1, 1, \dots, 1}_{\text{$t$ times}},
+  y_i, \dots, y_{n - t}) \enspace .
   \]
   Therefore, $\ell$ satisfies Kraft's condition. By our choice of
   $t$, we have that $\ell(x) \leq n - s$ if and only if $x$ contains a
@@ -1891,7 +1910,7 @@ exact result.
 It is not hard to see how \lemref{el}, \lemref{composition-tight},
 \lemref{fixed-length-tight}, and \thmref{elias-tight} can be used to
 give encoding arguments with real-valued codeword lengths, just as we
-did in the proof above.
+did in the proof above, and just as was implied throughout this work.
 
 
 \section{Summary and Conclusions}
