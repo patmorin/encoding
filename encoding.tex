@@ -137,11 +137,10 @@ encoding arguments.  \Secref{applications-i} presents applications of
 the Uniform Encoding Lemma to a variety of problems.  \Secref{nuel}
 presents a more general Non-Uniform Encoding Lemma that can handle a
 larger variety of applications, some of which are presented in
-\secref{applications-ii}.  \Secref{weights} presents an alternative
-view of encoding arguments in terms of weight functions; this
-alternative view justifies the use of non-integer codeword lengths.
-\Secref{summary} summarizes and concludes with some directions for
-future research.
+\secref{applications-ii}.  \Secref{el} presents an alternative view of
+encoding arguments, justifying the use of non-integer codeword
+lengths.  \Secref{summary} summarizes and concludes with some
+directions for future research.
 
 \section{Background}
 \seclabel{uel}
@@ -316,12 +315,12 @@ think of this as requiring $\log n$ bits but when it comes time to
 carefully write down a proof we include a ceiling over this term since
 bits are a discrete quantity.
 
-In \secref{weights}, however, we will see that the informal intuition
-we use in blackboard proofs is actually valid; we can think of
-encoding $i$ using $\log n$ bits even if $\log n$ is not an integer.
-In general we can imagine encoding a choice from among $r$ options
-using $\log r$ bits for any $r\in\N$.  From this point onwards, we
-omit ceilings this way in all our theorems and proofs. This makes
+In \secref{el}, however, we will see that the informal intuition we
+use in blackboard proofs is actually valid; we can think of encoding
+$i$ using $\log n$ bits even if $\log n$ is not an integer.  In
+general we can imagine encoding a choice from among $r$ options using
+$\log r$ bits for any $r\in\N$.  From this point onwards, we omit
+ceilings this way in all our theorems and proofs. This makes
 calculations simpler and provides tighter results.  For now, it allows
 us to state the following cleaner version of \thmref{runs-i}:
 
@@ -351,13 +350,13 @@ any probability density $p : X \to [0, 1]$ so that $|C(x)| =
 \ceil{\log (1/p_x)}$, and in particular, the construction of such a
 code is deterministic, even when $X$ is (countably) infinite.
 
-Again, as we will see in \secref{weights}, we can omit the ceiling in
-the expression for $|C_\alpha(x)|$.  This is true for any value of
-$n$. In particular, for $n=1$, it gives us a ``code'' for encoding a
-single bit where the cost of encoding a 1 is $\log(1/\alpha)$ and the
-cost of encoding a 0 is $\log(1/(1-\alpha))$.  Indeed, the ``code''
-for bit strings of length $n>1$ is just what we get when we apply this
-1-bit code to each bit of the bit string.
+Again, as we will see in \secref{el}, we can omit the ceiling in the
+expression for $|C_\alpha(x)|$.  This is true for any value of $n$. In
+particular, for $n=1$, it gives us a ``code'' for encoding a single
+bit where the cost of encoding a 1 is $\log(1/\alpha)$ and the cost of
+encoding a 0 is $\log(1/(1-\alpha))$.  Indeed, the ``code'' for bit
+strings of length $n>1$ is just what we get when we apply this 1-bit
+code to each bit of the bit string.
 
 If we wish to encode bit strings of length $n$ and we know in advance
 that the strings have exactly $k$ one bits, then we can optimize this
