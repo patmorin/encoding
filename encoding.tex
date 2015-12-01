@@ -237,7 +237,7 @@ a run of significantly more than $\log n$ one bits.  (See
 
 \begin{thm}\thmlabel{runs-i}
   Let $x=(x_1,\ldots,x_n)\in\{0,1\}^n$ be chosen uniformly at random
-  and let $t \ge \lceil\log n\rceil + s$. Then, the probability that
+  and let $t = \ceil{\ceil{\log n} + s}$. Then, the probability that
   there exists an $i\in\{1,\ldots,n-t+1\}$ such that
   $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$ is at most $2^{-s}$.
 \end{thm}
@@ -248,14 +248,13 @@ a run of significantly more than $\log n$ one bits.  (See
   string string $x=(x_1,\ldots,x_n)$ let $i$ be the minimum index such
   that $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$. The codeword, $C(x)$, for $x$
   is the binary string that consists of the
-  ($\lceil\log (n - t)\rceil$-bit binary encoding of the) index $i$
+  ($\lceil\log n\rceil$-bit binary encoding of the) index $i$
   followed by the $n-t$ bits
   $x_1,\ldots,x_{i-1},x_{i+t},\ldots,x_n$. (see \figref{runs-i}.)
 
   Observe that $C(x)$ has length 
   \[
-    \lceil\log (n - t)\rceil + n - t \le \lceil\log n\rceil + n - t
-    \le n-s \enspace .
+    \lceil\log n \rceil + n - t \le n-s \enspace .
   \]
   It is easy to check that, for any such $x$, we can reconstruct
   $(x_1,\ldots,x_n)$ from $C(x)$, so $C$ is a partial code whose
@@ -297,18 +296,18 @@ used in most encoding arguments:
 
 Note that \thmref{runs-i} also has an easy proof using the union
 bound: If we let $\mathcal{E}_i$ denote the event
-$x_i=x_{i+1}=\cdots x_{i+t}=1$, then
+$x_i=x_{i+1}=\cdots=x_{i+t}=1$, then
 \begin{align*}
   \Pr \bigcup_{i=0}^{n-t-1} \mathcal{E}_i
-  & \le \sum_{i=0}^{n-t-1} \Pr\mathcal{E}_i & \text{(using the union bound)}\\
-  & = \sum_{i=0}^{n-t-1} 2^{-t} & \text{(using the independence of the $x_i$'s)}\\
-  & \le n2^{-t} & \text{(the sum has $n-t\le n$ identical terms)}\\
-  & = n2^{-\lceil\log n\rceil-s} & \text{(from the definition of $t$)}\\
+  & \le \sum_{i=0}^{n-t-1} \Pr\mathcal{E}_i  \tag{using the union bound}\\
+  & = \sum_{i=0}^{n-t-1} 2^{-t}  \tag{using the independence of the $x_i$'s}\\
+  & \le n2^{-t}  \tag{the sum has $n-t\le n$ identical terms}\\
+  & = n2^{-\lceil\log n\rceil-s}  \tag{from the definition of $t$}\\
   & \le 2^{-s} \enspace .
 \end{align*}
 This traditional proof also works with the sometimes smaller value
-$t=\log n+s$ (note the lack of a ceiling over the logarithmic term),
-in which case the final inequality becomes an equality.
+$t=\ceil{\log n+s}$ (note the lack of a ceiling over the logarithmic
+term), in which case the final inequality becomes an equality.
 
 In the encoding proof of \thmref{runs-i}, the ceiling in the
 expression for $t$ is an artifact of encoding of the integer $i$ which
@@ -328,8 +327,8 @@ us to state the following cleaner version of \thmref{runs-i}:
 
 \begin{customthm}{\ref*{thm:runs-i}b}\thmlabel{runs-ii}
   Let $x=(x_1,\ldots,x_n)\in\{0,1\}^n$ be chosen uniformly at random
-  and let $t \ge \log n + s$. Then, the probability that there exists
-  an $i\in\{1,\ldots,n-t+1\}$ such that
+  and let $t = \ceil{\log n + s}$. Then, the probability that there
+  exists an $i\in\{1,\ldots,n-t+1\}$ such that
   $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$ is at most $2^{-s}$.
 \end{customthm}
 
@@ -558,7 +557,7 @@ argument.
 \begin{thm}\thmlabel{erdos-renyi-i}
   For all $n\ge 3$ and $s\ge 1$, the probability that the random
   graph, $G_{n,\frac{1}{2}}$ contains a clique or an independent set
-  of size $t \ge 3\log n + \sqrt{2s}$ is at most $2^{-s}$.
+  of size $t = \ceil{3\log n + \sqrt{2s}}$ is at most $2^{-s}$.
 \end{thm}
 
 \begin{proof}
@@ -626,7 +625,7 @@ balls.
 Before proving \thmref{urns}, we note that, for any constant $\eps >0$
 and all sufficiently large $n$, taking
 \[
-  t \ge \frac{(1+\eps)\log n}{\log\log n}
+  t = \Ceil{\frac{(1+\eps)\log n}{\log\log n}}
 \] 
 satisfies the requirements of \thmref{urns}.
 
@@ -785,17 +784,17 @@ The cuckoo hashing insertion algorithm can fail if some subgraph of
 the cuckoo graph contains more edges than vertices, since edges
 correspond to keys, and vertices correspond to array locations.
 \begin{lem}\lemlabel{cuckoo-failure}
-  Fix some vertex $v \in A$. The probability that $v$ is part of a
-  subgraph with more edges than vertices is $O(1/n^2)$.
+  The cuckoo graph has a subgraph with more edges than vertices with
+  probability $O(1/n)$.
 \end{lem}
 \begin{proof}
-  Suppose that $v$ is part of a subgraph with more edges than
-  vertices, and in particular a minimal such subgraph with $t + 1$
-  edges and $t$ vertices. Such a subgraph appears exactly as in
+  Suppose that some vertex $v$ is part of a subgraph with more edges
+  than vertices, and in particular a minimal such subgraph with $t +
+  1$ edges and $t$ vertices. Such a subgraph appears exactly as in
   \figref{cuckoo-cycles}. For every such subgraph, there are two edges
   $e_1$ and $e_2$ whose removal disconnects the graph into two paths
-  of length $t_1$ and $t_2$ starting from $v$, where
-  $t_1 + t_2 = t - 1$.
+  of length $t_1$ and $t_2$ starting from $v$, where $t_1 + t_2 = t -
+  1$.
 
   \begin{figure}
     \centering
@@ -812,24 +811,18 @@ correspond to keys, and vertices correspond to array locations.
     \figlabel{cuckoo-cycles}
   \end{figure}
 
-  We encode $G$ by presenting Elias $\delta$-codes for the values of
-  $t_1$ and $t_2$; then the edges of the above paths in order; then
-  the vertices of the paths in order; and the edges $e_1$ and $e_2$;
-  and finally the remaining $2n - 2(t + 1)$ endpoints of edges in the
-  graph. Such a code has length
+  We encode $G$ by giving the vertex $v$; and presenting Elias
+  $\delta$-codes for the values of $t_1$ and $t_2$; then the edges of
+  the above paths in order; then the vertices of the paths in order;
+  and the edges $e_1$ and $e_2$; and finally the remaining $2n - 2(t +
+  1)$ endpoints of edges in the graph. Such a code has length
   \begin{align*}
-    |C(G)| &= (t - 1)(\log n + \log m) + 2\log n + (2n - 2(t + 1))\log m + O(\log t) \\
-           &= \log m^{2n} - 2\log m - t + O(\log t) \\
-           &\leq \log m^{2n} - 2\log n + O(1) \enspace .
+    |C(G)| &= \log n + (t - 1)(\log n + \log m) + 2\log n + (2n - 2(t + 1))\log m + O(\log t) \\
+           &= \log m^{2n} + \log n - 2\log m - t + O(\log t) \\
+           &\leq \log m^{2n} - \log n + O(1) \enspace .
   \end{align*}
   We finish by applying the Uniform Encoding Lemma.
 \end{proof}
-
-From the union bound, we obtain the following:
-\begin{cor}
-  Cuckoo hashing succeeds upon insertion of $n$ elements with
-  probability $1 - O(1/n)$.
-\end{cor}
 
 \subsection{2-Choice Hashing}
 
@@ -863,16 +856,15 @@ $E = \{(h(x), g(x)) : x \in X\}$.
   $O(1/n)$.
 \end{lem}
 \begin{proof}
-  The proof is similar to that of \lemref{cuckoo-failure}, with an
-  additional application of the union bound. More specifically, we can
-  encode $G$ by giving the same encoding as in
+  The proof is similar to that of \lemref{cuckoo-failure}. More
+  specifically, we can encode $G$ by giving the same encoding as in
   \lemref{cuckoo-failure}, with an additional bit for each edge $uv$
-  in the encoding, indicating whether $u = h(x)$ and $v = g(x)$, or
-  $u = g(x)$ and $v = h(x)$. Our code thus has length
+  in the encoding, indicating whether $u = h(x)$ and $v = g(x)$, or $u
+  = g(x)$ and $v = h(x)$. Our code thus has length
   \begin{align*}
-    |C(G)| &= (t - 1)(\log n + \log m) + 2 \log n + (2n - 2(t + 1))\log m + t + O(\log t) \\
-           &= 2n \log m - 2 \log n - t \log c + t + O(\log t) \\
-           &\le \log m^{2n} - 2 \log n + O(1) \enspace ,
+    |C(G)| &= \log n + (t - 1)(\log n + \log m) + 2 \log n + (2n - 2(t + 1))\log m + t + O(\log t) \\
+           &= 2n \log m - \log n - t \log c + t + O(\log t) \\
+           &\le \log m^{2n} - \log n + O(1) \enspace ,
   \end{align*}
   since $\log c > 1$.
 \end{proof}
@@ -903,9 +895,9 @@ $E = \{(h(x), g(x)) : x \in X\}$.
   \[
     t \geq \frac{s + \log n + O(1)}{\log (c/4)} \enspace .
   \]
-  In particular, if we choose $s = \log n$, applying \lemref{uel}
-  tells us that $X$ has size at least $(2/\log (c/4))\log n + O(1)$
-  with probability $O(1/n)$.
+  In particular, if we choose $s = \log n$, applying the Uniform
+  Encoding Lemma tells us that $X$ has size at least $(2/\log
+  (c/4))\log n + O(1)$ with probability $O(1/n)$.
 \end{proof}
 
 Suppose that when $x$ is inserted, it is placed in a list with $t$
@@ -1010,9 +1002,9 @@ Wigderson~\cite[Lemma~1.9]{hoory.linial.ea:expander}.
     s(\alpha n) = (\alpha n/2)\log \left(\frac{1}{2^{2\beta}
         \alpha}\right) - 2 \log \alpha n
   \]
-  and $2^{-s(\alpha n)} = 2^{-\Omega(n)}$ for
-  $\alpha < (1/2)^{2\beta} \approx 0.002$. In each case, \lemref{uel}
-  gives the desired result.
+  and $2^{-s(\alpha n)} = 2^{-\Omega(n)}$ for $\alpha < (1/2)^{2\beta}
+  \approx 0.002$. In each case, the Uniform Encoding Lemma gives the
+  desired result.
 \end{proof}
 
 \subsection{Permutations and Binary Search Trees}
@@ -1186,12 +1178,12 @@ concentration of records in a random permutation.
   We encode a permutation $\sigma$ chosen uniformly at random from a
   set of size $n!$.
 
-  Suppose that $\sigma$ has $t \geq c\log n$ records
-  $r_1 < r_2 < \cdots < r_t$, for some fixed $c > 2$. First, give a
-  bit string $x = (x_1, \dots, x_t) \in \{0, 1\}^t$, where $x_i = 0$
-  if and only if $r_i$ lies in the first half of the interval
-  $[r_{i - 1}, n]$. It follows that $n_1(x) \leq \log n$. In other
-  words, $x$ is a sparse bit string, and $n_1(x)/t \leq 1/c$.
+  Suppose that $\sigma$ has $t = \ceil{c\log n}$ records $r_1 < r_2 <
+  \cdots < r_t$, for some fixed $c > 2$. First, give a bit string $x =
+  (x_1, \dots, x_t) \in \{0, 1\}^t$, where $x_i = 0$ if and only if
+  $r_i$ lies in the first half of the interval $[r_{i - 1}, n]$. It
+  follows that $n_1(x) \leq \log n$. In other words, $x$ is a sparse
+  bit string, and $n_1(x)/t \leq 1/c$.
 
   To begin our encoding of $\sigma$, we encode the bit string $x$ by
   giving the set of $n_1(x)$ ones in $x$; followed by the incremental
@@ -1219,8 +1211,8 @@ concentration of records in a random permutation.
     \frac{d}{d x} x H(a/x) = \log (1/(1 - a/x)) \enspace ,
   \]
   which is positive as long as $0 < a/x < 1$, and so $x H(a/x)$
-  increases as a function of $x$. Applying \lemref{uel}, we obtain the
-  desired result.
+  increases as a function of $x$. Applying the Uniform Encoding Lemma,
+  we obtain the desired result.
 \end{proof}
 
 \subsubsection{The Height of a Random Binary Search Tree}
@@ -1253,8 +1245,8 @@ be balanced if it occurs in the middle half of its subrange.
 \end{thm}
 \begin{proof}
   Suppose that the tree $\text{BST}(\sigma)$ has a root-to-leaf path
-  $Y = (y_1, \ldots, y_t)$ of length $t \geq c \log n$ for some fixed
-  $c > 2/\log (4/3)$.
+  $Y = (y_1, \ldots, y_t)$ of length $t = \ceil{c \log n}$ for some
+  fixed $c > 2/\log (4/3)$.
 
   Our encoding for $\sigma$ has two parts. The first part includes an
   encoding of the value $y_t$, and a bit string $x = (x_1, \ldots,
@@ -1286,9 +1278,9 @@ be balanced if it occurs in the middle half of its subrange.
   \[
     \log n! - t + O(\log \log n) \enspace .
   \]
-  Applying \lemref{uel}, we see that $\text{BST}(\sigma)$ has height
-  at most $c \log n$ with probability $1 - O(1/n)$ for
-  $c > 2/\log (4/3)$ satisfying
+  Applying the Uniform Encoding Lemma, we see that
+  $\text{BST}(\sigma)$ has height at most $c \log n$ with probability
+  $1 - O(1/n)$ for $c > 2/\log (4/3)$ satisfying
   \[
     c \left(1 - H\left(\frac{1}{c \log (4/3)}\right)\right) > 1 \enspace ,
   \]
@@ -1397,21 +1389,21 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
   Given a $k$-CNF formula $\varphi$ with $m$ clauses and $n$ variables
   such that each clause intersects at most $r \le 2^{k - 3}$ other
   clauses, the probability that $\textsc{Solve}(\varphi)$ calls
-  $\textsc{Fix}$ at least $t$ times is at most $2^{-t}$.
+  $\textsc{Fix}$ at least $s$ times is at most $2^{-s}$.
 \end{thm}
 \begin{proof}
-  Suppose that $\textsc{Solve}(\varphi)$ calls $\textsc{Fix}$ $t$
+  Suppose that $\textsc{Solve}(\varphi)$ calls $\textsc{Fix}$ $s$
   times. Let $\alpha \in \{\textsf{true}, \textsf{false}\}^n$ be the
   initial truth assignment for $\varphi$, and let
-  $\beta_1, \ldots, \beta_t \in \{\textsf{true}, \textsf{false}\}^k$
+  $\beta_1, \ldots, \beta_s \in \{\textsf{true}, \textsf{false}\}^k$
   be the local truth assignments produced in each call to
   $\textsc{Fix}$. The string
-  $\gamma = (\alpha, \beta_1, \ldots, \beta_t)$ is uniformly chosen
-  from a set of size $2^{n + tk}$, and will be the subject of our
+  $\gamma = (\alpha, \beta_1, \ldots, \beta_s)$ is uniformly chosen
+  from a set of size $2^{n + sk}$, and will be the subject of our
   encoding.
 
   The execution of $\textsc{Solve}(\varphi)$ determines a (rooted
-  ordered) \emph{recursion tree} $T$ on $t + 1$ nodes as follows: The
+  ordered) \emph{recursion tree} $T$ on $s + 1$ nodes as follows: The
   root of $T$ corresponds to the initial call to
   $\textsc{Solve}(\varphi)$, and its children $D_1, \ldots, D_d$
   recursively correspond to the sequence of calls to
@@ -1424,27 +1416,27 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
 
   The string $\gamma$ can be recovered from the bottom-up from our
   knowledge of the tree $T$ and the final assignment
-  $\alpha$. Specifically, let $D_t$ be the clause involved in the last
+  $\alpha$. Specifically, let $D_s$ be the clause involved in the last
   node of a pre-order traversal of $T$, so it is the last fixed clause
-  in the execution. Since $D_t$ was not satisfied before its
+  in the execution. Since $D_s$ was not satisfied before its
   reassignment, this allows us to deduce $k$ values of $\alpha$ before
-  $D_t$ was fixed. Pruning $D_t$ from the tree and continuing in this
-  manner at $D_{t - 1}$, we eventually recover the original truth
+  $D_s$ was fixed. Pruning $D_s$ from the tree and continuing in this
+  manner at $D_{s - 1}$, we eventually recover the original truth
   assignment produced in $\textsc{Solve}(\varphi)$.
 
   Therefore, to encode $\gamma$, we first give the final truth
   assignment $\alpha$; and a description of the shape of the tree $T$;
   and the sequence of at most $m$ clauses which are children of the
-  root of $T$; and the at most $t$ clauses involved in the calls to
+  root of $T$; and the at most $s$ clauses involved in the calls to
   $\textsc{Fix}$ in a pre-order traversal of $T$. As in
   \lemref{two-choice-component-size}, the shape of $T$ can be encoded
-  using $2t$ bits. In total, the code has length
+  using $2s$ bits. In total, the code has length
   \begin{align*}
-    |C(\gamma)| &= n + 2t + m + t \log r \\
-                &\le n + 2t + m + t(k - 3) \tag{since $r \le 2^{k - 3}$} \\
-                &= n + tk - t \enspace .
+    |C(\gamma)| &= n + 2s + m + s \log r \\
+                &\le n + 2s + m + s(k - 3) \tag{since $r \le 2^{k - 3}$} \\
+                &= n + sk - s \enspace .
   \end{align*}
-  The result is obtained by applying \lemref{nuel}.
+  The result is obtained by applying the Uniform Encoding Lemma.
 \end{proof}
 
 Using a slightly more careful encoding of the shape of the recursion
@@ -1571,7 +1563,8 @@ strings.
     |C_{p - \eps}(x)| &\le \log (1/p_x) - n (p - \eps) \log ((p - \eps)/p) - n (1 - p + \eps) \log ((1 - p + \eps)/(1 - p)) \\
                       &= \log (1/p_x) - n D(p - \eps \| p) \enspace .
   \end{align*}
-  The Chernoff bound is obtained by applying \lemref{nuel}.
+  The Chernoff bound is obtained by applying the Non-Uniform Encoding
+  Lemma.
 \end{proof}
 
 \subsection{Percolation on the Torus}
@@ -1619,7 +1612,8 @@ if
            &= \log (1/p_G) + \log n - t \log (1/(3p)) + O(1) \\
            &\leq \log (1/p_G) - s
   \end{align*}
-  by our choice of $t$. We finish by applying \lemref{nuel}.
+  by our choice of $t$. We finish by applying the Non-Uniform Encoding
+  Lemma.
 \end{proof}
 
 The torus grid graph can be drawn in the obvious way without crossings
@@ -1763,33 +1757,29 @@ accomplished with an encoding argument.
 Together, \thmref{triangles-up} and \thmref{triangles-down} establish
 that $1/n$ is a threshold function for triangle-freeness.
 
-\section{Weight Functions}
-\seclabel{weights}
+\section{Encoding with Kraft's Condition}
+\seclabel{el}
 
 We finally discuss why it has made sense to omit ceilings in all of
 our encoding arguments.
 
-MAYBE TALK ABOUT WHAT LUCIER ET AL. DID LIKE WITH TAO'S INCREMENTAL
-CODE?
-
-Recall that a real-valued function $\ell : X \to \R$
-\emph{satisfies Kraft's condition} if
+Let $[0, \infty]$ denote the set of extended non-negative real
+numbers, supporting all the usual extended arithmetic operations,
+including $1/0 = \infty$. Recall that a function $\ell : X \to [0,
+\infty]$ \emph{satisfies Kraft's condition} if
 \[
   \sum_{x \in X} 2^{-\ell(x)} \leq 1 \enspace .
 \]
 
-Observe that neither \lemref{uel}, \lemref{nuel}, nor any application
-of either of these results has required the specification of any
-prefix-free code: We know, by construction, that every such code is
-prefix-free, but we could also deduce from Kraft's inequality that,
-since our described codes satisfy Kraft's condition, a prefix-free
-code with the same codeword lengths exists. Instead, we will see that
-codeword lengths satisfying Kraft's condition suffice, and such
-codeword lengths need not be integers.
+Observe that neither the (Non-)Uniform Encoding Lemma nor any of its
+applications has required the specification of any prefix-free code:
+We know, by construction, that every such code is prefix-free, but we
+could also deduce from Kraft's inequality that, since our described
+codes satisfy Kraft's condition, a prefix-free code with the same
+codeword lengths exists. Instead, we will see that codeword lengths
+satisfying Kraft's condition suffice, and such codeword lengths need
+not be integers.
 
-Let $[0, \infty]$ denote the set of extended non-negative real
-numbers, supporting all the usual extended artihmetic operations,
-including $1/0 = \infty$.
 \begin{lem}\lemlabel{el}
   Let $\ell : X \to [0, \infty]$ satisfy Kraft's condition and let
   $x\in X$ be drawn randomly where $p_x$ denotes the probability of
@@ -1862,8 +1852,10 @@ We now give a tight notion corresponding to Elias codes.
   $c$.
 \end{thm}
 
-
-Recall how the result of \thmref{runs-i} carried an artifact of binary
+It is not hard to see how \lemref{el}, \lemref{composition-tight},
+\lemref{fixed-length-tight}, and \thmref{elias-tight} can be used to
+give encoding arguments with real-valued codeword lengths. Indeed,
+recall how the result of \thmref{runs-i} carried an artifact of binary
 encoding. Using our new tools, we can now refine this and recover the
 exact result.
 \begin{customthm}{\ref*{thm:runs-i}b}
@@ -1906,12 +1898,6 @@ exact result.
   $t$, we have that $\ell(x) \leq n - s$ if and only if $x$ contains a
   run of $t$ ones. We finish by applying \lemref{el}.
 \end{proof}
-
-It is not hard to see how \lemref{el}, \lemref{composition-tight},
-\lemref{fixed-length-tight}, and \thmref{elias-tight} can be used to
-give encoding arguments with real-valued codeword lengths, just as we
-did in the proof above, and just as was implied throughout this work.
-
 
 \section{Summary and Conclusions}
 \seclabel{summary}

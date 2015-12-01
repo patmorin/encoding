@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE ipe SYSTEM "ipe.dtd">
 <ipe version="70005" creator="Ipe 7.1.4">
-<info created="D:20150416100209" modified="D:20150930142131"/>
+<info created="D:20150416100209" modified="D:20151201115747"/>
 <preamble>\usepackage{kpfonts}</preamble>
 <ipestyle name="basic">
 <symbol name="arrow/arc(spx)">
@@ -294,7 +294,7 @@ h
 329.6 601 l
 </path>
 <text matrix="1 0 0 1 112 25" transformations="translations" pos="208 576" stroke="black" type="label" width="18.922" height="5.885" depth="0.07" halign="center" valign="baseline">$n-t$</text>
-<text matrix="1 0 0 1 -16 27.54" transformations="translations" pos="208 576" stroke="black" type="label" width="47.326" height="7.485" depth="2.61" halign="center" valign="baseline">$\left\lceil\log(n-t)\right\rceil$</text>
+<text matrix="1 0 0 1 -16 27.54" transformations="translations" pos="208 576" stroke="black" type="label" width="28.534" height="7.485" depth="2.61" halign="center" valign="baseline">$\left\lceil\log n \right\rceil$</text>
 <path matrix="0 0.3 -1.8 0 1344 508.4" stroke="black">
 352 656 m
 368 656 l
