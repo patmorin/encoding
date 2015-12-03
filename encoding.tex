@@ -506,9 +506,9 @@ prefix-free codes for the set of natural numbers. Of course, if $p :
 for $p$ could serve. However, it seems easier to simply design our
 codes by hand, rather than find appropriate distributions.
 
-A code is prefix-free if and only if a message consisting of a
+A code is prefix-free if and only if any message consisting of a
 sequence of its codewords can be decoded unambiguously as it is read
-from left to right. This idea allows us more easily to design the
+from left to right. This idea allows us to more easily design the
 codes in this section, which were originally given by
 Elias~\cite{elias:coding}.
 
@@ -784,7 +784,8 @@ the cuckoo graph contains more edges than vertices, since edges
 correspond to keys, and vertices correspond to array locations.
 \begin{lem}\lemlabel{cuckoo-failure}
   The cuckoo graph has a subgraph with more edges than vertices with
-  probability $O(1/n)$.
+  probability $O(1/n)$. In other words, cuckoo hashing succeeds with
+  probability $1 - O(1/n)$.
 \end{lem}
 \begin{proof}
   Suppose that some vertex $v$ is part of a subgraph with more edges
@@ -902,8 +903,9 @@ $E = \{(h(x), g(x)) : x \in X\}$.
 Suppose that when $x$ is inserted, it is placed in a list with $t$
 other elements. Then, we say that the age of $x$ is $a(x) = t$.
 \begin{thm}
-  The cost of any operation in 2-choice hashing is at most
-  $\log \log n + O(1)$ with probability $1 - O(1/n)$.
+  The cost of searching in 2-choice hashing in a table of size $cn$
+  with $c > e$ is at most $\log \log n + O(1)$ with probability $1 -
+  O(1/n)$.
 \end{thm}
 \begin{proof}
   Suppose that some element $x$ has $a(x) = t$. This leads to a binary
@@ -1011,23 +1013,24 @@ Wigderson~\cite[Lemma~1.9]{hoory.linial.ea:expander}.
 A \emph{permutation} $\sigma$ of size $n$ is a sequence of $n$
 distinct integers, sometimes denoted
 \[
-  \sigma = (\sigma(1), \ldots, \sigma(n)) \enspace .
+  \sigma = (\sigma_1, \ldots, \sigma_n) \enspace .
 \]
 Except when explicitly stated, we will assume that the set of integers
 involved in a permutation of size $n$ is precisely $\{1, \ldots,
 n\}$. The number of such permutations is $n!$.
 
 \subsubsection{Analysis of Insertion Sort}
+\seclabel{insertion-sort}
 
-Recall the insertion-sort algorithm for sorting a list,
-$x_1,\ldots,x_n$ of $n$ elements:
+Recall the insertion-sort algorithm for sorting a list, $\sigma =
+(\sigma_1,\ldots,\sigma_n)$ of $n$ elements:
 
-\noindent{$\textsc{InsertionSort}(x_1,\ldots,x_n)$}
+\noindent{$\textsc{InsertionSort}(\sigma)$}
 \begin{algorithmic}[1]
   \FOR{$i\gets 2$ \TO $n$}
      \STATE{$j \gets i$}
      \WHILE{$j>1$ \AND $x_{j-1} > x_j$}
-         \STATE{$x_j \leftrightarrow x_{j-1}$
+         \STATE{$\sigma_j \leftrightarrow \sigma_{j-1}$
             \COMMENT{ swap }}
          \STATE{$j\gets j-1$}
      \ENDWHILE
@@ -1035,12 +1038,12 @@ $x_1,\ldots,x_n$ of $n$ elements:
 \end{algorithmic}
 
 A typical question asks the expected number of times Line~4 executes
-if $x_1,\ldots,x_n$ is a uniformly random permutation of $n$ distinct
-elements.  The answer $\binom{n}{2}/2$ is an easy application of
-linearity of expectation: For every one of the $\binom{n}{2}$ pairs
-$p,q\in\{1,\ldots,n\}$ with $p<q$, the values initially stored at
-positions $x_p$ and $x_q$ will eventually be swapped if and only if
-$x_p > x_q$, which happens with probability $1/2$ in a random
+if $\sigma$ is a uniformly random permutation of size $n$.  The answer
+$\binom{n}{2}/2$ is an easy application of linearity of expectation:
+For every one of the $\binom{n}{2}$ pairs $p,q\in\{1,\ldots,n\}$ with
+$p<q$, the values initially stored at positions $\sigma_p$ and
+$\sigma_q$ will eventually be swapped if and only if $\sigma_p >
+\sigma_q$, which happens with probability $1/2$ in a random
 permutation.
 
 A more advanced question is to ask for a concentration result on the
@@ -1053,36 +1056,37 @@ bubble sort \cite{vitanyi:analysis}, though without all the trappings
 of Kolmogorov complexity.
 
 \begin{thm}\thmlabel{insertion-sort}
-  For a random permutation, $x_1,\ldots,x_n$ of $n$ distinct elements,
-  the probability that Line~4 of \textsc{InsertionSort} executes fewer
-  than $\alpha n^2 - n + 2$ times is at most
-  $2^{n\log(\alpha e^2)+O(\log n)}$.  In particular, for a fixed
-  $\alpha < 1/e^2$, this probability is $2^{-\Omega(n)}$.
+  For a uniformly random permutation $\sigma$ of size $n$, the
+  probability that Line~4 of $\textsc{InsertionSort}(\sigma)$ executes
+  fewer than $\alpha n^2 - n + 2$ times is at most $2^{n\log(\alpha
+    e^2)+O(\log n)}$.  In particular, for a fixed $\alpha < 1/e^2$,
+  this probability is $2^{-\Omega(n)}$.
 \end{thm}
 
 \begin{proof}
-  Let $\sigma$ be the permutation of $\{1,\ldots,n\}$ that defines the
-  sorted order of $x_1,\ldots,x_n$, so that $x_{\sigma(j)}$ is the
-  element that appears at position $j$ after sorting. Notice that
-  $\sigma$ is chosen uniformly at random among all $n!$ permutations
-  of of $\{1,\ldots,n\}$.
-  
+  %Let $\sigma$ be the permutation of $\{1,\ldots,n\}$ that defines the
+  %sorted order of $x_1,\ldots,x_n$, so that $x_{\sigma(j)}$ is the
+  %element that appears at position $j$ after sorting. Notice that
+  %$\sigma$ is chosen uniformly at random among all $n!$ permutations
+  %of of $\{1,\ldots,n\}$.
+  %
   We encode the permutation $\sigma$ by recording the execution of
-  InsertionSort on this permutation. In particular, we record, for
-  each $i\in\{2,\ldots,n\}$, the number of times, $m_i$, that Line~4
-  executes during the $i$th iteration of \textsc{InsertionSort}. With
-  this information, one can run the following version of
-  \textsc{InsertionSort} to recover $\sigma$:
+  \textsc{InsertionSort} on this permutation. In particular, we
+  record, for each $i\in\{2,\ldots,n\}$, the number of times, $m_i$,
+  that Line~4 executes during the $i$\textsuperscript{th} iteration of
+  \textsc{InsertionSort}. With this information, one can run the
+  following version of \textsc{InsertionSort} to recover $\sigma$:
   
   \noindent{$\textsc{InsertionSortReconstruct}(m_2,\ldots,m_n)$}:
   \begin{algorithmic}[1]
     \STATE{$\sigma \gets (1,\ldots,n)$}
     \FOR{$i\gets 2$ \TO $n$}
        \FOR{$j\gets i \textbf{ down to } i-m_i+1$}
-           \STATE{$\sigma(j) \leftrightarrow \sigma(j-1)$
+           \STATE{$\sigma_j \leftrightarrow \sigma_{j-1}$
               \COMMENT{ swap }}
        \ENDFOR
     \ENDFOR
+    \RETURN{$\sigma$}
   \end{algorithmic}
    
   To make this work, we have to be slightly clever with this
@@ -1126,15 +1130,15 @@ of Kolmogorov complexity.
 \subsubsection{Records}
 
 A \emph{(max) record} in a permutation $\sigma$ of size $n$ is some
-value $\sigma(i)$ with $1 \leq i \leq n$ such that
+value $\sigma_i$ with $1 \leq i \leq n$ such that
 \[
-  \sigma(i) = \max\{\sigma(1), \ldots, \sigma(i)\} \enspace .
+  \sigma_i = \max\{\sigma_1, \dots, \sigma_i\} \enspace .
 \]
-It is easy to see that the probability that $\sigma(i)$ is a record is
+It is easy to see that the probability that $\sigma_i$ is a record is
 exactly $1/i$, so the expected number of records in a uniformly random
 permutation is
 \[
-  H_n = \sum_{i = 1}^n \frac{1}{i} = \ln n + O(1) \enspace ,
+  H_n = \sum_{i = 1}^n 1/i = \ln n + O(1) \enspace ,
 \]
 the $n$\textsuperscript{th} harmonic number. It is harder to establish
 concentration with non-negligible probability. To do this, one first
@@ -1146,13 +1150,13 @@ Lucier \emph{et al.} to study the height of random binary search trees
 
 First, we describe an incremental and recursive manner of encoding a
 permutation $\sigma$: begin by providing the first value of the
-permutation $\sigma(1)$; followed by the indices of the permutation
-for which $\sigma$ takes on a value strictly smaller than $\sigma(1)$,
-including an explicit encoding of the induced permutation on the
-elements at those indices; and a recursive encoding of the permutation
-induced on the elements strictly larger than $\sigma(1)$.
+permutation $\sigma_1$; followed by the set of indices of the
+permutation for which $\sigma$ takes on a value strictly smaller than
+$\sigma_1$, including an explicit encoding of the induced permutation
+on the elements at those indices; and a recursive encoding of the
+permutation induced on the elements strictly larger than $\sigma_1$.
 
-If $\sigma$ contains $k$ elements strictly smaller than $\sigma(1)$,
+If $\sigma$ contains $k$ elements strictly smaller than $\sigma_1$,
 then the length $S$ of the codeword for $\sigma$ satisfies the
 recurrence
 \[
@@ -1166,15 +1170,15 @@ We can readily modify the encoding above to obtain a result about the
 concentration of records in a random permutation.
 
 \begin{thm}\thmlabel{records}
-  A uniformly random permutation of size $n$ has at least $c \log n$
-  records with probability at most
+  A uniformly random permutation $\sigma$ of size $n$ has at least $c
+  \log n$ records with probability at most
   \[
     2^{-c (1 - H(1/c)) \log n + O(\log \log n)} \enspace ,
   \]
   for $c > 2$.
 \end{thm}
 \begin{proof}
-  We encode a permutation $\sigma$ chosen uniformly at random from a
+  We encode the permutation $\sigma$ chosen uniformly at random from a
   set of size $n!$.
 
   Suppose that $\sigma$ has $t = \ceil{c\log n}$ records $r_1 < r_2 <
@@ -1196,7 +1200,7 @@ concentration of records in a random permutation.
   \begin{align*}
     \sum_{i = 1}^t \log \lceil n_i/2 \rceil &\leq \sum_{i = 1}^t \log (n_i/2 + 1)
                                               \leq \sum_{i = 1}^t \log (n_i/2) + \sum_{i = 1}^t O(1/n_i) \\
-                                            &\leq \sum_{i = 1}^t \log (n_i/2) + H_t = \sum_{i = 1}^t \log n_i - t + O(\log \log n) \enspace .
+                                            &\leq \sum_{i = 1}^t \log (n_i/2) + O(H_t) = \sum_{i = 1}^t \log n_i - t + O(\log \log n) \enspace .
   \end{align*}
   Thus, the total length of the code is
   \begin{align*}
@@ -1215,15 +1219,17 @@ concentration of records in a random permutation.
 \end{proof}
 
 \subsubsection{The Height of a Random Binary Search Tree}
+\seclabel{height}
 
 Every permutation $\sigma$ determines a binary search tree
 $\text{BST}(\sigma)$ created through the sequential insertion of the
-keys $\sigma(1), \ldots, \sigma(n)$. Specifically, if $\sigma_L$
-(respectively, $\sigma_R$) denotes the permutation of elements
-strictly smaller (respectively, strictly larger) than $\sigma(1)$,
-then $\text{BST}(\sigma)$ has $\sigma(1)$ as its root, with
-$\text{BST}(\sigma_L)$ and $\text{BST}(\sigma_R)$ as left and right
-subtrees. For any $\sigma$, the value $\sigma(1)$ is called its pivot.
+keys $\sigma_1, \ldots, \sigma_n$. Specifically, if $\sigma^L$
+(respectively, $\sigma^R$) denotes the permutation of elements
+strictly smaller (respectively, strictly larger) than $\sigma_1$, then
+$\text{BST}(\sigma)$ has $\sigma_1$ as its root, with
+$\text{BST}(\sigma^L)$ and $\text{BST}(\sigma^R)$ as left and right
+subtrees. For any $\sigma$, the value $\sigma_1$ is called a
+\emph{pivot}.
 
 Lucier \emph{et al.}~\cite{lucier.jiang.li:quicksort} use an encoding
 argument via Kolmogorov complexity to study the height of
@@ -1233,10 +1239,10 @@ $c \log n$ with probability $1 - O(1/n)$ for $c = 15.498...$; we can
 extend our result on records to obtain a tighter result.
 
 For a node $u$, let $s(u)$ denote the number of nodes in the tree
-rooted at $u$. Then, $u$ is called balanced if
-$s(u_L), s(u_R) > s(u)/4$, where $u_L$ and $u_R$ are the left and
-right subtrees of $u$ respectively. In other words, a node is said to
-be balanced if it occurs in the middle half of its subrange.
+rooted at $u$. Then, $u$ is called \emph{balanced} if $s(u^L), s(u^R)
+> s(u)/4$, where $u^L$ and $u^R$ are the left and right subtrees of
+$u$ respectively. In other words, a node is said to be balanced if it
+occurs in the middle half of its subrange.
 
 \begin{thm}\thmlabel{bst-height}
   Let $\sigma$ be a uniformly random permutation of size $n$. Then,
@@ -1300,6 +1306,90 @@ be balanced if it occurs in the middle half of its subrange.
 \end{rem}
 
 \subsubsection{Hoare's Find Algorithm}
+
+In this section, we analyze the number of comparisons made in the
+execution of Hoare's classic \textsc{Find} algorithm~\cite{hoare:find}
+which returns the $k$\textsuperscript{th} smallest element in an array
+of $n$ elements. The analysis is similar to that of the previous
+section.
+
+We assume knowledge of the algorithm $\textsc{Partition}$, which takes
+as input an array $\sigma = (\sigma_1, \dots, \sigma_n)$ and
+partitions it into the arrays $\sigma^L$ and $\sigma^R$ which contain
+the values strictly smaller and strictly larger than $\sigma_1$,
+respectively. The element $\sigma_1$ is called a \emph{pivot}. It is
+easy to see how $\textsc{Partition}$ can be implemented so as to
+perform only $n - 1$ comparisons. The algorithm $\textsc{Find}$ is
+then implemented as follows:
+
+\noindent{$\textsc{Find}(k, \sigma)$}:
+\begin{algorithmic}[1]
+  \STATE{$\sigma^L, \sigma^R \gets \textsc{Partition}(\sigma)$}
+  \IF{$|\sigma^L| \geq k$}
+    \RETURN{$\textsc{Find}(k, \sigma^L)$}
+  \ELSIF{$|\sigma^L| < k - 1$}
+    \RETURN{$\textsc{Find}(k - |\sigma^L| - 1, \sigma^R)$}
+  \ENDIF
+  \RETURN{$\sigma_k$}
+\end{algorithmic}
+
+As the algorithm executes, it sequentially identifies $k$ pivots $x_1,
+\dots, x_k$ before finding the solution. We will say that a pivot is
+\emph{good} if it lies in the interval $[n/4, 3n/4]$. Note that a good
+pivot causes the algorithm to recurse in a problem of size at most
+$3n/4$.
+
+\begin{lem}
+  Fix some constants $k_0 \geq 1$ and $0 < \alpha < 1/2$. Suppose
+  that, for each $k_0 \leq i \leq k$, the number of good pivots among
+  $x_1, \ldots, x_i$ is at least $\alpha i$. Then, $\textsc{Find}$
+  makes $O(n)$ comparisons.
+\end{lem}
+\begin{proof}
+  Let $n_i$ be the size of the input array during the
+  $i$\textsuperscript{th} recursive call, and in particular $n_0 =
+  n$. If $x_j$ is a good pivot, then the conditions of the lemma give
+  that $n_j \le 3 n_{j - 1}/4$, so
+  \[
+  n_i \leq (3/4)^{\alpha i} n
+  \]
+  for each $k_0 \leq i \leq k$. Therefore, the total number of
+  comparisons made by $\textsc{Find}$ is at most
+  \[
+  \sum_{i=0}^k (n_i + 1) = k_0(n + 1) + k + \sum_{i=k_0}^k n_i \le
+  O(n) + \sum_{i = k_0}^k (3/4)^{\alpha i} = O(n) \enspace . \qedhere
+  \]
+\end{proof}
+
+\begin{thm}
+  For a uniformly random permutation $\sigma$ and any $k$,
+  $\textsc{Find}(k, \sigma)$ executes $O(n)$ comparisons with high
+  probability.
+\end{thm}
+\begin{proof}
+  We again encode the permutation $\sigma$. Suppose that the
+  conditions of the preceding lemma are not satisfied,
+  \emph{i.e.}~there is an $i$ such that the number of good pivots
+  among $x_1, \dots, x_i$ is less than $\alpha i$. We encode $\sigma$
+  in two parts. The first part of our encoding gives the value of $i$
+  using an Elias $\delta$-code, followed by the set of indices of the
+  good pivots among $x_1, \dots, x_i$, which costs
+  \[
+  \log i + i H(\alpha) + O(\log \log i) \enspace .
+  \]
+  Note that the pivots $x_1, \dots, x_i$ trace a path from the root in
+  $\text{BST}(\sigma)$. Therefore, the second part of our encoding is
+  the recursive encoding presented in \secref{height}, where each
+  pivot can be encoded using one less bit. In total, our code then has
+  length
+  \[
+  \log n! - i + i H(\alpha) + \log i + O(\log \log i) = \log n! - \Omega(i) \enspace ,
+  \]
+  since $\alpha < 1/2$. The proof is completed by applying the Uniform
+  Encoding Lemma, and by observing that $k_0 \leq i$ can be made
+  arbitrarily large.
+\end{proof}
+
 
 \subsection{$k$-SAT and the Lov\'{a}sz Local Lemma}
 
@@ -1577,11 +1667,11 @@ see the book by Grimmett~\cite{grimmett:percolation}.
 
 When $\sqrt{n}$ is an integer, the \emph{$\sqrt{n} \times \sqrt{n}$
   torus grid graph} is defined to be the graph with vertex set
-$\{1, \ldots, \sqrt{n}\}^2$, where $(i, j)$ is adjacent to $(k, \ell)$
+$\{1, \ldots, \sqrt{n}\}^2$, where $(i, j)$ is adjacent to $(k, l)$
 if
 \begin{itemize}[topsep=0pt]
-\item $|i - k| \equiv 1 \pmod{\sqrt{n}}$ and $|j - \ell| = 0$, or
-\item $|i - k| = 0$ and $|j - \ell| \equiv 1 \pmod{\sqrt{n}}$.
+\item $|i - k| \equiv 1 \pmod{\sqrt{n}}$ and $|j - l| = 0$, or
+\item $|i - k| = 0$ and $|j - l| \equiv 1 \pmod{\sqrt{n}}$.
 \end{itemize}
 
 \begin{thm}
@@ -1640,7 +1730,7 @@ incident to the same edge of the original subgraph.
   n)$. Then, there is a cycle of faces separating these components
   whose length is $\omega(\log n)$. From the discussion above, such a
   cycle corresponds to a cycle of $\omega(\log n)$ missing edges in
-  the dual graph, as in \figref{peierlsrare}. From the previous
+  the dual graph, as in \figref{peierlsrare}. From the preceding
   result, we know that this does not happen with high probability.
 \end{proof}
 
