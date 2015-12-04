@@ -150,19 +150,20 @@ and binomial coefficients.
 
 \subsection{Prefix-free Codes and the Uniform Encoding Lemma}
 
-The expression $\{0, 1\}^*$ denotes the set of all finite length
-binary bit strings. A \emph{code} $C\from X\to \{0,1\}^*$ is a
-one-to-one function from a set $X$ to the set of finite length binary
-strings.  The elements of the range of $C$ are called $C$'s
-\emph{codewords}.  In most cases, there are some elements of the set
-$X$ that are not of interest to us.  In these cases, we consider
-partial codes. A \emph{partial code} $C\from X\nrightarrow \{0,1\}^*$
-is a one-to-one partial function.  When discussing partial codes we
-will use the convention that $|C(x)|=\infty$ if $x$ is not in the
-domain of $C$.
+A finite length \emph{string} over an alphabet $\Sigma$ is either the
+empty string $\eps$ or an element of $\Sigma^k$ for some $k \in
+\N$. The expression $\{0, 1\}^*$ denotes the set of all finite length
+binary strings. A \emph{code} $C\from X\to \{0,1\}^*$ is a one-to-one
+function from a set $X$ to the set of finite length binary strings.
+The elements of the range of $C$ are called $C$'s \emph{codewords}.
+In most cases, there are some elements of the set $X$ that are not of
+interest to us.  In these cases, we consider partial codes. A
+\emph{partial code} $C\from X\nrightarrow \{0,1\}^*$ is a one-to-one
+partial function.  When discussing partial codes we will use the
+convention that $|C(x)|=\infty$ if $x$ is not in the domain of $C$.
 
-A (partial) code, $C$, is \emph{prefix-free} if, for every pair
-$x\neq y$ in the domain of $C$ the binary string $C(x)$ is not a
+A (partial) code $C$ is \emph{prefix-free} if, for every pair
+$x\neq y$ in the domain of $C$, the binary string $C(x)$ is not a
 prefix of $C(y)$.  It can be helpful to think of prefix-free codes as
 (rooted ordered) binary trees whose leaves are labelled with the
 elements of $X$.  The codeword for a particular $x\in X$ is obtained
@@ -244,12 +245,11 @@ a run of significantly more than $\log n$ one bits.  (See
 \begin{proof}
   We will prove this theorem by constructing a partial prefix-free
   code for strings having a run of $t$ or more ones.  For such a
-  string string $x=(x_1,\ldots,x_n)$ let $i$ be the minimum index such
-  that $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$. The codeword, $C(x)$, for $x$
-  is the binary string that consists of the
-  ($\lceil\log n\rceil$-bit binary encoding of the) index $i$
-  followed by the $n-t$ bits
-  $x_1,\ldots,x_{i-1},x_{i+t},\ldots,x_n$. (see \figref{runs-i}.)
+  string $x=(x_1,\ldots,x_n)$ let $i$ be the minimum index such that
+  $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$. The codeword $C(x)$ for $x$ is the
+  binary string that consists of the ($\lceil\log n\rceil$-bit binary
+  encoding of the) index $i$ followed by the $n-t$ bits
+  $x_1,\ldots,x_{i-1},x_{i+t},\ldots,x_n$. (See \figref{runs-i}.)
 
   Observe that $C(x)$ has length 
   \[
@@ -309,8 +309,8 @@ $t=\ceil{\log n+s}$ (note the lack of a ceiling over the logarithmic
 term), in which case the final inequality becomes an equality.
 
 In the encoding proof of \thmref{runs-i}, the ceiling in the
-expression for $t$ is an artifact of encoding of the integer $i$ which
-is taken from a set of $n$. When sketching an encoding argument, we
+expression for $t$ is an artifact of encoding the integer $i$ which is
+taken from a set of size $n$. When sketching an encoding argument, we
 think of this as requiring $\log n$ bits but when it comes time to
 carefully write down a proof we include a ceiling over this term since
 bits are a discrete quantity.
@@ -345,10 +345,10 @@ $n_0(x)$ zeros,
 This code is the so-called Shannon-Fano code for
 $\mathrm{Bernoulli}(\alpha)$ bit strings of length $n$
 \cite{fano:transmission,shannon:mathematical}. In general, a
-Shannon-Fano code $C : X \to \{0, 1\}^*$ is really parametrized over
-any probability density $p : X \to [0, 1]$ so that $|C(x)| =
-\ceil{\log (1/p_x)}$, and in particular, the construction of such a
-code is deterministic, even when $X$ is (countably) infinite.
+Shannon-Fano code $C : X \to \{0, 1\}^*$ is parametrized over any
+probability density $p : X \to [0, 1]$ so that
+$|C(x)| = \ceil{\log (1/p_x)}$, and in particular, the construction of
+such a code is deterministic, even when $X$ is countably infinite.
 
 Again, as we will see in \secref{el}, we can omit the ceiling in the
 expression for $|C_\alpha(x)|$.  This is true for any value of $n$. In
@@ -394,7 +394,7 @@ helpful to have some manageable approximations.  One of these is
 derived as follows:
 \begin{align}
   H(\alpha) & = \alpha\log(1/\alpha) + (1-\alpha)\log(1/(1-\alpha)) \notag \\
-            & = \alpha\log(1/\alpha) + (1-\alpha)\log(1+(\alpha/(1-\alpha)) \notag \\
+            & = \alpha\log(1/\alpha) + (1-\alpha)\log(1+\alpha/(1-\alpha)) \notag \\
             & \le \alpha\log(1/\alpha) + \alpha\log e \eqlabel{entropy-i} 
 \end{align}
 since $1+x\le e^x$ for all $x\in\mathbb{R}$. \Eqref{entropy-i} is a
@@ -477,14 +477,14 @@ using a fixed-length code.  The length of the codewords in such a code
 is
 \begin{align}
   \log n!
-  & = n\log n - n\log e + (1/2)\log n + \log(1+\Theta(1/n)) \notag \\
-  & = n\log n - n\log e + (1/2)\log n + \Theta(1/n) \notag \\
+  & = n\log n - n\log e + (1/2)\log n + \log \sqrt{2 \pi} + \log(1+\Theta(1/n)) \notag \\
+  & = n\log n - n\log e + (1/2)\log n + \log \sqrt{2 \pi} + \Theta(1/n) \notag \\
   & = n\log n - n\log e + \Theta(\log n) \eqlabel{stirling-loose}
     \enspace .
 \end{align}
 
 We are sometimes interested in codes for the $\binom{n}{k}$ subsets of
-$k$ elements from a set of size $n$.  Note that there is an easy
+$k$ elements from a set of size $n$. Note that there is an easy
 bijection between such subsets and binary string of length $n$ having
 exactly $k$ ones. Therefore, we can represent these using the
 Shannon-Fano code $C_{k/n}$ and each of our codewords will have length
@@ -493,9 +493,11 @@ $nH(k/n)$.  In particular, this implies that
   \log\binom{n}{k} \le nH(k/n) \le k\log n - k\log k + k\log e 
   \eqlabel{log-n-choose-k}
 \end{equation}
-where the last inequality is an application of \eqref{entropy-i}. (The
+where the last inequality is an application of \eqref{entropy-i}. The
 astute reader will notice that we just used an encoding argument to
-prove an upper-bound on $\binom{n}{k}$.)
+prove an upper-bound on $\binom{n}{k}$. Alternatively, we could obtain
+a slightly worse bound using the fact that
+$\binom{n}{k} = \frac{n!}{k! (n - k)!}$ and applying \eqref{stirling}.
 
 \subsection{Encoding the Natural Numbers}
 
@@ -563,10 +565,10 @@ argument.
   This is an encoding argument that compresses the $r=\binom{n}{2}$
   bits of $G$'s adjacency matrix, as they appear in row-major order.
   
-  $G$ contains a clique or independent set, $S$, of size $t$. Hence,
-  the code $C(G)$ begins with a bit indicating whether $S$ is a clique
-  or independent set; the vertices of $S$; then the adjacency matrix
-  of $G$ in row major-order but leaving out all of the $\binom{t}{2}$
+  $G$ contains a clique or independent set $S$ of size $t$. Hence, the
+  code $C(G)$ begins with a bit indicating whether $S$ is a clique or
+  independent set; the vertices of $S$; then the adjacency matrix of
+  $G$ in row major-order but leaving out all of the $\binom{t}{2}$
   bits implied by the edges or non-edges in $S$.
   
   This encoding has length
@@ -654,7 +656,7 @@ satisfies the requirements of \thmref{urns}.
 \subsection{Linear Probing}
 
 Studying balls in urns is a useful technique to analyze hashing with
-chaining (see, e.g., \cite[Section~5.1]{morin:open}), a more
+chaining (see \emph{e.g.}~\cite[Section~5.1]{morin:open}), a more
 practically efficient form of a hashing is \emph{linear probing}.  In
 a linear-probing hash table, we hash $n$ items $x_1,\ldots,x_n$ into a
 linear probing hash table of size $m=cn$, $c\ge 1$. When we insert
@@ -1214,8 +1216,8 @@ concentration of records in a random permutation.
     \frac{d}{d x} x H(a/x) = \log (1/(1 - a/x)) \enspace ,
   \]
   which is positive as long as $0 < a/x < 1$, and so $x H(a/x)$
-  increases as a function of $x$. Applying the Uniform Encoding Lemma,
-  we obtain the desired result.
+  increases as a function of $x$. We finish by applying the Uniform
+  Encoding Lemma.
 \end{proof}
 
 \subsubsection{The Height of a Random Binary Search Tree}
@@ -1228,8 +1230,7 @@ keys $\sigma_1, \ldots, \sigma_n$. Specifically, if $\sigma^L$
 strictly smaller (respectively, strictly larger) than $\sigma_1$, then
 $\text{BST}(\sigma)$ has $\sigma_1$ as its root, with
 $\text{BST}(\sigma^L)$ and $\text{BST}(\sigma^R)$ as left and right
-subtrees. For any $\sigma$, the value $\sigma_1$ is called a
-\emph{pivot}.
+subtrees.
 
 Lucier \emph{et al.}~\cite{lucier.jiang.li:quicksort} use an encoding
 argument via Kolmogorov complexity to study the height of
@@ -1356,7 +1357,7 @@ $3n/4$.
   for each $k_0 \leq i \leq k$. Therefore, the total number of
   comparisons made by $\textsc{Find}$ is at most
   \[
-  \sum_{i=0}^k (n_i + 1) = k_0(n + 1) + k + \sum_{i=k_0}^k n_i \le
+  \sum_{i=0}^k (n_i + 1) \le k_0(n + 1) + k + \sum_{i=k_0}^k n_i \le
   O(n) + \sum_{i = k_0}^k (3/4)^{\alpha i} = O(n) \enspace . \qedhere
   \]
 \end{proof}
@@ -1379,11 +1380,12 @@ $3n/4$.
   \]
   Note that the pivots $x_1, \dots, x_i$ trace a path from the root in
   $\text{BST}(\sigma)$. Therefore, the second part of our encoding is
-  the recursive encoding presented in \secref{height}, where each
+  the recursive encoding presented in \secref{height}, in which each
   pivot can be encoded using one less bit. In total, our code then has
   length
   \[
-  \log n! - i + i H(\alpha) + \log i + O(\log \log i) = \log n! - \Omega(i) \enspace ,
+    |C(\sigma)| \le \log n! - i + i H(\alpha) + \log i + O(\log \log
+    i) = \log n! - \Omega(i) \enspace ,
   \]
   since $\alpha < 1/2$. The proof is completed by applying the Uniform
   Encoding Lemma, and by observing that $k_0 \leq i$ can be made
