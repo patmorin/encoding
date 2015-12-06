@@ -656,25 +656,25 @@ satisfies the requirements of \thmref{urns}.
 \subsection{Linear Probing}
 
 Studying balls in urns is a useful technique to analyze hashing with
-chaining (see \emph{e.g.}~\cite[Section~5.1]{morin:open}), a more
-practically efficient form of a hashing is \emph{linear probing}.  In
-a linear-probing hash table, we hash $n$ items $x_1,\ldots,x_n$ into a
-linear probing hash table of size $m=cn$, $c\ge 1$. When we insert
+chaining (see \emph{e.g.}~\cite[Section~5.1]{morin:open}). A more
+practically efficient form of hashing is \emph{linear probing}.  In a
+linear probing hash table, we hash $n$ items $x_1,\ldots,x_n$ into a
+hash table of size $m=cn$, for some fixed $c> 1$. When we insert
 $x_i$ we try and place it at table position $j=h(x_i)$ unless it is
 already occupied by one of $x_1,\ldots,x_{i-1}$ in which case we try
 table location $(j+1)\bmod m$, $(j+2)\bmod m$, and so on until we find
 an empty spot for $x_i$.  We want to study the expected search time
 for some item $x_i$ in this hash table.
 
-We call a maximal consecutive (the table locations $m-1$ and $0$ are
-considered consecutive) sequence of occupied table locations a
-\emph{block}.
+We call a maximal consecutive sequence of occupied table locations a
+\emph{block}. The table locations $m-1$ and $0$ are considered
+consecutive.
 
 \begin{thm}\thmlabel{linear-probing}
   Fix some $x\in\{x_1,\ldots,x_n\}$. Then the probability that the
-  block containing $x$ has size $t$ satisfying
+  block containing $x$ has size at least $t$, for $t$ satisfying
   \[
-    t \log (c/e) - \log t \ge s + O(1)
+    t \log (c/e) - \log t \ge s + O(1) \enspace ,
   \]
   is at most $2^{-s}$.
 \end{thm}
@@ -687,8 +687,8 @@ considered consecutive) sequence of occupied table locations a
   which is drawn uniformly at random from a set of size
   $n^{m}=n^{cn}$.
   
-  We encode $R$ by the first index, $b$, of the block containing $x$;
-  followed by the $t-1$ elements, $y_1,\ldots,y_{t-1}$, of this block
+  We encode $R$ by the first index $b$ of the block containing $x$;
+  followed by the $t-1$ elements $y_1,\ldots,y_{t-1}$ of this block
   (excluding $x$); followed by enough information to decode the hash
   values of $h(x)$ and $h(y_1),\ldots,h(y_{t-1})$; followed by
   $h(x_1),\ldots,h(x_n)$ excluding the $t$ hash values we can compute
@@ -701,16 +701,17 @@ considered consecutive) sequence of occupied table locations a
   \begin{align*}
     |C(R)| & = \overbrace{\log m}^{b} + \overbrace{\log\binom{n}{t-1}}^{y_1,\ldots,y_{t-1}} + \overbrace{t\log t}^{h(x),h(y_1),\ldots,h(y_{t-1})} + \overbrace{(n-t)\log m}^{\text{everything else}} \\
            & \le \log m + (t-1)\log n - 
-             (t-1)\log(t-1) + (t-1)\log e + t\log t + (n-t)\log m & \text{(by \eqref{log-n-choose-k})}\\
+             (t-1)\log(t-1) + (t-1)\log e + t\log t + (n-t)\log m \tag{by \eqref{log-n-choose-k}}\\
            & \le \log m + (t-1)\log n + (t-1)\log e + (n-t)\log m + \log t+ O(1)\\
-           & = n\log m - (t-1)\log c + (t-1)\log e + \log t + O(1) \\
+           & = n\log m - (t-1)\log c + (t-1)\log e + \log t + O(1) \tag{since $m = cn$}\\
            & = n\log m - (t-1)\log(c/e) + \log t + O(1) \\
            & \le \log m^n - s \enspace ,
   \end{align*}
   for all $t$ satisfying
   \[
-    t \log (c/e) - \log t \ge s + O(1) \enspace . \qedhere
+    t \log (c/e) - \log t \ge s + O(1) \enspace .
   \]
+  The proof is complete by applying the Uniform Encoding Lemma.
 \end{proof}
 
 \begin{rem}
@@ -747,11 +748,10 @@ The main object of study in cuckoo hashing is the \emph{cuckoo graph}:
 a random bipartite multigraph $G=(A,B,E)$ where $|A|=|B|=m$ for
 $m = 2n$, and $|E|=n$.  For each $i\in\{1,\ldots,n\}$, each edge $e_i$
 of $E$ is obtained by randomly choosing (with replacement) an endpoint
-in $a_i\in A$ and an endpoint in $b_i\in B$.  The cuckoo hashing
-algorithm may fail if this graph contains a long edge-simple path or
-if it contains a component with more edges than vertices.  (An
-edge-simple path is a path that uses each edge of the multiset $E$ at
-most once.)
+$a_i\in A$ and an endpoint $b_i\in B$.  The cuckoo hashing algorithm
+may fail if this graph contains a long edge-simple path or if it
+contains a component with more edges than vertices.  (An edge-simple
+path is a path that uses each edge of the multiset $E$ at most once.)
 
 \begin{lem}\lemlabel{cuckoo-path-length}
   The cuckoo graph has an edge-simple path of length at least
@@ -906,14 +906,14 @@ Suppose that when $x$ is inserted, it is placed in a list with $t$
 other elements. Then, we say that the age of $x$ is $a(x) = t$.
 \begin{thm}
   The cost of searching in 2-choice hashing in a table of size $cn$
-  with $c > e$ is at most $\log \log n + O(1)$ with probability $1 -
+  with $c > 4$ is at most $\log \log n + O(1)$ with probability $1 -
   O(1/n)$.
 \end{thm}
 \begin{proof}
   Suppose that some element $x$ has $a(x) = t$. This leads to a binary
-  \emph{witness tree} $T$ of height $t$ as follows.  The root of $T$
-  is the element $x$. When $x$ was inserted into the hash table, it
-  had to choose between the lists $h(x)$ and $g(x)$, both of which
+  \emph{witness tree} $T$ of height $t$ as follows: The root of $T$ is
+  the element $x$. When $x$ was inserted into the hash table, it had
+  to choose between the lists $h(x)$ and $g(x)$, both of which
   contained at least $t - 1$ elements; in particular, $h(x)$ has an
   element $x_h$ with $a(x_h) = t - 1$, and $g(x)$ has an element $x_g$
   with $a(x_g) = t - 1$. The elements $x_h$ and $x_g$ become left and
@@ -921,7 +921,11 @@ other elements. Then, we say that the age of $x$ is $a(x) = t$.
   some element appears more than once on a level, we only recurse on
   its leftmost occurence. Note that each vertex of $T$ corresponds to
   the edge $(h(x), g(x))$ of $G$. Moreover, the subgraph of $G$
-  induced by the edges $\{(h(x), g(x)) : x \in T\}$ is connected.
+  induced by the edges 
+  \[
+    \{(h(x), g(x)) : x \text{ is a vertex of } T\}
+  \]
+  is connected.
 
   Suppose that some node appears more than once on a level of
   $T$. From above, this means that some component of $G$ has a
@@ -959,15 +963,15 @@ element of $A'$.
 
 The following theorem shows that $G$ is an expander.  The proof of
 this theorem usually involves a messy sum that contains binomial
-coefficients and probabilities.  See, for example, Motwani and
+coefficients and probabilities: see, for example, Motwani and
 Raghavan~\cite[Theorem~5.3]{motwani.raghavan:randomized},
 Pinsker~\cite[Lemma 1]{pinsker:on}, or Hoory, Linial, and
 Wigderson~\cite[Lemma~1.9]{hoory.linial.ea:expander}.
 
 \begin{thm}
   There exists a constant $\alpha >0$ such that, with probability at
-  least $O(n^{-1/2})$, $|N(A')| \ge 3|A'|/2$ for all $A'\subseteq A$
-  with $|A'|\le \alpha n$.
+  least $1 - O(n^{-1/2})$, $|N(A')| \ge 3|A'|/2$ for all
+  $A'\subseteq A$ with $|A'|\le \alpha n$.
 \end{thm}
 
 \begin{proof}
@@ -976,10 +980,10 @@ Wigderson~\cite[Lemma~1.9]{hoory.linial.ea:expander}.
   random from a set of size $n^{3n}$.
 
   If some set $A'$, $|A'|=k\le \alpha n$, violates the conditions of
-  the theorem, then we encode $k$ using an Elias $\delta$-code; the
-  set $A'$; the set $N(A')$; and the edges between $A'$ and
+  the theorem, then we encode $k$ using an Elias $\delta$-code; and we
+  give the sets $A'$ and $N(A')$; and the edges between $A'$ and
   $N(A')$. Then we encode the rest of $G$, skipping the $3k\log n$
-  bits devoted to elements in $A'$.  The key savings here comes
+  bits devoted to elements in $A'$.  The key savings here come
   because $N(A')$ should take $3k\log n$ bits to encode, but can
   actually be encoded in roughly $3k\log(3k/2)$ bits. Our code then
   has length
@@ -1005,27 +1009,26 @@ Wigderson~\cite[Lemma~1.9]{hoory.linial.ea:expander}.
     s(\alpha n) = (\alpha n/2)\log \left(\frac{1}{2^{2\beta}
         \alpha}\right) - 2 \log \alpha n
   \]
-  and $2^{-s(\alpha n)} = 2^{-\Omega(n)}$ for $\alpha < (1/2)^{2\beta}
-  \approx 0.002$. In each case, the Uniform Encoding Lemma gives the
-  desired result.
+  and $2^{-s(\alpha n)} = 2^{-\Omega(n)}$ for
+  $\alpha < (1/2)^{2\beta} \approx 0.002$. In each case, the Uniform
+  Encoding Lemma gives the desired result, and in particular,
+  $2^{-s(k)} \leq O(n^{-1/2})$.
 \end{proof}
 
 \subsection{Permutations and Binary Search Trees}
 
 A \emph{permutation} $\sigma$ of size $n$ is a sequence of $n$
 distinct integers, sometimes denoted
-\[
-  \sigma = (\sigma_1, \ldots, \sigma_n) \enspace .
-\]
-Except when explicitly stated, we will assume that the set of integers
-involved in a permutation of size $n$ is precisely $\{1, \ldots,
-n\}$. The number of such permutations is $n!$.
+$\sigma = (\sigma_1, \ldots, \sigma_n)$. Except when explicitly
+stated, we will assume that the set of integers involved in a
+permutation of size $n$ is precisely $\{1, \ldots, n\}$. The number of
+such permutations is $n!$.
 
 \subsubsection{Analysis of Insertion Sort}
 \seclabel{insertion-sort}
 
-Recall the insertion-sort algorithm for sorting a list, $\sigma =
-(\sigma_1,\ldots,\sigma_n)$ of $n$ elements:
+Recall the insertion-sort algorithm for sorting a list
+$\sigma = (\sigma_1,\ldots,\sigma_n)$ of $n$ elements:
 
 \noindent{$\textsc{InsertionSort}(\sigma)$}
 \begin{algorithmic}[1]
@@ -1044,9 +1047,9 @@ if $\sigma$ is a uniformly random permutation of size $n$.  The answer
 $\binom{n}{2}/2$ is an easy application of linearity of expectation:
 For every one of the $\binom{n}{2}$ pairs $p,q\in\{1,\ldots,n\}$ with
 $p<q$, the values initially stored at positions $\sigma_p$ and
-$\sigma_q$ will eventually be swapped if and only if $\sigma_p >
-\sigma_q$, which happens with probability $1/2$ in a random
-permutation.
+$\sigma_q$ will eventually be swapped if and only if
+$\sigma_p > \sigma_q$, which happens with probability $1/2$ in a
+uniformly random permutation.
 
 A more advanced question is to ask for a concentration result on the
 number of executions of Line~4. This is a harder question to tackle;
@@ -1073,11 +1076,11 @@ of Kolmogorov complexity.
   %of of $\{1,\ldots,n\}$.
   %
   We encode the permutation $\sigma$ by recording the execution of
-  \textsc{InsertionSort} on this permutation. In particular, we
-  record, for each $i\in\{2,\ldots,n\}$, the number of times, $m_i$,
-  that Line~4 executes during the $i$\textsuperscript{th} iteration of
-  \textsc{InsertionSort}. With this information, one can run the
-  following version of \textsc{InsertionSort} to recover $\sigma$:
+  \textsc{InsertionSort} on this permutation. In particular, we record
+  for each $i\in\{2,\ldots,n\}$, the number of times $m_i$ that Line~4
+  executes during the $i$\textsuperscript{th} iteration of
+  $\textsc{InsertionSort}(\sigma)$. With this information, one can run
+  the following algorithm to recover $\sigma$:
   
   \noindent{$\textsc{InsertionSortReconstruct}(m_2,\ldots,m_n)$}:
   \begin{algorithmic}[1]
@@ -1105,8 +1108,8 @@ of Kolmogorov complexity.
   \[
     |C(\sigma)| = 2\log n + \log\binom{m+n-2}{n-2}
   \]
-  bits and this is sufficient to recover the permutation that defines
-  $x_1,\ldots,x_n$.  By applying \eqref{log-n-choose-k}, we obtain
+  bits and this is sufficient to recover the permutation $\sigma$.  By
+  applying \eqref{log-n-choose-k}, we obtain
   \begin{align*}
     |C(\sigma)| & \le (n-2)\log(m+n-2) - (n-2)\log(n-2)  + (n-2)\log e + O(\log n) \\
       & \le n\log(m+n-2) - n\log n   + n\log e + O(\log n) \\
@@ -1114,8 +1117,9 @@ of Kolmogorov complexity.
       & = 2n\log n + n\log\alpha - n\log n  + n\log e + O(\log n) \\
       & = n\log n + n\log\alpha + n\log e + O(\log n) \\
       & = \log n! + n\log\alpha + 2n\log e + O(\log n) \tag{by \eqref{stirling-loose}} \\
-      & = \log n! + n \log (\alpha e^2) + O(\log n) \enspace .  \qedhere
+      & = \log n! + n \log (\alpha e^2) + O(\log n) \enspace .
   \end{align*}
+  Again, we finish by applying the Uniform Encoding Lemma.
 \end{proof}
 
 
@@ -1137,8 +1141,8 @@ value $\sigma_i$ with $1 \leq i \leq n$ such that
   \sigma_i = \max\{\sigma_1, \dots, \sigma_i\} \enspace .
 \]
 It is easy to see that the probability that $\sigma_i$ is a record is
-exactly $1/i$, so the expected number of records in a uniformly random
-permutation is
+exactly $1/i$ if $\sigma$ is chosen uniformly at random, in which case
+the expected number of records in such a permutation is
 \[
   H_n = \sum_{i = 1}^n 1/i = \ln n + O(1) \enspace ,
 \]
@@ -1146,12 +1150,12 @@ the $n$\textsuperscript{th} harmonic number. It is harder to establish
 concentration with non-negligible probability. To do this, one first
 needs to show the independence of certain random variables, which
 quickly becomes tedious. We instead give an encoding argument to show
-concentration of the number of records inspired by a technique used by
-Lucier \emph{et al.} to study the height of random binary search trees
-\cite{lucier.jiang.li:quicksort}.
+concentration of the number of records, inspired by a technique used
+by Lucier \emph{et al.} to study the height of random binary search
+trees \cite{lucier.jiang.li:quicksort}.
 
 First, we describe an incremental and recursive manner of encoding a
-permutation $\sigma$: begin by providing the first value of the
+permutation $\sigma$: Begin by providing the first value of the
 permutation $\sigma_1$; followed by the set of indices of the
 permutation for which $\sigma$ takes on a value strictly smaller than
 $\sigma_1$, including an explicit encoding of the induced permutation
@@ -1175,7 +1179,7 @@ concentration of records in a random permutation.
   A uniformly random permutation $\sigma$ of size $n$ has at least $c
   \log n$ records with probability at most
   \[
-    2^{-c (1 - H(1/c)) \log n + O(\log \log n)} \enspace ,
+    2^{-c (1 - H(1/c)) \log n + O(\log \log n)}
   \]
   for $c > 2$.
 \end{thm}
@@ -1183,24 +1187,24 @@ concentration of records in a random permutation.
   We encode the permutation $\sigma$ chosen uniformly at random from a
   set of size $n!$.
 
-  Suppose that $\sigma$ has $t = \ceil{c\log n}$ records $r_1 < r_2 <
-  \cdots < r_t$, for some fixed $c > 2$. First, give a bit string $x =
-  (x_1, \dots, x_t) \in \{0, 1\}^t$, where $x_i = 0$ if and only if
-  $r_i$ lies in the first half of the interval $[r_{i - 1}, n]$. It
-  follows that $n_1(x) \leq \log n$. In other words, $x$ is a sparse
-  bit string, and $n_1(x)/t \leq 1/c$.
+  Suppose that $\sigma$ has $t = \ceil{c\log n}$ records
+  $r_1 < r_2 < \cdots < r_t$, for some fixed $c > 2$. First, give a
+  bit string $x = (x_1, \dots, x_t) \in \{0, 1\}^t$, where $x_i = 0$
+  if and only if $r_i$ lies in the first half of the interval
+  $[r_{i - 1}, n]$. It follows that $n_1(x) \leq \log n$, so
+  $n_1(x)/t \leq 1/c$.
 
   To begin our encoding of $\sigma$, we encode the bit string $x$ by
   giving the set of $n_1(x)$ ones in $x$; followed by the incremental
-  recursive encoding of $\sigma$ from earlier. In this case, our
-  knowledge of the value of $x_i$ halves the size of the space of
-  options for encoding the record $r_i$. In other words, our knowledge
-  of $x$ allows us to encode each record using roughly one less bit
-  per record. More precisely, since the encoding from above recurses
-  $t$ times on decreasing values $n_1 > \cdots > n_t$, then the number
-  of bits spent encoding records is at most
+  recursive encoding of $\sigma$ from earlier. Now, our knowledge of
+  the value of $x_i$ halves the size of the space of options for
+  encoding the record $r_i$. In other words, our knowledge of $x$
+  allows us to encode each record using roughly one less bit per
+  record. More precisely, since the encoding from above recurses $t$
+  times on decreasing values $n_1 > \cdots > n_t$, then the number of
+  bits spent encoding records is at most
   \begin{align*}
-    \sum_{i = 1}^t \log \lceil n_i/2 \rceil &\leq \sum_{i = 1}^t \log (n_i/2 + 1)
+    \sum_{i = 1}^t \log \ceil{n_i/2} &\leq \sum_{i = 1}^t \log (n_i/2 + 1)
                                               \leq \sum_{i = 1}^t \log (n_i/2) + \sum_{i = 1}^t O(1/n_i) \\
                                             &\leq \sum_{i = 1}^t \log (n_i/2) + O(H_t) = \sum_{i = 1}^t \log n_i - t + O(\log \log n) \enspace .
   \end{align*}
@@ -1255,20 +1259,17 @@ occurs in the middle half of its subrange.
   fixed $c > 2/\log (4/3)$.
 
   Our encoding for $\sigma$ has two parts. The first part includes an
-  encoding of the value $y_t$, and a bit string $x = (x_1, \ldots,
-  x_t)$, where $x_i = 1$ if and only if $y_i$ is balanced. From our
-  definition, if $y_i$ is balanced, then
-  \[
-    s(y_{i + 1}) \leq (3/4) s(y_i) \enspace ,
-  \]
-  and since $n_1(x)$ counts the number of balanced nodes along $Y$,
-  then
+  encoding of the value $y_t$, and a bit string
+  $x = (x_1, \ldots, x_t)$, where $x_i = 1$ if and only if $y_i$ is
+  balanced. From our definition, if $y_i$ is balanced, then
+  $s(y_{i + 1}) \leq (3/4) s(y_i)$, and since $n_1(x)$ counts the
+  number of balanced nodes along $Y$, then
   \[
     1 \leq (3/4)^{n_1(x)} n \iff n_1(x) \leq \log_{4/3} n \enspace .
   \]
 
   The second part of our encoding is recursive: First, encode the
-  value of the root $r$ using $\log \lceil n/2 \rceil$ bits. If the
+  value of the root $r$ using $\log \ceil{n/2}$ bits. If the
   path $Y$ goes to the left of $r$, then specify the values in the
   right subtree of $r$, including an explicit encoding of the
   permutation induced by these values; and recursively encode the
@@ -1311,7 +1312,7 @@ occurs in the middle half of its subrange.
 In this section, we analyze the number of comparisons made in the
 execution of Hoare's classic \textsc{Find} algorithm~\cite{hoare:find}
 which returns the $k$\textsuperscript{th} smallest element in an array
-of $n$ elements. The analysis is similar to that of the previous
+of $n$ elements. The analysis is similar to that of the preceding
 section.
 
 We assume knowledge of the algorithm $\textsc{Partition}$, which takes
@@ -1350,7 +1351,7 @@ $3n/4$.
   Let $n_i$ be the size of the input array during the
   $i$\textsuperscript{th} recursive call, and in particular $n_0 =
   n$. If $x_j$ is a good pivot, then the conditions of the lemma give
-  that $n_j \le 3 n_{j - 1}/4$, so
+  that $n_j \le (3/4) n_{j - 1}$, so
   \[
   n_i \leq (3/4)^{\alpha i} n
   \]
@@ -1480,21 +1481,22 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
   Given a $k$-CNF formula $\varphi$ with $m$ clauses and $n$ variables
   such that each clause intersects at most $r \le 2^{k - 3}$ other
   clauses, the probability that $\textsc{Solve}(\varphi)$ calls
-  $\textsc{Fix}$ at least $s$ times is at most $2^{-s}$.
+  $\textsc{Fix}$ at least $s + m$ times is at most $2^{-s}$.
 \end{thm}
 \begin{proof}
-  Suppose that $\textsc{Solve}(\varphi)$ calls $\textsc{Fix}$ $s$
-  times. Let $\alpha \in \{\textsf{true}, \textsf{false}\}^n$ be the
-  initial truth assignment for $\varphi$, and let
-  $\beta_1, \ldots, \beta_s \in \{\textsf{true}, \textsf{false}\}^k$
+  Suppose that $\textsc{Solve}(\varphi)$ calls $\textsc{Fix}$
+  $t = \ceil{s + m}$ times. Let
+  $\alpha \in \{\textsf{true}, \textsf{false}\}^n$ be the initial
+  truth assignment for $\varphi$, and let
+  $\beta_1, \ldots, \beta_t \in \{\textsf{true}, \textsf{false}\}^k$
   be the local truth assignments produced in each call to
   $\textsc{Fix}$. The string
-  $\gamma = (\alpha, \beta_1, \ldots, \beta_s)$ is uniformly chosen
-  from a set of size $2^{n + sk}$, and will be the subject of our
+  $\gamma = (\alpha, \beta_1, \ldots, \beta_t)$ is uniformly chosen
+  from a set of size $2^{n + tk}$, and will be the subject of our
   encoding.
 
   The execution of $\textsc{Solve}(\varphi)$ determines a (rooted
-  ordered) \emph{recursion tree} $T$ on $s + 1$ nodes as follows: The
+  ordered) \emph{recursion tree} $T$ on $t + 1$ nodes as follows: The
   root of $T$ corresponds to the initial call to
   $\textsc{Solve}(\varphi)$, and its children $D_1, \ldots, D_d$
   recursively correspond to the sequence of calls to
@@ -1507,25 +1509,27 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
 
   The string $\gamma$ can be recovered from the bottom-up from our
   knowledge of the tree $T$ and the final assignment
-  $\alpha$. Specifically, let $D_s$ be the clause involved in the last
-  node of a pre-order traversal of $T$, so it is the last fixed clause
-  in the execution. Since $D_s$ was not satisfied before its
-  reassignment, this allows us to deduce $k$ values of $\alpha$ before
-  $D_s$ was fixed. Pruning $D_s$ from the tree and continuing in this
-  manner at $D_{s - 1}$, we eventually recover the original truth
-  assignment produced in $\textsc{Solve}(\varphi)$.
+  $\alpha$. Specifically, let $D_1, \dots, D_t$ be the clauses
+  encountered in a pre-order traversal of $T$, so that in particular
+  $D_t$ is the last fixed clause in the execution. Since $D_t$ was not
+  satisfied before its reassignment, this allows us to deduce $k$
+  values of $\alpha$ before $D_t$ was fixed. Pruning $D_t$ from the
+  tree and continuing in this manner at $D_{t - 1}$, we eventually
+  recover the original truth assignment produced in
+  $\textsc{Solve}(\varphi)$.
 
   Therefore, to encode $\gamma$, we first give the final truth
   assignment $\alpha$; and a description of the shape of the tree $T$;
   and the sequence of at most $m$ clauses which are children of the
-  root of $T$; and the at most $s$ clauses involved in the calls to
+  root of $T$; and the at most $t$ clauses involved in the calls to
   $\textsc{Fix}$ in a pre-order traversal of $T$. As in
   \lemref{two-choice-component-size}, the shape of $T$ can be encoded
-  using $2s$ bits. In total, the code has length
+  using $2t$ bits. In total, the code has length
   \begin{align*}
-    |C(\gamma)| &= n + 2s + m + s \log r \\
-                &\le n + 2s + m + s(k - 3) \tag{since $r \le 2^{k - 3}$} \\
-                &= n + sk - s \enspace .
+    |C(\gamma)| &= n + 2t + m + t \log r \\
+                &\le n + 2t + m + t(k - 3) \tag{since $r \le 2^{k - 3}$} \\
+                &= n + tk - t + m \\
+                &\le n + tk - s \enspace .
   \end{align*}
   The result is obtained by applying the Uniform Encoding Lemma.
 \end{proof}
@@ -1565,7 +1569,7 @@ We will say that a real-valued function $\ell : X \to \R$
 
 The following generalization of the Uniform Encoding Lemma, which was
 originally proven by Barron~\cite[Theorem~3.1]{barron:dissertation},
-serves this purpose:
+serves for non-uniform input distributions:
 \begin{lem}[Non-Uniform Encoding Lemma]\lemlabel{nuel}  
   Let $C\from X\nrightarrow\{0,1\}^*$ be a partial prefix-free code
   and let $x\in X$ be drawn randomly where $p_x$ denotes the
@@ -1593,7 +1597,7 @@ serves this purpose:
 \end{proof}
 
 Notice that the Non-Uniform Encoding Lemma is a strict generalization
-of the Uniform Encoding Lemma; take $p_x=1/|X|$ for all $x\in X$ and
+of the Uniform Encoding Lemma: Take $p_x=1/|X|$ for all $x\in X$ and
 we obtain the Uniform Encoding Lemma.
 
 As in \secref{sparse-bit-strings}, we will be interested in using a
@@ -1677,7 +1681,7 @@ if
 \end{itemize}
 
 \begin{thm}
-  Let $G$ be the subgraph of the $\sqrt{n} \times \sqrt{n}$ torus grid
+  Let $G$ be a subgraph of the $\sqrt{n} \times \sqrt{n}$ torus grid
   graph in which each edge is chosen with probability $p < 1/3$. Then,
   the probability that $G$ contains a cycle of length at least
   \[
@@ -1721,9 +1725,9 @@ vertices are adjacent if and only if their corresponding faces are
 incident to the same edge of the original subgraph.
 
 \begin{thm}
-  Let $G$ denote the subgraph of the $\sqrt{n} \times \sqrt{n}$ torus
-  grid graph in which each edge is chosen with probability greater
-  than $2/3$. Then, $G$ has at most one component of size
+  Let $G$ be a subgraph of the $\sqrt{n} \times \sqrt{n}$ torus grid
+  graph in which each edge is chosen with probability greater than
+  $2/3$. Then, $G$ has at most one component of size
   $\omega(\log^2 n)$ with high probability.
 \end{thm}
 \begin{proof}
@@ -1805,9 +1809,9 @@ accomplished with an encoding argument.
     Notice that, for $i<j<k$ if $A_{i,j}=1$ and $A_{i,k}=1$, then the
     fact that there are no triangles implies that $A_{j,k}=0$.
 
-    Let $m_i$ be the number of ones in the $i$th row of the submatrix.
-    By specifying rows $1,\ldots,n/2$, we eliminate the need to
-    specify
+    Let $m_i$ be the number of ones in the $i$\textsuperscript{th} row
+    of the submatrix.  By specifying rows $1,\ldots,n/2$, we eliminate
+    the need to specify
     \[
       m = \sum_{i=1}^{n/2}\binom{m_i}{2} \ge (n/2) \binom{2
         n_1(M)/n}{2} \ge (n/2)\binom{c/4}{2} = \Omega(c^2n) \enspace ,
@@ -1855,9 +1859,9 @@ We finally discuss why it has made sense to omit ceilings in all of
 our encoding arguments.
 
 Let $[0, \infty]$ denote the set of extended non-negative real
-numbers, supporting all the usual extended arithmetic operations,
-including $1/0 = \infty$. Recall that a function $\ell : X \to [0,
-\infty]$ \emph{satisfies Kraft's condition} if
+numbers, supporting all the usual extended arithmetic operations and
+identities, including $1/0 = \infty$. Recall that a function
+$\ell : X \to [0, \infty]$ \emph{satisfies Kraft's condition} if
 \[
   \sum_{x \in X} 2^{-\ell(x)} \leq 1 \enspace .
 \]
@@ -1883,11 +1887,13 @@ not be integers.
   The proof is identical to that of \lemref{nuel}.
 \end{proof}
 
-The sum of functions $\ell : X \to [0, \infty]$ and $\ell' : X' \to
-[0, \infty]$ is the function $\ell + \ell' : X \times X' \to [0,
-\infty]$, where $(\ell + \ell') (x, x') = \ell(x) + \ell'(x')$. Note
-that for any partial codes $C : X \to \{0, 1\}^* \cup \{\bot\}, C' :
-X' \to \{0, 1\}^* \cup \{\bot\}$, any $x \in X$, and any $x' \in X'$,
+The sum of functions $\ell : X \to [0, \infty]$ and
+$\ell' : X' \to [0, \infty]$ is the function
+$\ell + \ell' : X \times X' \to [0, \infty]$, where
+$(\ell + \ell') (x, x') = \ell(x) + \ell'(x')$. Note that for any
+partial codes
+$C : X \nrightarrow \{0, 1\}^*, C' : X' \nrightarrow \{0, 1\}^*$, any
+$x \in X$, and any $x' \in X'$,
 \[
 (|C| + |C'|)(x, x') = |C(x)| + |C'(x')| = |(C \cdot C')|(x, x') \enspace .
 \]
@@ -1951,15 +1957,15 @@ encoding. Using our new tools, we can now refine this and recover the
 exact result.
 \begin{customthm}{\ref*{thm:runs-i}b}
   Let $x=(x_1,\ldots,x_n)\in\{0,1\}^n$ be chosen uniformly at random
-  and let $t \ge \log n + s$. Then, the probability that there exists
-  an $i\in\{1,\ldots,n-t+1\}$ such that
+  and let $t = \ceil{\log n + s}$. Then, the probability that there
+  exists an $i\in\{1,\ldots,n-t+1\}$ such that
   $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$ is at most $2^{-s}$.
 \end{customthm}
 \begin{proof}
   Let $\ell : \{0, 1\}^n \to [0, \infty]$ be such that if $x$ contains
-  a run of $t \geq \log n + s$ ones, then $\ell(x) = \log n + n - t$,
-  and otherwise $\ell(x) = \infty$. We will show that $\ell$ satisfies
-  Kraft's condition.
+  a run of $t = \ceil{\log n + s}$ ones, then
+  $\ell(x) = \log n + n - t$, and otherwise $\ell(x) = \infty$. We
+  will show that $\ell$ satisfies Kraft's condition.
 
   %Recall that $x$ is said to contain a run of $t$ ones if there exists
   %some $i \in \{1, \ldots, n - t + 1\}$ such that $x_i = \cdots = x_{i
@@ -1967,8 +1973,8 @@ exact result.
 
   Let the function $f : \{1, \ldots, n - t + 1\} \to [0, \infty]$ have
   $f(i) = \log n$ for all $i$, and
-  $g : \{0, 1\}^{n - t} \to [0, \infty]$ have $g(x) = n - t$ for all
-  $x$. Both of these functions satisfy Kraft's condition by
+  $g : \{0, 1\}^{n - t} \to [0, \infty]$ have $g(y) = n - t$ for all
+  $y$. Both of these functions satisfy Kraft's condition by
   \lemref{fixed-length-tight}. By \lemref{composition-tight}, so does
   the function
   \[
