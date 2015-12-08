@@ -151,9 +151,9 @@ and binomial coefficients.
 \subsection{Prefix-free Codes and the Uniform Encoding Lemma}
 
 A finite length \emph{string} over an alphabet $\Sigma$ is either the
-empty string $\eps$ or an element of $\Sigma^k$ for some $k \in
-\N$. The expression $\{0, 1\}^*$ denotes the set of all finite length
-binary strings. A \emph{code} $C\from X\to \{0,1\}^*$ is a one-to-one
+empty string or an element of $\Sigma^k$ for some $k \in \N$. The
+expression $\{0, 1\}^*$ denotes the set of all finite length binary
+strings. A \emph{code} $C\from X\to \{0,1\}^*$ is a one-to-one
 function from a set $X$ to the set of finite length binary strings.
 The elements of the range of $C$ are called $C$'s \emph{codewords}.
 In most cases, there are some elements of the set $X$ that are not of
@@ -547,8 +547,8 @@ the context.
 \subsection{Graphs with no Large Clique or Independent Set}
 
 A \emph{Erd\H{o}s-R\'enyi random graph}, $G_{n,p}$ is a graph with
-vertex set $V=\{1,\ldots,n\}$ and in which each edge
-$uw\in \binom{V}{2}$ is present with probability $p$ and absent with
+vertex set $V=\{1,\ldots,n\}$ and in which each edge $\{u, w\} \in
+\binom{V}{2}$ is present with probability $p$ and absent with
 probability $1-p$, independently of the other edges.  Erd\H{o}s
 \cite{erdos:some} used the random graph $G_{n,\frac{1}{2}}$ to prove
 the existence of graphs having no large clique and no large
@@ -556,42 +556,41 @@ independent set. Here we show how this can be done using an encoding
 argument.
 
 \begin{thm}\thmlabel{erdos-renyi-i}
-  For all $n\ge 3$ and $s\ge 1$, the probability that the random
-  graph, $G_{n,\frac{1}{2}}$ contains a clique or an independent set
-  of size $t = \ceil{3\log n + \sqrt{2s}}$ is at most $2^{-s}$.
+  For a sufficiently large $n$, the probability that the random graph,
+  $G_{n,\frac{1}{2}}$ contains a clique or an independent set of size
+  $t = \ceil{3\log n + \sqrt{2s}}$ is at most $2^{-s}$.
 \end{thm}
 
 \begin{proof}
-  This is an encoding argument that compresses the $r=\binom{n}{2}$
-  bits of $G$'s adjacency matrix, as they appear in row-major order.
+  This is an encoding argument that compresses the $\binom{n}{2}$ bits
+  of $G$'s adjacency matrix, as they appear in row-major order.
   
-  $G$ contains a clique or independent set $S$ of size $t$. Hence, the
-  code $C(G)$ begins with a bit indicating whether $S$ is a clique or
-  independent set; the vertices of $S$; then the adjacency matrix of
-  $G$ in row major-order but leaving out all of the $\binom{t}{2}$
-  bits implied by the edges or non-edges in $S$.
+  The graph $G$ contains a clique or independent set $S$ of size
+  $t$. Hence, the code $C(G)$ begins with a bit indicating whether $S$
+  is a clique or independent set; the set of vertices of $S$; then the
+  adjacency matrix of $G$ in row major-order but leaving out all of
+  the $\binom{t}{2}$ bits implied by the edges or non-edges in $S$.
   
-  This encoding has length
+  Such a codeword has length
   \begin{align*}
     |C(G)| & = 1 + t\log n + \binom{n}{2}-\binom{t}{2} \\
-           & = \binom{n}{2} + 1 + t\log n - (1/2)(t^2 - t) \\
-           & \le \binom{n}{2} + 1 - (1/2)(t^2 - t - 2t \log n) \enspace .
+    & = \binom{n}{2} + 1 + t\log n - (1/2)(t^2 - t) \\
+    & = \binom{n}{2} + 1 - (1/2)(t^2 - t - 2t \log n) \enspace .
   \end{align*}
-  The function $f(x) = (1/2)(x^2 - x - 2x \log n)$ is increasing for
-  $x \geq \log n + 1/2$, so
+  The function $f(x) = (1/2)(x^2 - x - 2x \log n) - 1$ is increasing
+  for $x \geq \log n + 1/2$, so
   \begin{align*}
     f(t) &\ge f(3\log n + \sqrt{2s}) \\
-    &= (1/2)(9 \log^2 n + 2 \sqrt{2s} \log n + 2s - 3 \log n - \sqrt{2s} - 6 \log^2 n - 2 \sqrt{2s} \log n) \\
-    &= (1/2)(3 \log^2 n - 3 \log n - \sqrt{2s}) + s \enspace .
+    &= (1/2)(9 \log^2 n + 6 \sqrt{2s} \log n + 2s - 3 \log n - \sqrt{2s} - 6 \log^2 n - 2 \sqrt{2s} \log n) - 1 \\
+    &= (1/2)(3 \log^2 n + 4 \sqrt{2s} \log n - 3 \log n - \sqrt{2s}) + s - 1 \\
+    &\ge s
   \end{align*}
-  Therefore, our code has length
+  for sufficiently large values of $n$. Therefore, our code has length
   \begin{align*}
-    |C(G)| & \le \binom{n}{2} + 1 + f(3 \log n + \sqrt{2s}) \\
-	   & \le \binom{n}{2} + 1 - (1/2)(3 \log^2 n - 3 \log n - \sqrt{2s}) - s \\
-           & \le \binom{n}{2} - s \enspace ,
+    |C(G)| & = \binom{n}{2} - f(t) \\
+    & \le \binom{n}{2} - s \enspace .
   \end{align*}
-  since $n \ge 3$. Applying the Uniform Encoding Lemma completes the
-  proof.
+  Applying the Uniform Encoding Lemma completes the proof.
 \end{proof}
 
 \begin{rem}
@@ -647,7 +646,7 @@ satisfies the requirements of \thmref{urns}.
            &= \log n + t\log n - t\log t + t\log e + (n-t)\log n
              \tag{using \eqref{log-n-choose-k}} \\
            & = n \log n + \log n - t\log t + t\log e \\
-           & \le  n\log n - s \tag{by the choice of $t$} \\
+           & \le n \log n - s \tag{by the choice of $t$} \\
            & = \log n^n - s
   \end{align*}
   bits. We conclude the proof by applying the Uniform Encoding Lemma.
@@ -658,13 +657,15 @@ satisfies the requirements of \thmref{urns}.
 Studying balls in urns is a useful technique to analyze hashing with
 chaining (see \emph{e.g.}~\cite[Section~5.1]{morin:open}). A more
 practically efficient form of hashing is \emph{linear probing}.  In a
-linear probing hash table, we hash $n$ items $x_1,\ldots,x_n$ into a
-hash table of size $m=cn$, for some fixed $c> 1$. When we insert
-$x_i$ we try and place it at table position $j=h(x_i)$ unless it is
-already occupied by one of $x_1,\ldots,x_{i-1}$ in which case we try
-table location $(j+1)\bmod m$, $(j+2)\bmod m$, and so on until we find
-an empty spot for $x_i$.  We want to study the expected search time
-for some item $x_i$ in this hash table.
+linear probing hash table, we hash the elements $x_1, \ldots, x_n$
+into a hash table of size $m=cn$, for some fixed $c> 1$. We are given
+a hash function $h : \{x_1, \ldots, x_n\} \to \{1, \ldots, m\}$ which
+we assume to be a uniform random variable. To insert $x_i$, we try and
+place it at table position $j=h(x_i)$, unless it is already occupied
+by one of $x_1,\ldots,x_{i-1}$, in which case we try table location
+$(j+1)\bmod m$, $(j+2)\bmod m$, and so on until we find an empty spot
+for $x_i$.  We want to study the expected search time for some item
+$x_i$ in this hash table.
 
 We call a maximal consecutive sequence of occupied table locations a
 \emph{block}. The table locations $m-1$ and $0$ are considered
@@ -680,14 +681,15 @@ consecutive.
 \end{thm}
 
 \begin{proof}
-  This is an encoding argument that encodes the sequence
+  This is an encoding argument that encodes the function $h$ by
+  encoding the sequence
   \[
-    R = (h(x_1),h(x_2),\ldots,h(x_n)) \enspace ,
+    (h(x_1),h(x_2),\ldots,h(x_n)) \enspace ,
   \]
   which is drawn uniformly at random from a set of size
   $n^{m}=n^{cn}$.
   
-  We encode $R$ by the first index $b$ of the block containing $x$;
+  We encode $h$ by the first index $b$ of the block containing $x$;
   followed by the $t-1$ elements $y_1,\ldots,y_{t-1}$ of this block
   (excluding $x$); followed by enough information to decode the hash
   values of $h(x)$ and $h(y_1),\ldots,h(y_{t-1})$; followed by
@@ -699,12 +701,12 @@ consecutive.
   $t\log t$ bits.  Therefore, if the block containing $x$ has size
   $t$, then we obtain a codeword whose length is
   \begin{align*}
-    |C(R)| & = \overbrace{\log m}^{b} + \overbrace{\log\binom{n}{t-1}}^{y_1,\ldots,y_{t-1}} + \overbrace{t\log t}^{h(x),h(y_1),\ldots,h(y_{t-1})} + \overbrace{(n-t)\log m}^{\text{everything else}} \\
+    |C(h)| & = \overbrace{\log m}^{b} + \overbrace{\log\binom{n}{t-1}}^{y_1,\ldots,y_{t-1}} + \overbrace{t\log t}^{h(x),h(y_1),\ldots,h(y_{t-1})} + \overbrace{(n-t)\log m}^{\text{everything else}} \\
            & \le \log m + (t-1)\log n - 
              (t-1)\log(t-1) + (t-1)\log e + t\log t + (n-t)\log m \tag{by \eqref{log-n-choose-k}}\\
            & \le \log m + (t-1)\log n + (t-1)\log e + (n-t)\log m + \log t+ O(1)\\
            & = n\log m - (t-1)\log c + (t-1)\log e + \log t + O(1) \tag{since $m = cn$}\\
-           & = n\log m - (t-1)\log(c/e) + \log t + O(1) \\
+           & = \log m^n - (t-1)\log(c/e) + \log t + O(1) \\
            & \le \log m^n - s \enspace ,
   \end{align*}
   for all $t$ satisfying
@@ -737,21 +739,44 @@ consecutive.
   \end{align*}
 \end{proof}
 
-\subsection{Analysis of Cuckoo Hashing}
+\subsection{Cuckoo Hashing}
 
 Cuckoo hashing is relatively new kind of hash table that offers an
 alternative to classic perfect hashing \cite{pagh.rodler:cuckoo}. Here
 we present a clever proof, due to Mihai Pătraşcu, that cuckoo hashing
 succeeds with probability $1-O(1/n)$ \cite{patrascu:cuckoo}.
 
-The main object of study in cuckoo hashing is the \emph{cuckoo graph}:
-a random bipartite multigraph $G=(A,B,E)$ where $|A|=|B|=m$ for
-$m = 2n$, and $|E|=n$.  For each $i\in\{1,\ldots,n\}$, each edge $e_i$
-of $E$ is obtained by randomly choosing (with replacement) an endpoint
-$a_i\in A$ and an endpoint $b_i\in B$.  The cuckoo hashing algorithm
-may fail if this graph contains a long edge-simple path or if it
-contains a component with more edges than vertices.  (An edge-simple
-path is a path that uses each edge of the multiset $E$ at most once.)
+%The main object of study in cuckoo hashing is the \emph{cuckoo graph},
+%a random bipartite multigraph $G=(A,B,E)$ where $|A|=|B|=m$ for $m =
+%2n$, and $|E|=n$.  For each $i\in\{1,\ldots,n\}$, each edge $e_i$ of
+%$E$ is obtained by randomly choosing (with replacement) an endpoint
+%$a_i\in A$ and an endpoint $b_i\in B$.  The cuckoo hashing algorithm
+%may fail if this graph contains a long edge-simple path or if it
+%contains a component with more edges than vertices.  (An edge-simple
+%path is a path that uses each edge of the multiset $E$ at most once.)
+
+We again hash the elements $x_1, \ldots, x_n$. The hash table consists
+of two arrays $A$ and $B$ of size $m = 2n$, and two hash functions $h,
+g : \{x_1, \ldots, x_n\} \to \{1, \ldots, m\}$ which are uniform
+random variables. To insert an element $x$ into the hash table, we
+insert it into $A[h(x)]$; if $A[h(x)]$ already contains an element
+$y$, we insert $y$ into $B[g(y)]$; if $B[g(y)]$ already contains some
+element $z$, we insert $z$ into $A[h(z)]$, etc. If an empty location
+is eventually found, the algorithm terminates successfully. If a cycle
+is detected, then the hash table is rebuilt using different hash
+functions. Any element $x$ either is held in $A[h(x)]$ or $B[g(x)]$,
+so we can search for $x$ in constant time.
+
+To study the performance of insertion in cuckoo hashing, we study the
+random bipartite \emph{cuckoo graph} $G = (A, B, E)$, where $|A| = |B|
+= m$ and $|E| = n$, with each vertex corresponding either to a
+location in the array $A$ or $B$ above, and with edge multiset $E =
+\{(h(x_i), g(x_i)) : 1 \leq i \leq n\}$.
+
+An edge-simple path is a path which uses each edge at most once. Such
+a path in this graph describes the potential motion of elements in a
+hash table insertion. Thus, in bounding the length of edge-simple
+paths in the cuckoo graph, we bound the worst case insertion time.
 
 \begin{lem}\lemlabel{cuckoo-path-length}
   The cuckoo graph has an edge-simple path of length at least
@@ -760,8 +785,8 @@ path is a path that uses each edge of the multiset $E$ at most once.)
 \begin{proof}
   We encode $G$ by presenting its set of edges. Since each endpoint of
   an edge is chosen independently and uniformly at random from a set
-  of size $n$, then the set of all edges is chosen uniformly from a
-  set of size $m^{2n}$.
+  of size $n$, then the set of all edges is chosen uniformly at random
+  from a set of size $m^{2n}$.
 
   Suppose that some vertex $v$ is the endpoint of an edge-simple path
   of length $t$; such a path has $t + 1$ vertices and $t$ edges. In
@@ -820,7 +845,7 @@ correspond to keys, and vertices correspond to array locations.
   1)$ endpoints of edges in the graph. Such a code has length
   \begin{align*}
     |C(G)| &= \log n + (t - 1)(\log n + \log m) + 2\log n + (2n - 2(t + 1))\log m + O(\log t) \\
-           &= \log m^{2n} + \log n - 2\log m - t + O(\log t) \\
+           &= 2n \log m + \log n - 2\log m - t + O(\log t) \\
            &\leq \log m^{2n} - \log n + O(1) \enspace .
   \end{align*}
   We finish by applying the Uniform Encoding Lemma.
@@ -831,15 +856,15 @@ correspond to keys, and vertices correspond to array locations.
 We showed in \secref{urns} that if $n$ balls are thrown independently
 and uniformly at random into $n$ urns, then the maximum number of
 balls in any urn is $O(\log n/\log \log n)$ with high probability. In
-2-choice hashing, each ball is instead given a choice of two urns, and
-the urn containing the fewer balls is preferred.
+\emph{2-choice hashing}, each ball is instead given a choice of two
+urns, and the urn containing the fewer balls is preferred.
 
-More specifically, we are given two hash functions
-$h, g : X \to \{1, \ldots, m\}$. Each value of $h$ and $g$ points to
-one of $m$ urns. The element $x \in X$ is added to the urn containing
-the fewest elements between $h(x)$ and $g(x)$ during an insertion. The
-worst case search time is at most the maximum number of hashing
-collisions, or the maximum number of elements in any urn.
+More specifically, we are given two hash functions $h, g : X \to \{1,
+\ldots, m\}$ which are uniform random variables. Each value of $h$ and
+$g$ points to one of $m$ urns. The element $x \in X$ is added to the
+urn containing the fewest elements between $h(x)$ and $g(x)$ during an
+insertion. The worst case search time is at most the maximum number of
+hashing collisions, or the maximum number of elements in any urn.
 
 Perhaps surprisingly, the simple change of having two choices instead
 of only one results in an exponential improvement over the strategy of
@@ -902,7 +927,7 @@ $E = \{(h(x), g(x)) : x \in X\}$.
   (c/4))\log n + O(1)$ with probability $O(1/n)$.
 \end{proof}
 
-Suppose that when $x$ is inserted, it is placed in a list with $t$
+Suppose that when $x$ is inserted, it is placed in a urn with $t$
 other elements. Then, we say that the age of $x$ is $a(x) = t$.
 \begin{thm}
   The cost of searching in 2-choice hashing in a table of size $cn$
@@ -913,7 +938,7 @@ other elements. Then, we say that the age of $x$ is $a(x) = t$.
   Suppose that some element $x$ has $a(x) = t$. This leads to a binary
   \emph{witness tree} $T$ of height $t$ as follows: The root of $T$ is
   the element $x$. When $x$ was inserted into the hash table, it had
-  to choose between the lists $h(x)$ and $g(x)$, both of which
+  to choose between the urns $h(x)$ and $g(x)$, both of which
   contained at least $t - 1$ elements; in particular, $h(x)$ has an
   element $x_h$ with $a(x_h) = t - 1$, and $g(x)$ has an element $x_g$
   with $a(x_g) = t - 1$. The elements $x_h$ and $x_g$ become left and
@@ -921,7 +946,7 @@ other elements. Then, we say that the age of $x$ is $a(x) = t$.
   some element appears more than once on a level, we only recurse on
   its leftmost occurence. Note that each vertex of $T$ corresponds to
   the edge $(h(x), g(x))$ of $G$. Moreover, the subgraph of $G$
-  induced by the edges 
+  induced by the edges
   \[
     \{(h(x), g(x)) : x \text{ is a vertex of } T\}
   \]
@@ -946,9 +971,8 @@ other elements. Then, we say that the age of $x$ is $a(x) = t$.
   $c > e$, instead of $c > 4$.
 \end{rem}
 
-\subsection{Robin-Hood Hashing}
-
-Soon.
+%\subsection{Robin-Hood Hashing}
+%Soon.
 
 
 \subsection{Bipartite Expanders}
@@ -989,7 +1013,7 @@ Wigderson~\cite[Lemma~1.9]{hoory.linial.ea:expander}.
   has length
   \begin{align*}
     |C(G)| &= 2\log k + \log {n \choose k} + \log {n \choose 3k/2} + 3k \log (3k/2) + (3n - 3k)\log n + O(1) \\
-           &\leq \log n^{3n} - (k/2)\log n + (k/2)\log k + \beta k + 2 \log k + O(1) \tag{by \eqref{log-n-choose-k}}\\
+           &\leq 3n \log n - (k/2)\log n + (k/2)\log k + \beta k + 2 \log k + O(1) \tag{by \eqref{log-n-choose-k}}\\
            &= \log n^{3n} - s(k)
   \end{align*}
   bits, where $\beta = (3/2) \log (3/2) + (5/2) \log e$. Note that
@@ -1155,25 +1179,24 @@ by Lucier \emph{et al.} to study the height of random binary search
 trees \cite{lucier.jiang.li:quicksort}.
 
 First, we describe an incremental and recursive manner of encoding a
-permutation $\sigma$: Begin by providing the first value of the
-permutation $\sigma_1$; followed by the set of indices of the
+permutation $\sigma$ of size $n$: Begin by providing the first value
+of the permutation $\sigma_1$; followed by the set of indices of the
 permutation for which $\sigma$ takes on a value strictly smaller than
 $\sigma_1$, including an explicit encoding of the induced permutation
 on the elements at those indices; and a recursive encoding of the
 permutation induced on the elements strictly larger than $\sigma_1$.
 
 If $\sigma$ contains $k$ elements strictly smaller than $\sigma_1$,
-then the length $S$ of the codeword for $\sigma$ satisfies the
+then the length $\ell(n)$ of the codeword for $\sigma$ satisfies the
 recurrence
 \[
-  S(n) = \log n + \log \binom{n - 1}{k} + \log k! + S(n - k - 1) \enspace ,
+  \ell(n) = \log n + \log \binom{n - 1}{k} + \log k! + \ell(n - k - 1) \enspace ,
 \]
-with $S(0) = 0$ and $S(1) = 0$. This solves to $S(n) = \log n!$, so the
-encoding described above is no better than a fixed-length encoding for
-$\sigma$.
-
-We can readily modify the encoding above to obtain a result about the
-concentration of records in a random permutation.
+with $\ell(0) = 0$ and $\ell(1) = 0$. This solves to $\ell(n) = \log
+n!$, so the encoding described above is no better than a fixed-length
+encoding for $\sigma$. However, we can readily modify this encoding to
+obtain a result about the concentration of records in a uniformly
+random permutation.
 
 \begin{thm}\thmlabel{records}
   A uniformly random permutation $\sigma$ of size $n$ has at least $c
