@@ -1223,28 +1223,25 @@ random permutation.
   the value of $x_i$ halves the size of the space of options for
   encoding the record $r_i$. In other words, our knowledge of $x$
   allows us to encode each record using roughly one less bit per
-  record. More precisely, since the encoding from above recurses $t$
-  times on decreasing values $n_1 > \cdots > n_t$, then the number of
-  bits spent encoding records is at most
+  record. More precisely, if the number of choices for each record
+  $r_i$ in the original encoding is $m_i$, such that $m_1 > \dots >
+  m_t$, then the number of bits spent encoding records in the new code
+  is at most
   \begin{align*}
-    \sum_{i = 1}^t \log \ceil{n_i/2} &\leq \sum_{i = 1}^t \log (n_i/2 + 1)
-                                              \leq \sum_{i = 1}^t \log (n_i/2) + \sum_{i = 1}^t O(1/n_i) \\
-                                            &\leq \sum_{i = 1}^t \log (n_i/2) + O(H_t) = \sum_{i = 1}^t \log n_i - t + O(\log \log n) \enspace .
+    \sum_{i = 1}^t \log \ceil{m_i/2} &\leq \sum_{i = 1}^t \log (m_i/2
+    + 1)
+    \leq \sum_{i = 1}^t \log (m_i/2) + \sum_{i = 1}^t O(1/m_i) \\
+    &\leq \sum_{i = 1}^t \log (m_i/2) + O(H_t) = \sum_{i = 1}^t \log
+    m_i - t + O(\log \log n) \enspace .
   \end{align*}
   Thus, the total length of the code is
   \begin{align*}
     |C(\sigma)| &\leq \binom{t}{n_1(x)} + \log n! - t + O(\log \log n) \\
                 &\leq \log n! - t (1 - H(n_1(x)/t)) + O(\log \log n) \tag{by \eqref{log-n-choose-k}}\\
-                &\leq \log n! - c (1 - H(1/c))\log n + O(\log \log n) \enspace .
+                &\leq \log n! - c (1 - H(1/c))\log n + O(\log \log n) \enspace ,
   \end{align*}
-  This last inequality holds since the function $x H(a/x)$ has
-  derivative
-  \[
-    \frac{d}{d x} x H(a/x) = \log (1/(1 - a/x)) \enspace ,
-  \]
-  which is positive as long as $0 < a/x < 1$, and so $x H(a/x)$
-  increases as a function of $x$. We finish by applying the Uniform
-  Encoding Lemma.
+  where this last inequality follows since $c > 2$, so $H(n_1(x)/t)
+  \leq H(1/c)$. We finish by applying the Uniform Encoding Lemma.
 \end{proof}
 
 \subsubsection{The Height of a Random Binary Search Tree}
@@ -1371,17 +1368,17 @@ $3n/4$.
   makes $O(n)$ comparisons.
 \end{lem}
 \begin{proof}
-  Let $n_i$ be the size of the input array during the
-  $i$\textsuperscript{th} recursive call, and in particular $n_0 =
+  Let $m_i$ be the size of the input array during the
+  $i$\textsuperscript{th} recursive call, and in particular $m_0 =
   n$. If $x_j$ is a good pivot, then the conditions of the lemma give
-  that $n_j \le (3/4) n_{j - 1}$, so
+  that $m_j \le (3/4) m_{j - 1}$, so
   \[
-  n_i \leq (3/4)^{\alpha i} n
+  m_i \leq (3/4)^{\alpha i} n
   \]
   for each $k_0 \leq i \leq k$. Therefore, the total number of
   comparisons made by $\textsc{Find}$ is at most
   \[
-  \sum_{i=0}^k (n_i + 1) \le k_0(n + 1) + k + \sum_{i=k_0}^k n_i \le
+  \sum_{i=0}^k (m_i + 1) \le k_0(n + 1) + k + \sum_{i=k_0}^k m_i \le
   O(n) + \sum_{i = k_0}^k (3/4)^{\alpha i} = O(n) \enspace . \qedhere
   \]
 \end{proof}
