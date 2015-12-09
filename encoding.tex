@@ -546,9 +546,9 @@ the context.
 
 \subsection{Graphs with no Large Clique or Independent Set}
 
-A \emph{Erd\H{o}s-R\'enyi random graph}, $G_{n,p}$ is a graph with
-vertex set $V=\{1,\ldots,n\}$ and in which each edge $\{u, w\} \in
-\binom{V}{2}$ is present with probability $p$ and absent with
+The \emph{Erd\H{o}s-R\'enyi random graph} $G_{n,p}$ is the space of
+graphs with vertex set $V=\{1,\ldots,n\}$ and in which each edge $\{u,
+w\} \in \binom{V}{2}$ is present with probability $p$ and absent with
 probability $1-p$, independently of the other edges.  Erd\H{o}s
 \cite{erdos:some} used the random graph $G_{n,\frac{1}{2}}$ to prove
 the existence of graphs having no large clique and no large
@@ -556,9 +556,9 @@ independent set. Here we show how this can be done using an encoding
 argument.
 
 \begin{thm}\thmlabel{erdos-renyi-i}
-  For a sufficiently large $n$, the probability that the random graph,
-  $G_{n,\frac{1}{2}}$ contains a clique or an independent set of size
-  $t = \ceil{3\log n + \sqrt{2s}}$ is at most $2^{-s}$.
+  For $n \ge 3$, the probability that $G \in G_{n,\frac{1}{2}}$
+  contains a clique or an independent set of size $t = \ceil{3\log n +
+    \sqrt{2s}}$ is at most $2^{-s}$.
 \end{thm}
 
 \begin{proof}
@@ -598,9 +598,9 @@ argument.
   since the elements of $S$ can be encoded using only
   $\log\binom{n}{t}$ bits, rather than $t\log n$.  With a more careful
   calculation, using \eqref{log-n-choose-k}, the proof then works with
-  $t \ge 2\log n +O(\log\log n) + \sqrt{s}$. This comes closer to
-  Erdős' original result, which was at the threshold $2\log n -
-  2\log\log n + O(1)$.
+  $t = 2\log n +O(\log\log n) + \sqrt{s}$. This comes closer to Erdős'
+  original result, which was at the threshold $2\log n - 2\log\log n +
+  O(1)$.
 \end{rem}
 
 
@@ -901,12 +901,12 @@ $E = \{(h(x), g(x)) : x \in X\}$.
   with probability $O(1/n)$.
 \end{lem}
 \begin{proof}
-  Suppose $G$ has a connected component $X$ with $t - 1$ edges and at
-  most $t$ vertices. Then $X$ has a spanning tree $T$. Pick an
-  arbitrary vertex of $X$ as the root of $T$. We encode $G$ by
-  specifying first the $t - 1$ edges and $t$ vertices encountered in a
-  pre-order traversal of $T$; then a bit string encoding the shape of
-  $T$; and finally the remaining $2(n - t + 1)$ endpoints of edges.
+  Suppose $G$ has a connected component with $t - 1$ edges and at most
+  $t$ vertices. This component has a spanning tree $T$. Pick an
+  arbitrary vertex as the root of $T$. We encode $G$ by specifying
+  first the $t - 1$ edges and $t$ vertices encountered in a pre-order
+  traversal of $T$; then a bit string encoding the shape of $T$; and
+  finally the remaining $2(n - t + 1)$ endpoints of edges.
 
   We can encode the shape of $T$ using a bit string of length
   $2(t - 1)$, tracing a pre-order traversal of the tree, where a 0 bit
@@ -923,8 +923,8 @@ $E = \{(h(x), g(x)) : x \in X\}$.
     t \geq \frac{s + \log n + O(1)}{\log (c/4)} \enspace .
   \]
   In particular, if we choose $s = \log n$, applying the Uniform
-  Encoding Lemma tells us that $X$ has size at least $(2/\log
-  (c/4))\log n + O(1)$ with probability $O(1/n)$.
+  Encoding Lemma tells us that $G$ has a component of size at least
+  $(2/\log (c/4))\log n + O(1)$ with probability $O(1/n)$.
 \end{proof}
 
 Suppose that when $x$ is inserted, it is placed in a urn with $t$
@@ -977,40 +977,55 @@ other elements. Then, we say that the age of $x$ is $a(x) = t$.
 
 \subsection{Bipartite Expanders}
 
-Consider a random bipartite multigraph $G=(A,B,E)$ where $|A|=|B|=n$
-and the $3n$ edges in $E$ are obtained as follows: Each vertex $u\in
-A$ chooses 3 random neighbours, $x(u)$, $y(u)$, and $z(u)$, in $B$,
-with replacement.  All choices of edges are independent. For a set
-$A'\subseteq A$, the \emph{neighbourhood} of $A'$, denoted $N(A')$, is
-the subset of vertices in $B$ that are adjacent to at least one
-element of $A'$.
+Expanders are families of graphs which share some isoperimetric
+quality, \emph{i.e.}~where subgraphs ``expand'' in their
+neighbourhoods. These graphs have received much research attention,
+and have been shown to have many applications in computer
+science. See, for instance, the survey by Hoory, Linial, and
+Wigderson~\cite{hoory.linial.ea:expander}.
 
-The following theorem shows that $G$ is an expander.  The proof of
-this theorem usually involves a messy sum that contains binomial
-coefficients and probabilities: see, for example, Motwani and
+We offer an encoding argument to prove that a certain random bipartite
+graph is an expander with high probability. There are many different
+notions of expansion. We will consider what is commonly known as
+vertex expansion in bipartite graphs: For some fixed $0 < \alpha \leq
+1$, a bipartite graph $G = (A, B, E)$ is called a \emph{$(c,
+  \alpha)$-expander} if
+\begin{align*}
+  \min_{\substack{{A' \subseteq A}\\{|A'| \leq \alpha |A|}}} \frac{|N(A')|}{|A'|} \geq c \enspace ,
+\end{align*}
+where $N(A') \subseteq B$ is the set of neighbours of $A'$ in $G$.
+
+Let $G = (A, B, E)$ be a random bipartite multigraph where $|A| = |B|
+= n$ and where each vertex of $A$ is connected to three vertices of
+$B$ chosen independently and uniformly at random (with
+replacement). The following theorem shows that $G$ is an expander.
+The proof of this theorem usually involves a messy sum that contains
+binomial coefficients and probabilities: see, for example, Motwani and
 Raghavan~\cite[Theorem~5.3]{motwani.raghavan:randomized},
-Pinsker~\cite[Lemma 1]{pinsker:on}, or Hoory, Linial, and
+Pinsker~\cite[Lemma~1]{pinsker:on}, or Hoory, Linial, and
 Wigderson~\cite[Lemma~1.9]{hoory.linial.ea:expander}.
 
 \begin{thm}
-  There exists a constant $\alpha >0$ such that, with probability at
-  least $1 - O(n^{-1/2})$, $|N(A')| \ge 3|A'|/2$ for all
-  $A'\subseteq A$ with $|A'|\le \alpha n$.
+  There exists a constant $\alpha >0$ such that $G$ is a
+  $(3/2,\alpha)$-expander with probability at least $1 - O(n^{-1/2})$.
 \end{thm}
 
 \begin{proof}
   We encode the graph $G$ by presenting its edge set. Since each edge
   is selected uniformly at random, then $G$ is chosen uniformly at
   random from a set of size $n^{3n}$.
-
-  If some set $A'$, $|A'|=k\le \alpha n$, violates the conditions of
-  the theorem, then we encode $k$ using an Elias $\delta$-code; and we
-  give the sets $A'$ and $N(A')$; and the edges between $A'$ and
+  
+  If $G$ is not a $(3/2, \alpha)$-expander, then there is some set $A'
+  \subseteq A$ with $|A'|=k\le \alpha n$ and
+  \[
+  \frac{|N(A')|}{|A'|} < 3/2 \enspace .
+  \]
+  To encode $G$, we first give $k$ using an Elias $\gamma$-code; and
+  we give the sets $A'$ and $N(A')$; and the edges between $A'$ and
   $N(A')$. Then we encode the rest of $G$, skipping the $3k\log n$
-  bits devoted to elements in $A'$.  The key savings here come
-  because $N(A')$ should take $3k\log n$ bits to encode, but can
-  actually be encoded in roughly $3k\log(3k/2)$ bits. Our code then
-  has length
+  bits devoted to elements in $A'$.  The key savings here come because
+  $N(A')$ should take $3k\log n$ bits to encode, but can actually be
+  encoded in roughly $3k\log(3k/2)$ bits. Our code then has length
   \begin{align*}
     |C(G)| &= 2\log k + \log {n \choose k} + \log {n \choose 3k/2} + 3k \log (3k/2) + (3n - 3k)\log n + O(1) \\
            &\leq 3n \log n - (k/2)\log n + (k/2)\log k + \beta k + 2 \log k + O(1) \tag{by \eqref{log-n-choose-k}}\\
@@ -1371,15 +1386,15 @@ $3n/4$.
   Let $m_i$ be the size of the input array during the
   $i$\textsuperscript{th} recursive call, and in particular $m_0 =
   n$. If $x_j$ is a good pivot, then the conditions of the lemma give
-  that $m_j \le (3/4) m_{j - 1}$, so
+  that $m_j \le (3/4) m_{j - 1}$. Therefore,
   \[
   m_i \leq (3/4)^{\alpha i} n
   \]
-  for each $k_0 \leq i \leq k$. Therefore, the total number of
-  comparisons made by $\textsc{Find}$ is at most
+  for each $k_0 \leq i \leq k$, and the total number of comparisons
+  made by $\textsc{Find}$ is at most
   \[
   \sum_{i=0}^k (m_i + 1) \le k_0(n + 1) + k + \sum_{i=k_0}^k m_i \le
-  O(n) + \sum_{i = k_0}^k (3/4)^{\alpha i} = O(n) \enspace . \qedhere
+  O(n) + n \sum_{i = k_0}^k (3/4)^{\alpha i} = O(n) \enspace . \qedhere
   \]
 \end{proof}
 
@@ -1454,15 +1469,16 @@ see, even if each clause is only nearly pairwise disjoint, \emph{i.e.}
 their intersection has size less than $2^k/e$.
 
 This result has been well known as a consequence of the Lov\'{a}sz
-Local Lemma, whose original proof is non-constructive, and so would
-not produce a satisfying truth assignment as applied to an instance of
-$k$-SAT. Some constructive solutions to $k$-SAT have been known, but
-only for suboptimal clause intersection sizes. Moser and
-Tardos~\cite{moser:locallemma} famously presented the first
-constructive proof of the full Lov\'{a}sz Local Lemma, which also
-gives a construction for $k$-SAT. The analysis which we reproduce in
-this section comes from Fortnow's rephrasing of Moser's proof for
-$k$-SAT using the incompressibility method~\cite{fortnow:ksat}.
+Local Lemma~\cite{lovasz:locallemma}, whose original proof is
+non-constructive, and so would not produce a satisfying truth
+assignment as applied to an instance of $k$-SAT. Some constructive
+solutions to $k$-SAT have been known, but only for suboptimal clause
+intersection sizes. Moser and Tardos~\cite{moser:locallemma} famously
+presented the first constructive proof of the full Lov\'{a}sz Local
+Lemma, which also gives a construction for $k$-SAT. The analysis which
+we reproduce in this section comes from Fortnow's rephrasing of
+Moser's proof for $k$-SAT using the incompressibility
+method~\cite{fortnow:ksat}.
 
 Moser's algorithm is remarkably naive, and can be described in only a
 few sentences: Pick a uniformly random truth assignment for the
@@ -1542,14 +1558,18 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
   assignment $\alpha$; and a description of the shape of the tree $T$;
   and the sequence of at most $m$ clauses which are children of the
   root of $T$; and the at most $t$ clauses involved in the calls to
-  $\textsc{Fix}$ in a pre-order traversal of $T$. As in
+  $\textsc{Fix}$ in a pre-order traversal of $T$.
+
+  The key savings come from the fact that each clause intersects at
+  most $r$ other clauses, so each clause (which is not a child of the
+  root) can be encoded using $\log r$ bits. Moreover, as in
   \lemref{two-choice-component-size}, the shape of $T$ can be encoded
   using $2t$ bits. In total, the code has length
   \begin{align*}
-    |C(\gamma)| &= n + 2t + m + t \log r \\
-                &\le n + 2t + m + t(k - 3) \tag{since $r \le 2^{k - 3}$} \\
-                &= n + tk - t + m \\
-                &\le n + tk - s \enspace .
+    |C(\gamma)| &\le n + 2t + m + t \log r \\
+    &\le n + 2t + m + t(k - 3) \tag{since $r \le 2^{k - 3}$} \\
+    &= n + tk - t + m \\
+    &\le n + tk - s \enspace .
   \end{align*}
   The result is obtained by applying the Uniform Encoding Lemma.
 \end{proof}
@@ -1780,6 +1800,11 @@ incident to the same edge of the original subgraph.
 
 \subsection{Triangles in $G_{n,p}$}
 
+Recall that $G_{n,p}$ is the space of graphs with vertex set
+$V=\{1,\ldots,n\}$ and in which each edge $\{u, w\} \in \binom{V}{2}$
+is present with probability $p$ and absent with probability $1-p$,
+independently of the other edges.
+
 The expected number of triangles (cycles of length 3) in $G_{n,p}$ is
 easily seen to be $p^3\binom{n}{3}$.  For $p=(6c)^{1/3}/n$, this
 expectation is $k-O(1/n)$.  Unfortunately, even when $c$ is a large
@@ -1799,9 +1824,8 @@ accomplished with an encoding argument.
 \end{thm}
 
 \begin{proof}
-  Without loss of generality assume that $G$'s vertex set is
-  $V=\{1,\ldots,n\}$.  In this argument, we will produce an encoding
-  of $G$'s adjacency matrix, $A$.
+  In this argument, we will produce an encoding of $G$'s adjacency
+  matrix, $A$.
 
   Refer to \figref{triangles}.  If $G$ contains no triangles, then we
   look at the number of ones in the $n/2\times n/2$ submatrix $M$
