@@ -6,6 +6,7 @@
 \usepackage{subcaption}
 \usepackage{enumitem}
 \usepackage{url}
+\usepackage{comment}
 
 \newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
 
@@ -153,10 +154,11 @@ and binomial coefficients.
 A finite length \emph{string} over an alphabet $\Sigma$ is either the
 empty string or an element of $\Sigma^k$ for some $k \in \N$. The
 expression $\{0, 1\}^*$ denotes the set of all finite length binary
-strings. A \emph{code} $C\from X\to \{0,1\}^*$ is a one-to-one
-function from a set $X$ to the set of finite length binary strings.
-The elements of the range of $C$ are called $C$'s \emph{codewords}.
-In most cases, there are some elements of the set $X$ that are not of
+(or bit) strings. A bit string of length $n$ will be called an $n$-bit
+string. A \emph{code} $C\from X\to \{0,1\}^*$ is a one-to-one function
+from a set $X$ to the set of finite length binary strings.  The
+elements of the range of $C$ are called $C$'s \emph{codewords}.  In
+most cases, there are some elements of the set $X$ that are not of
 interest to us.  In these cases, we consider partial codes. A
 \emph{partial code} $C\from X\nrightarrow \{0,1\}^*$ is a one-to-one
 partial function.  When discussing partial codes we will use the
@@ -175,19 +177,19 @@ by tracing the root-to-leaf path leading to $x$ and outputting a 0
   \centering{\includegraphics{bintree}}
   \caption{A prefix-free code for the set
     $X=\{\mathtt{a},\mathtt{b},\mathtt{c},\mathtt{d},\mathtt{e},\mathtt{f}\}$
-    and the corresponding leaf-labelled binary tree. (Which can also
-    be viewed as a partial prefix-free code for the set
-    $\{\mathtt{a},\mathtt{b},\mathtt{c},\ldots,\mathtt{z}\}$.)}
+    and the corresponding leaf-labelled binary tree (which can also be
+    viewed as a partial prefix-free code for the set
+    $\{\mathtt{a},\mathtt{b},\mathtt{c},\ldots,\mathtt{z}\}$).}
   \figlabel{bintree}
 \end{figure}
 
 If $C$ is prefix-free, then the number of $C$'s codewords that have
-length \emph{at most} $k$ is not more than $2^k$. To see this why this
-is so, observe that $C$ can be modified into a code $\hat C$, in which
-every codeword of length $\ell <k$ is extended---by appending $k-\ell$
+length at most $k$ is not more than $2^k$. To see this why this is so,
+observe that $C$ can be modified into a code $\hat C$, in which every
+codeword of length $\ell <k$ is extended---by appending $k-\ell$
 zeros---so that it has length exactly $k$. The prefix-freeness of $C$
-ensures that $\hat C$ is also a prefix-free code. The number of
-$\hat C$'s codewords of length $k$ is equal to the the number of $C$'s
+ensures that $\hat C$ is also a prefix-free code. The number of $\hat
+C$'s codewords of length $k$ is equal to the the number of $C$'s
 codewords of length at most $k$; since codewords are just binary
 strings, there are not more than $2^k$ of these.
 
@@ -412,7 +414,7 @@ $1/2$. In particular, for $\alpha=(1-\eps)/2$,
             & < 1-\frac{\eps^2}{2\ln 2} \enspace .\eqlabel{entropy-ii}
 \end{align}
 
-\subsection{Basic Chernoff Bounds}
+\subsection{Basic Chernoff Bound}
 
 Since we now have the pieces we need, we give an encoding argument for
 a well-known and extremely useful result typically attributed to
@@ -604,16 +606,15 @@ argument.
 \end{rem}
 
 
-
 \subsection{Balls in Urns}
 \seclabel{urns}
 
-The question of what happens when one throws $n$ balls, uniformly and
-independently into $n$ urns is a useful abstraction of many
-algorithmic, data structures and load-balancing problem.  Here we show
-how an encoding argument can be used to prove the classic result that,
-when we do this, no urn contains more than $O(\log n/\log\log n)$
-balls.
+The question of what happens when one throws $n$ balls uniformly and
+independently at random into $n$ urns is a useful abstraction of many
+algorithmic, data structures, and load-balancing problem.  Here we
+show how an encoding argument can be used to prove the classic result
+that, when we do this, no urn contains more than $O(\log n/\log\log
+n)$ balls.
 
 \begin{thm}\thmlabel{urns}
   Let $t$ be such that $t\log(t/e) \ge s+\log n$ and suppose we throw
@@ -966,13 +967,26 @@ other elements. Then, we say that the age of $x$ is $a(x) = t$.
 
 \begin{rem}
   The arguments in this section can be refined by more carefully
-  encoding the shape of trees using Cayley's formula. We would then
-  recover the same results for hash tables of size $m = cn$ for
-  $c > e$, instead of $c > 4$.
+  encoding the shape of trees using Cayley's formula. In particular, a
+  rooted tree with $t$ nodes and $m$ choices for distinct node labels
+  can be encoded using $\log \binom{m}{t} + (t - 2) \log t$ bits
+  instead of $t \log m + 2(t - 1)$ bits. We would then recover the
+  same results for hash tables of size $m = cn$ for $c > e$ instead of
+  $c > 4$. In fact, it suffices that $c > 0$ for searching to take
+  time $O(\log \log n)$ in 2-choice hashing. We leave it as an open
+  problem to find an encoding argument for this result when $c > 0$.
 \end{rem}
 
-%\subsection{Robin-Hood Hashing}
-%Soon.
+\begin{rem}
+  Robin Hood hashing is another hashing solution which achieves
+  $O(\log \log n)$ worst case running time for all
+  operations~\cite{devroye:robin}. The original analysis is difficult,
+  but might lend itself to a similar kind of analysis as we used in
+  this section. Indeed, when a Robin Hood hashing operation takes a
+  significant amount of time, a large witness tree is again implied,
+  which suggests an easy encoding argument. Unfortunately, this
+  approach appears to involve unwieldy hypergraph encoding.
+\end{rem}
 
 
 \subsection{Bipartite Expanders}
@@ -1259,6 +1273,14 @@ random permutation.
   \leq H(1/c)$. We finish by applying the Uniform Encoding Lemma.
 \end{proof}
 
+\begin{rem}\remlabel{records}
+  The preceding result only works for $c > 2$, but we already know
+  that the number of records in a uniformly random permutation is
+  concentrated around $\ln n + O(1)$, where $\ln n = \alpha \log n$
+  for $\alpha = 0.6931...$. We leave as an open problem whether or not
+  this significant gap can be closed through an encoding argument.
+\end{rem}
+
 \subsubsection{The Height of a Random Binary Search Tree}
 \seclabel{height}
 
@@ -1340,6 +1362,16 @@ occurs in the middle half of its subrange.
   number of records in a uniformly random permutation is $O(\log n)$
   with high probability; the result from \thmref{records} only
   improves upon the implied constant.
+\end{rem}
+
+\begin{rem}
+  We know that the height of the binary search tree built from the
+  sequential insertion of elements from a uniformly random permutation
+  of size $n$ is concentrated around $\alpha \ln n + O(\log \log n)$,
+  for $\alpha = 4.311...$~\cite{reed:height}. Perhaps if the gap in
+  our analysis of records in \remref{records} can be closed through an
+  encoding argument, then so too can the gap in our analysis of random
+  binary search tree height.
 \end{rem}
 
 \subsubsection{Hoare's Find Algorithm}
@@ -1517,7 +1549,7 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
   Given a $k$-CNF formula $\varphi$ with $m$ clauses and $n$ variables
   such that each clause intersects at most $r \le 2^{k - 3}$ other
   clauses, the probability that $\textsc{Solve}(\varphi)$ calls
-  $\textsc{Fix}$ at least $s + m$ times is at most $2^{-s}$.
+  $\textsc{Fix}$ at least $s + m \log m$ times is at most $2^{-s}$.
 \end{thm}
 \begin{proof}
   Suppose that $\textsc{Solve}(\varphi)$ calls $\textsc{Fix}$
@@ -1562,21 +1594,28 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
 
   The key savings come from the fact that each clause intersects at
   most $r$ other clauses, so each clause (which is not a child of the
-  root) can be encoded using $\log r$ bits. Moreover, as in
+  root) can be encoded using $\log r$ bits. Each clause which is a
+  child of the root can be encoded using $\log m$ bits, and since the
+  order of these children might be significant, we use $m \log m$ bits
+  to encode the full sequence of these clauses. Finally, as in
   \lemref{two-choice-component-size}, the shape of $T$ can be encoded
   using $2t$ bits. In total, the code has length
   \begin{align*}
-    |C(\gamma)| &\le n + 2t + m + t \log r \\
-    &\le n + 2t + m + t(k - 3) \tag{since $r \le 2^{k - 3}$} \\
-    &= n + tk - t + m \\
+    |C(\gamma)| &\le n + 2t + m\log m+ t \log r \\
+    &\le n + 2t + m\log m + t(k - 3) \tag{since $r \le 2^{k - 3}$} \\
+    &= n + tk - t + m\log m \\
     &\le n + tk - s \enspace .
   \end{align*}
   The result is obtained by applying the Uniform Encoding Lemma.
 \end{proof}
 
-Using a slightly more careful encoding of the shape of the recursion
-tree above, Messner and Thierauf~\cite{messner:ksat} gave an encoding
-argument for the above result in which $r < 2^k/e$.
+\begin{rem}
+  By more carefully encoding of the shape of the recursion tree above,
+  Messner and Thierauf~\cite{messner:ksat} gave an encoding argument
+  for the above result in which $r < 2^k/e$. Their refinement follows
+  from a more careful counting of the number of trees with nodes of
+  bounded degree.
+\end{rem}
 
 \section{The Non-Uniform Encoding Lemma and Shannon-Fano Codes}
 \seclabel{nuel}
@@ -1652,7 +1691,7 @@ since we are not concerned with ceilings.
 \section{Applications of the Non-Uniform Encoding Lemma}
 \seclabel{applications-ii}
 
-\subsection{Chernoff Bounds}
+\subsection{Chernoff Bound}
 \seclabel{chernoff}
 
 We will now prove the so-called \emph{additive version} of the
@@ -1800,10 +1839,10 @@ incident to the same edge of the original subgraph.
 
 \subsection{Triangles in $G_{n,p}$}
 
-Recall that $G_{n,p}$ is the space of graphs with vertex set
-$V=\{1,\ldots,n\}$ and in which each edge $\{u, w\} \in \binom{V}{2}$
-is present with probability $p$ and absent with probability $1-p$,
-independently of the other edges.
+Recall that the Erd\H{o}s-R\'{e}nyi random graph $G_{n,p}$ is the
+space of graphs with vertex set $V=\{1,\ldots,n\}$ and in which each
+edge $\{u, w\} \in \binom{V}{2}$ is present with probability $p$ and
+absent with probability $1-p$, independently of the other edges.
 
 The expected number of triangles (cycles of length 3) in $G_{n,p}$ is
 easily seen to be $p^3\binom{n}{3}$.  For $p=(6c)^{1/3}/n$, this
@@ -2043,6 +2082,47 @@ exact result.
 \section{Summary and Conclusions}
 \seclabel{summary}
 
+We have described a simple method for producing encoding
+arguments. Using our encoding lemmas, we gave original proofs for
+several previously established results.
+
+Typically, one would invoke the incompressibility method after
+developing some of the theory of Kolmogorov complexity. Our technique
+requires only a basic understanding of prefix-free codes and one
+simple lemma. We are also the first to suggest a simple and tight
+manner of encoding using only Kraft's condition with real-valued
+codeword lengths. In this light, we posit that there is no reason to
+develop an encoding argument through the incompressibility method: our
+Uniform Encoding Lemma is simpler, the Non-Uniform Encoding Lemma is
+more general, and our technique from \secref{el} is less
+wasteful. Indeed, though it would be easy to state and prove our
+Non-Uniform Encoding Lemma in the setting of Kolmogorov complexity, it
+seems as if the general encoding lemma from \secref{el} only can exist
+in our simplified framework.
+
+\begin{comment}
+Using our encoding lemmas, we gave original proofs for several
+previously established results. Specifically, we showed:
+\begin{itemize}
+\item if $n$ balls are thrown into $n$ urns uniformly at random, then
+  no urn contains more than $O(\log n/\log \log n)$ balls with high
+  probability;
+\item linear probing succeeds in $O(1)$ expected time;
+\item searching in 2-choice hashing takes time $O(\log \log n)$ with
+  high probability;
+\item a certain random bipartite graph is an expander with high
+  probability;
+\item the number of records in a uniformly random permutation is
+  $O(\log n)$ with high probability;
+\item the height of the binary search tree built from the sequential
+  insertion of a uniformly random permutation of $n$ integers is
+  $O(\log n)$ with high probability;
+\item Chernoff's bound on the tail of a binomial random variable;
+\item percolation occurs in random dense subgraphs of the torus;
+\item a strong threshold for triangle-freeness in the
+  Erd\H{o}s-R\'{e}nyi random graph.
+\end{itemize}
+\end{comment}
 
 \section*{Acknowledgement}
 
