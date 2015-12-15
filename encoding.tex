@@ -1553,7 +1553,7 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
 \end{thm}
 \begin{proof}
   Suppose that $\textsc{Solve}(\varphi)$ calls $\textsc{Fix}$
-  $t = \ceil{s + m}$ times. Let
+  $t = \ceil{s + m\log m}$ times. Let
   $\alpha \in \{\textsf{true}, \textsf{false}\}^n$ be the initial
   truth assignment for $\varphi$, and let
   $\beta_1, \ldots, \beta_t \in \{\textsf{true}, \textsf{false}\}^k$
