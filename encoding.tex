@@ -16,8 +16,8 @@
   {\renewcommand\theinnercustomthm{#1}\innercustomthm}
   {\endinnercustomthm}
 
-\title{\MakeUppercase{Encoding Arguments}}
-\author{Pat Morin, Tommy Reddad, and Wolfgang Mulzer}
+\title{\MakeUppercase{Encoding Arguments}\thanks{This research is partially funded by NSERC.}}
+\author{Pat Morin, Wolfgang Mulzer, and Tommy Reddad}
 \date{}
 
 \begin{document}
@@ -53,10 +53,6 @@
 
 \section{Introduction}
 \setlength{\baselineskip}{15.84pt}
-
-Since we are overwhelmingly concerned with binary encoding, we will
-agree now that the base of logarithms in $\log x$ is $2$, except when
-explicitly stated otherwise.
 
 There is no doubt that probability theory plays a fundamental role in
 computer science: Some of the fastest and simplest fundamental
@@ -111,8 +107,11 @@ probabilistic analysis:
   \begin{enumerate}
 
   \item Prove an upper-bound of $1/n^{\log n}$ on the probability that
-    a random graph on $n$ vertices contains a clique of size
-    $k=\lceil 4\log n\rceil$.
+    a random graph on $n$ vertices contains a clique of size $k=\lceil
+    4\log n\rceil$.\footnote{Since we are overwhelmingly concerned with
+    binary encoding, we will
+    agree now that the base of logarithms in $\log x$ is $2$, except when
+    explicitly stated otherwise.}
 
   \item Design a encoding for graphs on $n$ vertices so that a graph,
     $G$, that contains a clique of size $k=\lceil 4\log n\rceil$ is
@@ -2126,16 +2125,16 @@ previously established results. Specifically, we showed:
 
 \section*{Acknowledgement}
 
-This research was initiated in response to an invitation to give a
-talk at the Ninth Annual Probability, Combinatorics and Geometry
-Workshop, held April 4--11 at McGill University's Bellairs Institute.
-Many ideas that appear in the current paper were developed during the
-workshop. The author is grateful to the other workshop participants
-for providing a stimulating working environment.  In particular,
-Xing~Shi~Cai pointed out the application to runs in binary strings
-(\thmref{runs-i}) and G\'abor~Lugosi stated and proved the Non-Uniform
-Encoding Lemma (\lemref{nuel}) in response to the author's half-formed
-ideas about a non-uniform version of \lemref{uel}.
+This research was initiated in response to an invitation for the first
+author to give a talk at the Ninth Annual Probability, Combinatorics
+and Geometry Workshop, held April 4--11 at McGill University's
+Bellairs Institute.  Many ideas that appear in the current paper were
+developed during the workshop. The author is grateful to the other
+workshop participants for providing a stimulating working environment.
+In particular, Xing~Shi~Cai pointed out the application to runs in
+binary strings (\thmref{runs-i}) and G\'abor~Lugosi stated and proved
+the Non-Uniform Encoding Lemma (\lemref{nuel}) in response to the first
+author's half-formed ideas about a non-uniform version of \lemref{uel}.
 
 \bibliography{encoding}{}
 \bibliographystyle{plain}
