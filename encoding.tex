@@ -579,7 +579,9 @@ argument.
   \end{equation}
   At this point, we should pause and examine \eqref{tst-1}, which has
   the rough form:
-  \[ |C(G)|  = \binom{n}{2} + O(t\log n) - \Omega(t^2) \enspace . \]
+  \[ |C(G)|  = \binom{n}{2} + t\log n - \Omega(t^2) \enspace . \]
+  That is, a clique of independent set of size $t$ costs $O(t\log n)$ bits
+  to encode, but saves $\Omega(t^2)$ bits in the encoding of $G$'s adjacency matrix.
   Clearly, for $t>C\log n$ with $C$ sufficiently large, this has the form 
   \[ |C(G)|  = \binom{n}{2} - \Omega(t^2) \enspace . \]
   At this point, it is just a matter of determining the dependence on $C$.
@@ -679,8 +681,8 @@ for $x_i$.  We want to study the expected search time for some item
 $x_i$ in this hash table.
 
 We call a maximal consecutive sequence of occupied table locations a
-\emph{block}. The table locations $m-1$ and $0$ are considered
-consecutive.
+\emph{block}. (The table locations $m-1$ and $0$ are considered
+consecutive.)
 
 \begin{thm}\thmlabel{linear-probing}
   Fix some $x\in\{x_1,\ldots,x_n\}$. Then the probability that the
