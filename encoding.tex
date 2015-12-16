@@ -553,7 +553,7 @@ graphs with vertex set $V=\{1,\ldots,n\}$ and in which each edge $\{u,
 w\} \in \binom{V}{2}$ is present with probability $p$ and absent with
 probability $1-p$, independently of the other edges.  Erd\H{o}s
 \cite{erdos:some} used the random graph $G_{n,\frac{1}{2}}$ to prove
-the existence of graphs having no large clique and no large
+the existence of graphs simultaneously having no large clique and no large
 independent set. Here we show how this can be done using an encoding
 argument.
 
@@ -574,8 +574,18 @@ argument.
   the $\binom{t}{2}$ bits implied by the edges or non-edges in $S$.
   
   Such a codeword has length
+  \begin{equation} 
+    |C(G)|  = 1 + t\log n + \binom{n}{2}-\binom{t}{2}  \eqlabel{tst-1}
+  \end{equation}
+  At this point, we should pause and examine \eqref{tst-1}, which has
+  the rough form:
+  \[ |C(G)|  = \binom{n}{2} + O(t\log n) - \Omega(t^2) \enspace . \]
+  Clearly, for $t>C\log n$ with $C$ sufficiently large, this has the form 
+  \[ |C(G)|  = \binom{n}{2} - \Omega(t^2) \enspace . \]
+  At this point, it is just a matter of determining the dependence on $C$.
+  Continuing from \eqref{tst-1}, we have
   \begin{align*}
-    |C(G)| & = 1 + t\log n + \binom{n}{2}-\binom{t}{2} \\
+    |C(G)| 
     & = \binom{n}{2} + 1 + t\log n - (1/2)(t^2 - t) \\
     & = \binom{n}{2} + 1 - (1/2)(t^2 - t - 2t \log n) \enspace .
   \end{align*}
