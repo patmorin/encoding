@@ -1225,6 +1225,8 @@ permutation for which $\sigma$ takes on a value strictly smaller than
 $\sigma_1$, including an explicit encoding of the induced permutation
 on the elements at those indices; and a recursive encoding of the
 permutation induced on the elements strictly larger than $\sigma_1$.
+Note that the number of recursive invocations is equal to the
+number of records in $\sigma$.
 
 If $\sigma$ contains $k$ elements strictly smaller than $\sigma_1$,
 then the length $\ell(n)$ of the codeword for $\sigma$ satisfies the
@@ -1413,31 +1415,32 @@ then implemented as follows:
   \RETURN{$\sigma_k$}
 \end{algorithmic}
 
-As the algorithm executes, it sequentially identifies $k$ pivots $x_1,
-\dots, x_k$ before finding the solution. We will say that a pivot is
-\emph{good} if it lies in the interval $[n/4, 3n/4]$. Note that a good
-pivot causes the algorithm to recurse in a problem of size at most
-$3n/4$.
+As the algorithm executes, it sequentially identifies $t$ pivots
+$x_1, \dots, x_t$ before finding the solution. Let $\sigma^{(i)}$
+denote the value of $\sigma$ in the $i{\text{th}}$ recursive call and let $n_i=|\sigma^{(i)}|$,
+so that $\sigma^{(0)}=(\sigma_1,\ldots,\sigma_n)$ and $m_0=n$.  We will say that
+the $i{\text{th}}$ pivot is \emph{good} if its rank, in $\sigma^{(i)}$
+is in the interval $[n_i/4, 3n_i/4]$. Note that
+a good pivot causes the algorithm to recurse in a problem of size at
+most $3n_i/4$.
 
 \begin{lem}
-  Fix some constants $k_0 \geq 1$ and $0 < \alpha < 1/2$. Suppose
-  that, for each $k_0 \leq i \leq k$, the number of good pivots among
+  Fix some constants $t_0 \geq 1$ and $0 < \alpha < 1/2$. Suppose
+  that, for each $t_0 \leq i \leq t$, the number of good pivots among
   $x_1, \ldots, x_i$ is at least $\alpha i$. Then, $\textsc{Find}$
   makes $O(n)$ comparisons.
 \end{lem}
 \begin{proof}
-  Let $m_i$ be the size of the input array during the
-  $i$\textsuperscript{th} recursive call, and in particular $m_0 =
-  n$. If $x_j$ is a good pivot, then the conditions of the lemma give
-  that $m_j \le (3/4) m_{j - 1}$. Therefore,
+  If $x_j$ is a good pivot, then the conditions of the lemma give
+  that $n_j \le (3/4) n_{j - 1}$. Therefore,
   \[
-  m_i \leq (3/4)^{\alpha i} n
+  n_i \leq (3/4)^{\alpha i} n
   \]
-  for each $k_0 \leq i \leq k$, and the total number of comparisons
+  for each $t_0 \leq i \leq t$, and the total number of comparisons
   made by $\textsc{Find}$ is at most
   \[
-  \sum_{i=0}^k (m_i + 1) \le k_0(n + 1) + k + \sum_{i=k_0}^k m_i \le
-  O(n) + n \sum_{i = k_0}^k (3/4)^{\alpha i} = O(n) \enspace . \qedhere
+  \sum_{i=0}^t (n_i + 1) \le t_0(n + 1) + t + \sum_{i=t_0}^t n_i \le
+  O(n) + n \sum_{i = t_0}^t (3/4)^{\alpha i} = O(n) \enspace . \qedhere
   \]
 \end{proof}
 
