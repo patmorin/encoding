@@ -170,6 +170,15 @@ and binomial coefficients.
 
 \subsection{Prefix-free Codes and the Uniform Encoding Lemma}
 
+\wolfgang{Suggestion}
+An \emph{alphabet} $\Sigma$ is a finite set (typically
+$\Sigma = \{0, 1\}$).
+\wolfgang{Do we ever need general $\Sigma$?}
+A finite length \emph{string} over $\Sigma$ is a finite (possibly empty) sequence
+of elements from $\Sigma$. For $k \in \N$, we denote by $\Sigma^k$
+the set of all strings over $\Sigma$  of length $k$, and by $\Sigma^*$
+the set of all finite strings.
+\wolfgang{End suggestion}
 A finite length \emph{string} over an alphabet $\Sigma$ is either the
 empty string or an element of $\Sigma^k$ for some $k \in \N$. The
 expression $\{0, 1\}^*$ denotes the set of all finite length binary
@@ -184,6 +193,7 @@ interest to us.  In these cases, we consider partial codes. A
 partial function.  When discussing partial codes we will use the
 convention that $|C(x)|=\infty$ if $x$ is not in the domain of $C$.
 
+\wolfgang{Do we need to define prefix?}
 A (partial) code $C$ is \emph{prefix-free} if, for every pair
 $x\neq y$ in the domain of $C$, the binary string $C(x)$ is not a
 prefix of $C(y)$.  It can be helpful to think of prefix-free codes as
