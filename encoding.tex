@@ -20,6 +20,13 @@
 \author{Pat Morin, Wolfgang Mulzer, and Tommy Reddad}
 \date{}
 
+\newcommand{\aremark}[3]{\textcolor{blue}{\textsc{#1 #2:}}
+  \textcolor{red}{\textsf{#3}}}
+\newcommand{\pat}[2][says]{\aremark{Wolfgang}{#1}{#2}}
+\newcommand{\tommy}[2][says]{\aremark{Wolfgang}{#1}{#2}}
+\newcommand{\wolfgang}[2][says]{\aremark{Wolfgang}{#1}{#2}}
+
+
 \begin{document}
 \begin{titlepage}
 \maketitle
@@ -28,7 +35,7 @@
 \begin{abstract}
   \setlength{\baselineskip}{15.84pt}
 
-  This expository article surveys ``encoding arguments.'' In their
+  This expository article surveys ``encoding arguments.'' In its
   most most basic form an encoding argument proves an upper bound on
   the probability of an event using the fact a uniformly random choice
   from a set of size $n$ can not be encoded with fewer than $\log_2 n$
@@ -54,13 +61,23 @@
 \section{Introduction}
 \setlength{\baselineskip}{15.84pt}
 
+\wolfgang{I think this paragraph could use some references.}
 There is no doubt that probability theory plays a fundamental role in
 computer science: Some of the fastest and simplest fundamental
-algorithms and data structures are randomized; average-case analysis
-of algorithms relies entirely on tools from probability theory; and
+algorithms and data structures are randomized
+\wolfgang{Cite Motwani Raghavan, Mitzenmacher Upfal?}; average-case analysis
+of algorithms relies entirely on tools from probability theory
+\wolfgang{Cite Flajolet Sedgwick?}; and
 many difficult combinatorial questions have strikingly simple
-solutions using probabilistic arguments.
+solutions using probabilistic arguments\wolfgang{Cite Alon Spencer?}.
 
+\wolfgang{Do you really want to phrase it as bluntly as this?
+It sounds a bit like ``Computer scientists do not understand
+mathematics, so we need to dumb it down for them.''
+I could also see an expository approach where we say that
+most of these arguments are basically counting, and that
+encoding arguments are a particularly ``computer sciency''
+way of thinking about the usual injection approach to counting.}
 Unfortunately, many of these beautiful results are inaccessible to
 most computer scientists because of a view that ``the math is too
 hard.''  For instance, the 2013 edition of ACM/IEEE Curriculum
@@ -71,8 +88,10 @@ recommends a total of 6 Tier-1 hours and 2 Tier-2 hours spent on
 discrete probability, as part of the discrete structures curriculum
 \cite[Page~77]{computing-curricula:computer}.
 
+\wolfgang{As above, maybe one could also emphasize that
+the uniform coding lemma is basically a bijection counting argument.}
 In this expository paper, we survey applications of ``encoding
-arguments'' that tranforms the problem of upper-bounding the
+arguments'' that transform the problem of upper-bounding the
 probability of a specific event, $\mathcal{E}$, into the problem of
 devising a code for the set of elementary events in $\mathcal{E}$.
 Encoding arguments have several advantages over traditional
@@ -130,6 +149,7 @@ accessible, yet versatile tool for answering many questions.  Most of
 these arguments can be applied after learning almost no probability
 theory beyond the Encoding Lemma mentioned above.
 
+\wolfgang{Maybe provide a bit more variety in the phrasing in this paragraph?}
 The remainder of this article is organized as follows: In
 \secref{uel}, we present necessary background, including the
 \emph{Uniform Encoding Lemma}, which is the basis of most of our
