@@ -100,12 +100,12 @@ probabilistic analysis:
 \begin{enumerate}
 \item Encoding arguments are almost ``probability-free.''  Except for
   applying a simple \emph{Uniform Encoding Lemma}, there is no
-  probability involved.  In particular, there is no chance to make
+  probability involved.  In particular, there is no chance of
   common mistakes such as multiplying probabilities of non-independent
   events or (equivalently) multiplying expectations.
 
   The proof of the Uniform Encoding Lemma itself is trivial and the
-  only probability it uses is that the fact, if a finite set $X$
+  only probability it uses is the fact that, if a finite set $X$
   contains $r$ special elements and we pick an element uniformly at
   random from $X$, then the probability of picking a special element
   is $r/|X|$.
@@ -132,8 +132,8 @@ probabilistic analysis:
     agree now that the base of logarithms in $\log x$ is $2$, except when
     explicitly stated otherwise.}
 
-  \item Design a encoding for graphs on $n$ vertices so that a graph,
-    $G$, that contains a clique of size $k=\lceil 4\log n\rceil$ is
+  \item Design an encoding for graphs on $n$ vertices so that a graph,
+    $G$, that contains a clique of size $k=\lceil 4\log n\rceil$, is
     encoded using at most $\binom{n}{2}-\log^2 n$ bits. (Note: Your
     encoding and decoding algorithms don't have to be efficient, just
     correct.)
@@ -149,7 +149,8 @@ accessible, yet versatile tool for answering many questions.  Most of
 these arguments can be applied after learning almost no probability
 theory beyond the Encoding Lemma mentioned above.
 
-\wolfgang{Maybe provide a bit more variety in the phrasing in this paragraph?}
+\wolfgang{Maybe provide a bit more variety in the phrasing in this 
+paragraph, (e.g., another verb in place of ``present''}
 The remainder of this article is organized as follows: In
 \secref{uel}, we present necessary background, including the
 \emph{Uniform Encoding Lemma}, which is the basis of most of our
@@ -187,7 +188,7 @@ $s$.  A bit string of length $n$ will be called an $n$-bit
 string. A \emph{code} $C\from X\to \{0,1\}^*$ is a one-to-one function
 from a set $X$ to the set of finite length binary strings.  The
 elements of the range of $C$ are called $C$'s \emph{codewords}.  In
-most cases, there are some elements of the set $X$ that are not of
+most cases \wolfgang{Often}, there are some elements of the set $X$ that are not of
 interest to us.  In these cases, we consider partial codes. A
 \emph{partial code} $C\from X\nrightarrow \{0,1\}^*$ is a one-to-one
 partial function.  When discussing partial codes we will use the
@@ -196,9 +197,12 @@ convention that $|C(x)|=\infty$ if $x$ is not in the domain of $C$.
 \wolfgang{Do we need to define prefix?}
 A (partial) code $C$ is \emph{prefix-free} if, for every pair
 $x\neq y$ in the domain of $C$, the binary string $C(x)$ is not a
-prefix of $C(y)$.  It can be helpful to think of prefix-free codes as
+prefix of $C(y)$.  It can be helpful to \wolfgang{visualize}
+think of prefix-free codes as
 (rooted ordered) binary trees whose leaves are labelled with the
-elements of $X$.  The codeword for a particular $x\in X$ is obtained
+elements of $X$.  
+\wolfgang{Suggestion: use juxtaposition instead of ``respectively''}
+The codeword for a particular $x\in X$ is obtained
 by tracing the root-to-leaf path leading to $x$ and outputting a 0
 (respectively, 1) each time this path goes from a parent to its left
 (respectively, right) child. (See \figref{bintree}.)
@@ -213,6 +217,7 @@ by tracing the root-to-leaf path leading to $x$ and outputting a 0
   \figlabel{bintree}
 \end{figure}
 
+\wolfgang{we claim that}
 If $C$ is prefix-free, then the number of $C$'s codewords that have
 length at most $k$ is not more than $2^k$. To see this why this is so,
 observe that $C$ can be modified into a code $\hat C$, in which every
@@ -223,15 +228,17 @@ C$'s codewords of length $k$ is equal to the the number of $C$'s
 codewords of length at most $k$; since codewords are just binary
 strings, there are not more than $2^k$ of these.
 
+\wolfgang{Give it a name? ``block code?}
 Observe that every finite set $X$ has a prefix-free code in which
 every codeword has length $\lceil\log |X|\rceil$. We simply enumerate
 the elements of $X$ in some order $x_0,x_1,\ldots,x_{|X|-1}$ and
 assign to each $x_i$ the binary representation of $i$ (padded with
 leading zeros), which has length $\lceil\log |X|\rceil$, since
 $i\in\{0,\ldots,|X|-1\}$.  We will use this type of \emph{fixed-length
-  code} implicitly in many arguments.
+code} implicitly in many arguments.
 
 
+\wolfgang{Make the announcement bigger?}
 As we will see, the following lemma, which is folklore, is
 surprisingly versatile:
 \begin{lem}[Uniform Encoding Lemma]\lemlabel{uel}
@@ -267,6 +274,7 @@ a run of significantly more than $\log n$ one bits.  (See
   \figlabel{runs-i}
 \end{figure}
 
+\wolfgang{Really use tuple-notation for strings?}
 \begin{thm}\thmlabel{runs-i}
   Let $x=(x_1,\ldots,x_n)\in\{0,1\}^n$ be chosen uniformly at random
   and let $t = \ceil{\ceil{\log n} + s}$. Then, the probability that
@@ -287,6 +295,8 @@ a run of significantly more than $\log n$ one bits.  (See
   \[
     \lceil\log n \rceil + n - t \le n-s \enspace .
   \]
+  \wolfgang{Maybe we should not use ``proof by intimidation''
+    in the first motivational example.}
   It is easy to check that, for any such $x$, we can reconstruct
   $(x_1,\ldots,x_n)$ from $C(x)$, so $C$ is a partial code whose
   domain is the set of binary strings of length $n$ having a run of
@@ -304,14 +314,16 @@ a run of significantly more than $\log n$ one bits.  (See
 
 Simple as it is, the proof of \thmref{runs-i} contains the main ideas
 used in most encoding arguments:
+\wolfgang{Terminology: do we distinguish between ``outcomes''
+and ``events'' = sets of outcomes?}
 
 \begin{enumerate}
 \item The arguments usually show that a particular \emph{bad event} is
   unlikely. In \thmref{runs-i} the bad event is the occurrence of a
   substring of $t$ consecutive ones.
 
-\item The code is partial prefix-free code whose domain contains the
-  set of bad events. In this case, the code $C$ is only capable of
+\item The code is a partial prefix-free code whose domain contains the
+  set of bad events\wolfgang{outcomes}. In this case, the code $C$ is only capable of
   encoding strings containing a run of $t$ consecutive ones.
 
 \item The code usually begins with a concise description of the bad
@@ -328,12 +340,14 @@ used in most encoding arguments:
 Note that \thmref{runs-i} also has an easy proof using the union
 bound: If we let $\mathcal{E}_i$ denote the event
 $x_i=x_{i+1}=\cdots=x_{i+t}=1$, then
+\wolfgang{Further up, probabilities had braces.}
 \begin{align*}
   \Pr \bigcup_{i=0}^{n-t-1} \mathcal{E}_i
   & \le \sum_{i=0}^{n-t-1} \Pr\mathcal{E}_i  \tag{using the union bound}\\
   & = \sum_{i=0}^{n-t-1} 2^{-t}  \tag{using the independence of the $x_i$'s}\\
   & \le n2^{-t}  \tag{the sum has $n-t\le n$ identical terms}\\
-  & = n2^{-\lceil\log n\rceil-s}  \tag{from the definition of $t$}\\
+  & = n2^{-\lceil\log n\rceil-s}  \tag{from the definition of $t$,
+  \wolfgang{Should be $\leq$?}}\\
   & \le 2^{-s} \enspace .
 \end{align*}
 This traditional proof also works with the sometimes smaller value
@@ -343,17 +357,19 @@ term), in which case the final inequality becomes an equality.
 In the encoding proof of \thmref{runs-i}, the ceiling in the
 expression for $t$ is an artifact of encoding the integer $i$ which is
 taken from a set of size $n$. When sketching an encoding argument, we
-think of this as requiring $\log n$ bits but when it comes time to
+think of this as requiring $\log n$ bits but when 
+\wolfgang{the time comes to?}it comes time to
 carefully write down a proof we include a ceiling over this term since
 bits are a discrete quantity.
 
-In \secref{el}, however, we will see that the informal intuition we
+In \secref{el}, however, we will \wolfgang{give a 
+formal justification} see that the informal intuition we
 use in blackboard proofs is actually valid; we can think of encoding
 $i$ using $\log n$ bits even if $\log n$ is not an integer.  In
 general we can imagine encoding a choice from among $r$ options using
 $\log r$ bits for any $r\in\N$.  From this point onwards, we omit
-ceilings this way in all our theorems and proofs. This makes
-calculations simpler and provides tighter results.  For now, it allows
+ceilings this way in all our theorems and proofs. This simplifies
+calculations and provides tighter results.  For now, it allows
 us to state the following cleaner version of \thmref{runs-i}:
 
 \begin{customthm}{\ref*{thm:runs-i}b}\thmlabel{runs-ii}
