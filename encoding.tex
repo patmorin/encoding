@@ -933,7 +933,8 @@ correspond to keys, and vertices correspond to array locations.
   the above paths in order; then the vertices of the paths in order;
   and the edges $e_1$ and $e_2$; and finally the remaining $2n - 2(t +
   1)$ endpoints of edges in the graph. Such a code has length
-  \wolfgang{Should the first term be $\log m$, since $v$ is a vertex?}
+  \wolfgang{Should the first term be $\log m$, since $v$ is a vertex?
+    I am a bit confused about the calculation...}
   \begin{align*}
     |C(G)| &= \log n + (t - 1)(\log n + \log m) + 2\log n + (2n - 2(t + 1))\log m + O(\log t) \\
            &= 2n \log m + \log n - 2\log m - t + O(\log t) \\
@@ -959,7 +960,8 @@ hashing collisions, or the maximum number of elements in any urn.
 
 Perhaps surprisingly, the simple change of having two choices instead
 of only one results in an exponential improvement over the strategy of
-\secref{urns}. 2-choice hashing was first studied by Azar \emph{et
+\secref{urns}. The concept of 2-choice hashing was first studied by 
+Azar \emph{et
   al.}~\cite{azar:multiplechoice}, who showed that the expected
 maximum size of an urn is $\log \log n + O(1)$. Our encoding argument
 is based on V\"{o}cking's use of witness trees to analyze 2-choice
@@ -970,7 +972,8 @@ where $m = cn$ for some constant $c > 4$, and
 $E = \{(h(x), g(x)) : x \in X\}$.
 
 \begin{lem}\lemlabel{two-choice-two-cycles}
-  $G$ has a subgraph with more edges than vertices with probability
+  The probability that $G$ has a subgraph with more edges than 
+  vertices is
   $O(1/n)$.
 \end{lem}
 \begin{proof}
@@ -994,14 +997,14 @@ $E = \{(h(x), g(x)) : x \in X\}$.
 \begin{proof}
   Suppose $G$ has a connected component with $t - 1$ edges and at most
   $t$ vertices. This component has a spanning tree $T$. Pick an
-  arbitrary vertex as the root of $T$. We encode $G$ by specifying
+  arbitrary vertex as the root of $T$. To encode $G$, we specify
   first the $t - 1$ edges and $t$ vertices encountered in a pre-order
   traversal of $T$; then a bit string encoding the shape of $T$; and
-  finally the remaining $2(n - t + 1)$ endpoints of edges.
+  finally the remaining $2(n - t + 1)$ endpoints of edges in $G$.
 
-  We can encode the shape of $T$ using a bit string of length
+  We can encode the shape of $T$ with a bit string of length
   $2(t - 1)$, tracing a pre-order traversal of the tree, where a 0 bit
-  indicates that the path to the next node goes up, and a 1 indicates
+  indicates that the path to the next node goes up, and a 1 bit indicates
   that the path goes down. In total, our code has length
   \begin{align*}
     |C(G)| &= t \log m + (t - 1) \log n + 2(t - 1) + 2 (n - t + 1) \log m \\
@@ -1013,13 +1016,14 @@ $E = \{(h(x), g(x)) : x \in X\}$.
   \[
     t \geq \frac{s + \log n + O(1)}{\log (c/4)} \enspace .
   \]
-  In particular, if we choose $s = \log n$, applying the Uniform
+  In particular, for $s = \log n$, the Uniform
   Encoding Lemma tells us that $G$ has a component of size at least
   $(2/\log (c/4))\log n + O(1)$ with probability $O(1/n)$.
 \end{proof}
 
-Suppose that when $x$ is inserted, it is placed in a urn with $t$
-other elements. Then, we say that the age of $x$ is $a(x) = t$.
+Suppose that when $x$ is inserted, it is placed in \wolfgang{an?} 
+urn with $t$
+other elements. Then, we say that the \emph{age} of $x$ is $a(x) = t$.
 \begin{thm}
   The cost of searching in 2-choice hashing in a table of size $cn$
   with $c > 4$ is at most $\log \log n + O(1)$ with probability $1 -
@@ -1035,8 +1039,9 @@ other elements. Then, we say that the age of $x$ is $a(x) = t$.
   with $a(x_g) = t - 1$. The elements $x_h$ and $x_g$ become left and
   right children of $x$ in $T$. The process continues recursively. If
   some element appears more than once on a level, we only recurse on
-  its leftmost occurence. Note that each vertex of $T$ corresponds to
-  the edge $(h(x), g(x))$ of $G$. Moreover, the subgraph of $G$
+  its leftmost occurrence \wolfgang{Figure?}. 
+  Note that each vertex of $T$ corresponds to
+  an edge $(h(x), g(x))$ of $G$. Moreover, the subgraph of $G$
   induced by the edges
   \[
     \{(h(x), g(x)) : x \text{ is a vertex of } T\}
@@ -1044,11 +1049,14 @@ other elements. Then, we say that the age of $x$ is $a(x) = t$.
   is connected.
 
   Suppose that some node appears more than once on a level of
-  $T$. From above, this means that some component of $G$ has a
+  $T$. By the discussion above \wolfgang{Which discussion? Figure?}, 
+  this means that some component of $G$ has a
   cycle. If this happens twice, then $G$ has a subgraph with more
   edges than vertices. By \lemref{two-choice-two-cycles}, this happens
   with probability $O(1/n)$. If instead this happens at most once,
-  then $T$ has at most one subtree removed, so $T$ has at least $2^t$
+  then $T$ has at most one subtree removed \wolfgang{This is a bit
+  vague, maybe: "is a complete binary tree with at most one
+  subtree removed"?}, so $T$ has at least $2^t$
   nodes. If we choose $t = \ceil{\log \log n + d}$, then $T$ has at
   least $2^d \log n$ nodes, which we know from
   \lemref{two-choice-component-size} happens with probability $O(1/n)$
@@ -1057,12 +1065,14 @@ other elements. Then, we say that the age of $x$ is $a(x) = t$.
 
 \begin{rem}
   The arguments in this section can be refined by more carefully
-  encoding the shape of trees using Cayley's formula. In particular, a
+  encoding the shape of trees using Cayley's formula \wolfgang{reference}.
+  In particular, a
   rooted tree with $t$ nodes and $m$ choices for distinct node labels
   can be encoded using $\log \binom{m}{t} + (t - 2) \log t$ bits
   instead of $t \log m + 2(t - 1)$ bits. We would then recover the
   same results for hash tables of size $m = cn$ for $c > e$ instead of
-  $c > 4$. In fact, it suffices that $c > 0$ for searching to take
+  $c > 4$. In fact, it \wolfgang{is known that it.. reference?} 
+  suffices that $c > 0$ for searching to take
   time $O(\log \log n)$ in 2-choice hashing. We leave it as an open
   problem to find an encoding argument for this result when $c > 0$.
 \end{rem}
@@ -1071,11 +1081,12 @@ other elements. Then, we say that the age of $x$ is $a(x) = t$.
   Robin Hood hashing is another hashing solution which achieves
   $O(\log \log n)$ worst case running time for all
   operations~\cite{devroye:robin}. The original analysis is difficult,
-  but might lend itself to a similar kind of analysis as we used in
+  but might be amenable to a similar kind of analysis as we used in
   this section. Indeed, when a Robin Hood hashing operation takes a
   significant amount of time, a large witness tree is again implied,
   which suggests an easy encoding argument. Unfortunately, this
   approach appears to involve unwieldy hypergraph encoding.
+  \wolfgang{so, the problem is what?}
 \end{rem}
 
 
@@ -1083,21 +1094,28 @@ other elements. Then, we say that the age of $x$ is $a(x) = t$.
 
 Expanders are families of graphs which share some isoperimetric
 quality, \emph{i.e.}~where subgraphs ``expand'' in their
-neighbourhoods. These graphs have received much research attention,
-and have been shown to have many applications in computer
+neighbourhoods. \wolfgang{This description seems to
+undersell expanders. Maybe: "...of sparse graphs with
+share many connectivity properties with complete graphs"} 
+These graphs have received much research attention,
+and have led to many applications in computer
 science. See, for instance, the survey by Hoory, Linial, and
 Wigderson~\cite{hoory.linial.ea:expander}.
 
+\wolfgang{maybe a sentence like: "the existence of expanders
+was originally established through probabilistic arguments."}
 We offer an encoding argument to prove that a certain random bipartite
 graph is an expander with high probability. There are many different
 notions of expansion. We will consider what is commonly known as
-vertex expansion in bipartite graphs: For some fixed $0 < \alpha \leq
+\emph{vertex expansion} in bipartite graphs: 
+For some fixed $0 < \alpha \leq
 1$, a bipartite graph $G = (A, B, E)$ is called a \emph{$(c,
   \alpha)$-expander} if
 \begin{align*}
   \min_{\substack{{A' \subseteq A}\\{|A'| \leq \alpha |A|}}} \frac{|N(A')|}{|A'|} \geq c \enspace ,
 \end{align*}
 where $N(A') \subseteq B$ is the set of neighbours of $A'$ in $G$.
+\wolfgang{say it in words, figure?}
 
 Let $G = (A, B, E)$ be a random bipartite multigraph where $|A| = |B|
 = n$ and where each vertex of $A$ is connected to three vertices of
@@ -1116,7 +1134,7 @@ Wigderson~\cite[Lemma~1.9]{hoory.linial.ea:expander}.
 
 \begin{proof}
   We encode the graph $G$ by presenting its edge set. Since each edge
-  is selected uniformly at random, then $G$ is chosen uniformly at
+  is selected uniformly at random, the graph $G$ is chosen uniformly at
   random from a set of size $n^{3n}$.
   
   If $G$ is not a $(3/2, \alpha)$-expander, then there is some set $A'
@@ -1124,22 +1142,23 @@ Wigderson~\cite[Lemma~1.9]{hoory.linial.ea:expander}.
   \[
   \frac{|N(A')|}{|A'|} < 3/2 \enspace .
   \]
-  To encode $G$, we first give $k$ using an Elias $\gamma$-code; and
-  we give the sets $A'$ and $N(A')$; and the edges between $A'$ and
+  To encode $G$, we first give $k$ using an Elias $\gamma$-code; together 
+  with the sets $A'$ and $N(A')$; and the edges between $A'$ and
   $N(A')$. Then we encode the rest of $G$, skipping the $3k\log n$
   bits devoted to elements in $A'$.  The key savings here come because
   $N(A')$ should take $3k\log n$ bits to encode, but can actually be
   encoded in roughly $3k\log(3k/2)$ bits. Our code then has length
+  \wolfgang{The calculation is a bit short. More details?}
   \begin{align*}
     |C(G)| &= 2\log k + \log {n \choose k} + \log {n \choose 3k/2} + 3k \log (3k/2) + (3n - 3k)\log n + O(1) \\
            &\leq 3n \log n - (k/2)\log n + (k/2)\log k + \beta k + 2 \log k + O(1) \tag{by \eqref{log-n-choose-k}}\\
            &= \log n^{3n} - s(k)
   \end{align*}
-  bits, where $\beta = (3/2) \log (3/2) + (5/2) \log e$. Note that
+  bits, where $\beta = (3/2) \log (3/2) + (5/2) \log e$. Since
   \[
     \frac{d^2}{dk^2} s(k) = \frac{4 - k}{2 k^2} \log e \enspace ,
   \]
-  so that $s(k)$ is concave for all $k \geq 4$. Thus, $s(k)$ is
+  the function $s(k)$ is concave for all $k \geq 4$. Thus, $s(k)$ is
   minimized either when $k = 1, 2, 3, 4$, or $k = \alpha n$. We have
   \begin{align*}
     s(1) &= (1/2)\log n + c_1 \enspace , & 
@@ -1161,8 +1180,14 @@ Wigderson~\cite[Lemma~1.9]{hoory.linial.ea:expander}.
 \subsection{Permutations and Binary Search Trees}
 
 A \emph{permutation} $\sigma$ of size $n$ is a sequence of $n$
-distinct integers, sometimes denoted
-$\sigma = (\sigma_1, \ldots, \sigma_n)$. Except when explicitly
+pairwise distinct integers, sometimes denoted
+$\sigma = (\sigma_1, \ldots, \sigma_n)$
+\wolfgang{This definition is a bit surprising. Maybe indicate
+that it is somewhat non-standard ("for our purposes")
+In particular, this definition is a bit dirty, because
+the notion of "uniform random permutation" does not make
+much sense if the numbers are not fixed.}. 
+Except when explicitly
 stated, we will assume that the set of integers involved in a
 permutation of size $n$ is precisely $\{1, \ldots, n\}$. The number of
 such permutations is $n!$.
@@ -1186,13 +1211,17 @@ $\sigma = (\sigma_1,\ldots,\sigma_n)$ of $n$ elements:
 \end{algorithmic}
 
 A typical question asks the expected number of times Line~4 executes
-if $\sigma$ is a uniformly random permutation of size $n$.  The answer
+if $\sigma$ is a uniformly random permutation of size $n$
+\wolfgang{What kind of question? Where is it typical?
+"A typical task in the average-case analysis of algorithms is to"}.  
+The answer
 $\binom{n}{2}/2$ is an easy application of linearity of expectation:
 For every one of the $\binom{n}{2}$ pairs $p,q\in\{1,\ldots,n\}$ with
 $p<q$, the values initially stored at positions $\sigma_p$ and
 $\sigma_q$ will eventually be swapped if and only if
 $\sigma_p > \sigma_q$, which happens with probability $1/2$ in a
-uniformly random permutation.
+uniformly random permutation \wolfgang{mention the
+concept of inversion?}.
 
 A more advanced question is to ask for a concentration result on the
 number of executions of Line~4. This is a harder question to tackle;
@@ -1207,7 +1236,8 @@ of Kolmogorov complexity.
   For a uniformly random permutation $\sigma$ of size $n$, the
   probability that Line~4 of $\textsc{InsertionSort}(\sigma)$ executes
   fewer than $\alpha n^2 - n + 2$ times is at most $2^{n\log(\alpha
-    e^2)+O(\log n)}$.  In particular, for a fixed $\alpha < 1/e^2$,
+    e^2)+O(\log n)}$ \wolfgang{This is a bit hard to parse}.  
+    In particular, for a fixed $\alpha < 1/e^2$,
   this probability is $2^{-\Omega(n)}$.
 \end{thm}
 
@@ -1219,11 +1249,16 @@ of Kolmogorov complexity.
   %of of $\{1,\ldots,n\}$.
   %
   We encode the permutation $\sigma$ by recording the execution of
-  \textsc{InsertionSort} on this permutation. In particular, we record
+  \textsc{InsertionSort} on $\sigma$. In particular, we record
   for each $i\in\{2,\ldots,n\}$, the number of times $m_i$ that Line~4
   executes during the $i$\textsuperscript{th} iteration of
   $\textsc{InsertionSort}(\sigma)$. With this information, one can run
-  the following algorithm to recover $\sigma$:
+  the following algorithm to recover $\sigma$
+  \wolfgang{More explanation here? I would have expected
+  $i$ to go from $n$ downto $2$ and $j$ to go up, corresponding
+  to a reverse execution of insertion sort. For the
+  pseudocode below, correctness is not obvious to me (but
+  maybe I should try some examples by hand)}:
   
   \noindent{$\textsc{InsertionSortReconstruct}(m_2,\ldots,m_n)$}:
   \begin{algorithmic}[1]
@@ -1267,7 +1302,7 @@ of Kolmogorov complexity.
 
 
 \begin{rem}
-  Although it doesn't require any advanced probability,
+  Although\wolfgang{Why although? Omit this whole auxiliary sentence?} it doesn't require any advanced probability,
   \thmref{insertion-sort} is not sharp; it only gives a non-trivial
   probability when $\alpha < 1/e^2$.  To obtain a sharp bound, one can
   use the fact that $m_2,\ldots,m_n$ are independent and $m_i$ is
@@ -1278,7 +1313,9 @@ of Kolmogorov complexity.
 
 \subsubsection{Records}
 
-A \emph{(max) record} in a permutation $\sigma$ of size $n$ is some
+A \emph{(max) record}
+\wolfgang{I know it as a "peak"} 
+in a permutation $\sigma$ of size $n$ is some
 value $\sigma_i$ with $1 \leq i \leq n$ such that
 \[
   \sigma_i = \max\{\sigma_1, \dots, \sigma_i\} \enspace .
