@@ -22,8 +22,8 @@
 
 \newcommand{\aremark}[3]{\textcolor{blue}{\textsc{#1 #2:}}
   \textcolor{red}{\textsf{#3}}}
-\newcommand{\pat}[2][says]{\aremark{Wolfgang}{#1}{#2}}
-\newcommand{\tommy}[2][says]{\aremark{Wolfgang}{#1}{#2}}
+\newcommand{\pat}[2][says]{\aremark{Pat}{#1}{#2}}
+\newcommand{\tommy}[2][says]{\aremark{Tommy}{#1}{#2}}
 \newcommand{\wolfgang}[2][says]{\aremark{Wolfgang}{#1}{#2}}
 
 
@@ -65,11 +65,11 @@
 There is no doubt that probability theory plays a fundamental role in
 computer science: Some of the fastest and simplest fundamental
 algorithms and data structures are randomized
-\wolfgang{Cite Motwani Raghavan, Mitzenmacher Upfal?}; average-case analysis
+\wolfgang{Cite Motwani Raghavan, Mitzenmacher Upfal?}\cite{mitzenmacher.upfal:probability, motwani.raghavan:randomized}; average-case analysis
 of algorithms relies entirely on tools from probability theory
-\wolfgang{Cite Flajolet Sedgwick?}; and
+\wolfgang{Cite Flajolet Sedgwick?}\cite{flajolet.sedgewick:aofa}; and
 many difficult combinatorial questions have strikingly simple
-solutions using probabilistic arguments\wolfgang{Cite Alon Spencer?}.
+solutions using probabilistic arguments\wolfgang{Cite Alon Spencer?}\cite{alon:probabilistic}.
 
 \wolfgang{Do you really want to phrase it as bluntly as this?
 It sounds a bit like ``Computer scientists do not understand
@@ -171,41 +171,37 @@ and binomial coefficients.
 
 \subsection{Prefix-free Codes and the Uniform Encoding Lemma}
 
-\wolfgang{Suggestion}
-An \emph{alphabet} $\Sigma$ is a finite set (typically
-$\Sigma = \{0, 1\}$).
-\wolfgang{Do we ever need general $\Sigma$?}
-A finite length \emph{string} over $\Sigma$ is a finite (possibly empty) sequence
-of elements from $\Sigma$. For $k \in \N$, we denote by $\Sigma^k$
-the set of all strings over $\Sigma$  of length $k$, and by $\Sigma^*$
-the set of all finite strings.
-\wolfgang{End suggestion}
-A finite length \emph{string} over an alphabet $\Sigma$ is either the
-empty string or an element of $\Sigma^k$ for some $k \in \N$. The
-expression $\{0, 1\}^*$ denotes the set of all finite length binary
-(or bit) strings. For a string, $s$, we use $|s|$ to denote the length of
-$s$.  A bit string of length $n$ will be called an $n$-bit
-string. A \emph{code} $C\from X\to \{0,1\}^*$ is a one-to-one function
-from a set $X$ to the set of finite length binary strings.  The
-elements of the range of $C$ are called $C$'s \emph{codewords}.  In
-most cases \wolfgang{Often}, there are some elements of the set $X$ that are not of
-interest to us.  In these cases, we consider partial codes. A
-\emph{partial code} $C\from X\nrightarrow \{0,1\}^*$ is a one-to-one
-partial function.  When discussing partial codes we will use the
-convention that $|C(x)|=\infty$ if $x$ is not in the domain of $C$.
+A finite length \emph{binary string}, or \emph{bit string}, is a
+finite (possibly empty) sequence of elements from $\{0, 1\}$. For
+$k \in \N$, we denote by $\{0, 1\}^k$ the set of all binary strings of
+length $k$, and by $\{0,1\}^*$ the set of all finite strings.
+\wolfgang{Do we ever need general $\Sigma$?} \tommy{No, we never need
+  general $\Sigma$, so I changed this for only a binary alphabet.}
+For a binary string, $s$, we use $|s|$ to denote the length of $s$.  A
+binary string of length $n$ will be called an $n$-bit string. A
+\emph{code} $C\from X\to \{0,1\}^*$ is a one-to-one function from a
+set $X$ to the set of finite length binary strings.  The elements of
+the range of $C$ are called $C$'s
+\emph{codewords}. \wolfgang{Often}\tommy{Okay} Often, there are some
+elements of the set $X$ that are not of interest to us.  In these
+cases, we consider partial codes. A \emph{partial code}
+$C\from X\nrightarrow \{0,1\}^*$ is a one-to-one partial function.
+When discussing partial codes we will use the convention that
+$|C(x)|=\infty$ if $x$ is not in the domain of $C$.
 
-\wolfgang{Do we need to define prefix?}
-A (partial) code $C$ is \emph{prefix-free} if, for every pair
-$x\neq y$ in the domain of $C$, the binary string $C(x)$ is not a
-prefix of $C(y)$.  It can be helpful to \wolfgang{visualize}
-think of prefix-free codes as
-(rooted ordered) binary trees whose leaves are labelled with the
-elements of $X$.  
-\wolfgang{Suggestion: use juxtaposition instead of ``respectively''}
-The codeword for a particular $x\in X$ is obtained
-by tracing the root-to-leaf path leading to $x$ and outputting a 0
-(respectively, 1) each time this path goes from a parent to its left
-(respectively, right) child. (See \figref{bintree}.)
+\wolfgang{Do we need to define prefix?} \tommy{Yes.}  A binary string
+$x$ is called a \emph{prefix} of another binary string $y$ if there
+exists some binary string $z$ such that $xz = y$. A (partial) code $C$
+is \emph{prefix-free} if, for every pair $x\neq y$ in the domain of
+$C$, the binary string $C(x)$ is not a prefix of $C(y)$.  It can be
+helpful to \wolfgang{visualize} \tommy{Okay} visualize prefix-free
+codes as (rooted ordered) binary trees whose leaves are labelled with
+the elements of $X$. \wolfgang{Suggestion: use juxtaposition instead
+  of ``respectively''} \tommy{Okay} The codeword for a particular
+$x\in X$ is obtained by tracing the root-to-leaf path leading to $x$
+and outputting a 0 each time this path goes from a parent to its left
+child, and a 1 each time it goes to a right child. (See
+\figref{bintree}.)
 
 \begin{figure}
   \centering{\includegraphics{bintree}}
@@ -217,18 +213,19 @@ by tracing the root-to-leaf path leading to $x$ and outputting a 0
   \figlabel{bintree}
 \end{figure}
 
-\wolfgang{we claim that}
-If $C$ is prefix-free, then the number of $C$'s codewords that have
-length at most $k$ is not more than $2^k$. To see this why this is so,
-observe that $C$ can be modified into a code $\hat C$, in which every
-codeword of length $\ell <k$ is extended---by appending $k-\ell$
-zeros---so that it has length exactly $k$. The prefix-freeness of $C$
-ensures that $\hat C$ is also a prefix-free code. The number of $\hat
-C$'s codewords of length $k$ is equal to the the number of $C$'s
-codewords of length at most $k$; since codewords are just binary
-strings, there are not more than $2^k$ of these.
+\wolfgang{we claim that} \tommy{Okay}
+We claim that if $C$ is prefix-free, then the
+number of $C$'s codewords that have length at most $k$ is not more
+than $2^k$. To see this why this is so, observe that $C$ can be
+modified into a code $\hat C$, in which every codeword of length
+$\ell <k$ is extended---by appending $k-\ell$ zeros---so that it has
+length exactly $k$. The prefix-freeness of $C$ ensures that $\hat C$
+is also a prefix-free code. The number of $\hat C$'s codewords of
+length $k$ is equal to the the number of $C$'s codewords of length at
+most $k$; since codewords are just binary strings, there are not more
+than $2^k$ of these.
 
-\wolfgang{Give it a name? ``block code?}
+\wolfgang{Give it a name? ``block code?} \tommy{It already has a name: fixed-length code.}
 Observe that every finite set $X$ has a prefix-free code in which
 every codeword has length $\lceil\log |X|\rceil$. We simply enumerate
 the elements of $X$ in some order $x_0,x_1,\ldots,x_{|X|-1}$ and
@@ -287,21 +284,28 @@ a run of significantly more than $\log n$ one bits.  (See
   code for strings having a run of $t$ or more ones.  For such a
   string $x=(x_1,\ldots,x_n)$ let $i$ be the minimum index such that
   $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$. The codeword $C(x)$ for $x$ is the
-  binary string that consists of the ($\lceil\log n\rceil$-bit binary
+  binary string that consists of the ($\ceil{\log n}$-bit binary
   encoding of the) index $i$ followed by the $n-t$ bits
   $x_1,\ldots,x_{i-1},x_{i+t},\ldots,x_n$. (See \figref{runs-i}.)
 
   Observe that $C(x)$ has length 
   \[
-    \lceil\log n \rceil + n - t \le n-s \enspace .
+    \ceil{\log n} + n - t \le n-s \enspace .
   \]
-  \wolfgang{Maybe we should not use ``proof by intimidation''
-    in the first motivational example.}
-  It is easy to check that, for any such $x$, we can reconstruct
-  $(x_1,\ldots,x_n)$ from $C(x)$, so $C$ is a partial code whose
-  domain is the set of binary strings of length $n$ having a run of
-  $t$ or more ones.  It is also easy to see that $C$ is prefix free,
-  since all codewords are unique and have the same length.
+  \wolfgang{Maybe we should not use ``proof by intimidation'' in the
+    first motivational example.}  \tommy{Following Wolfgang's
+    suggestion: explained some of the details of the proof.}  For any
+  such $x$, we can reconstruct $(x_1,\ldots,x_n)$ from $C(x)$ by
+  reading it from left to right. Indeed, the leftmost $\ceil{\log n}$
+  bits from $C(x)$ tell us, in binary, the value of an index $i$ for
+  which $x_i = x_{i + 1} = \dots = x_{i + t - 1} = 1$; the following
+  $n - t$ bits in sequence give us the values of the remaining unknown
+  bits
+  $x_1, x_2, \dots, x_{i - 1}, x_{i + t}, x_{i + t + 1}, \dots,
+  x_n$. Thus, $C$ is a partial code whose domain is the set of binary
+  strings of length $n$ having a run of $t$ or more ones.  It is also
+  easy to see that $C$ is prefix free, in particular since all
+  codewords are unique and have the same length.
 
   Now, $x$ was chosen uniformly at random from a set of size $2^{n}$.
   Therefore, by the Uniform Encoding Lemma, the probability that there
@@ -313,23 +317,25 @@ a run of significantly more than $\log n$ one bits.  (See
 \end{proof}
 
 Simple as it is, the proof of \thmref{runs-i} contains the main ideas
-used in most encoding arguments:
-\wolfgang{Terminology: do we distinguish between ``outcomes''
-and ``events'' = sets of outcomes?}
-
+used in most encoding arguments: \wolfgang{Terminology: do we
+  distinguish between ``outcomes'' and ``events'' = sets of outcomes?}
+\tommy{Following Wolfgang's suggestion: added a distinction between
+  events and outcomes.}
 \begin{enumerate}
 \item The arguments usually show that a particular \emph{bad event} is
   unlikely. In \thmref{runs-i} the bad event is the occurrence of a
   substring of $t$ consecutive ones.
 
-\item The code is a partial prefix-free code whose domain contains the
-  set of bad events\wolfgang{outcomes}. In this case, the code $C$ is only capable of
-  encoding strings containing a run of $t$ consecutive ones.
+\item The code is a partial prefix-free code whose domain is the bad
+  event, whose elements we call bad outcomes. In this case, the code
+  $C$ is only capable of encoding strings containing a run of $t$
+  consecutive ones, and a particular string containing such a run is a
+  bad outcome.
 
 \item The code usually begins with a concise description of the bad
-  event, and is then followed by a straightforward encoding of the
-  information that is not implied by the bad event. In
-  \thmref{runs-i}, the bad event is completely described by the index
+  outcome, and is then followed by a straightforward encoding of the
+  information that is not implied by the bad outcome. In
+  \thmref{runs-i}, the bad outcome is completely described by the index
   $i$ at which the run of $t$ one bits begins, and this implies that
   the bits $x_i,\ldots,x_{i+t-1}$ are all equal to 1, so these bits do
   not need to be specified in the second part of the codeword.
@@ -340,14 +346,13 @@ and ``events'' = sets of outcomes?}
 Note that \thmref{runs-i} also has an easy proof using the union
 bound: If we let $\mathcal{E}_i$ denote the event
 $x_i=x_{i+1}=\cdots=x_{i+t}=1$, then
-\wolfgang{Further up, probabilities had braces.}
+\wolfgang{Further up, probabilities had braces.} \tommy{Added braces.}
 \begin{align*}
-  \Pr \bigcup_{i=0}^{n-t-1} \mathcal{E}_i
-  & \le \sum_{i=0}^{n-t-1} \Pr\mathcal{E}_i  \tag{using the union bound}\\
+  \Pr \left\{\bigcup_{i=0}^{n-t-1} \mathcal{E}_i\right\}
+  & \le \sum_{i=0}^{n-t-1} \Pr \{\mathcal{E}_i\}  \tag{using the union bound}\\
   & = \sum_{i=0}^{n-t-1} 2^{-t}  \tag{using the independence of the $x_i$'s}\\
   & \le n2^{-t}  \tag{the sum has $n-t\le n$ identical terms}\\
-  & = n2^{-\lceil\log n\rceil-s}  \tag{from the definition of $t$,
-  \wolfgang{Should be $\leq$?}}\\
+  & \le n2^{-\lceil\log n\rceil-s}  \tag{from the definition of $t$ \wolfgang{Should be $\le$?} \tommy{Yes}}\\
   & \le 2^{-s} \enspace .
 \end{align*}
 This traditional proof also works with the sometimes smaller value
@@ -357,20 +362,21 @@ term), in which case the final inequality becomes an equality.
 In the encoding proof of \thmref{runs-i}, the ceiling in the
 expression for $t$ is an artifact of encoding the integer $i$ which is
 taken from a set of size $n$. When sketching an encoding argument, we
-think of this as requiring $\log n$ bits but when 
-\wolfgang{the time comes to?}it comes time to
-carefully write down a proof we include a ceiling over this term since
-bits are a discrete quantity.
+think of this as requiring $\log n$ bits but when \wolfgang{the time
+  comes to?} \tommy{Okay} the time comes to carefully write down a
+proof we include a ceiling over this term since bits are a discrete
+quantity.
 
-In \secref{el}, however, we will \wolfgang{give a 
-formal justification} see that the informal intuition we
-use in blackboard proofs is actually valid; we can think of encoding
-$i$ using $\log n$ bits even if $\log n$ is not an integer.  In
-general we can imagine encoding a choice from among $r$ options using
-$\log r$ bits for any $r\in\N$.  From this point onwards, we omit
-ceilings this way in all our theorems and proofs. This simplifies
-calculations and provides tighter results.  For now, it allows
-us to state the following cleaner version of \thmref{runs-i}:
+In \secref{el}, however, we will \wolfgang{give a formal
+  justification} \tommy{Okay} formally justify that the informal
+intuition we use in blackboard proofs is actually valid; we can think
+of encoding $i$ using $\log n$ bits even if $\log n$ is not an
+integer.  In general we can imagine encoding a choice from among $r$
+options using $\log r$ bits for any $r\in\N$.  From this point
+onwards, we omit ceilings this way in all our theorems and
+proofs. This simplifies calculations and provides tighter results.
+For now, it allows us to state the following cleaner version of
+\thmref{runs-i}:
 
 \begin{customthm}{\ref*{thm:runs-i}b}\thmlabel{runs-ii}
   Let $x=(x_1,\ldots,x_n)\in\{0,1\}^n$ be chosen uniformly at random
@@ -390,15 +396,17 @@ $n_0(x)$ zeros,
   |C_\alpha(x)| = \lceil n_1(x)\log(1/\alpha) + n_0(x)\log(1/(1-\alpha)) \rceil \enspace .
   \eqlabel{sparse-bitstring-i}
 \end{equation}
-This code is the so-called \wolfgang{emph?} Shannon-Fano code for
-$\mathrm{Bernoulli}(\alpha)$ bit strings of length $n$
-\cite{fano:transmission,shannon:mathematical}. 
-\wolfgang{I find the next sentence a bit clunky, rephrase?}
-In general, a
-Shannon-Fano code $C : X \to \{0, 1\}^*$ is parametrized over any
-probability density $p : X \to [0, 1]$ so that
-$|C(x)| = \ceil{\log (1/p_x)}$, and in particular, the construction of
-such a code is deterministic, even when $X$ is countably infinite.
+This code is the \wolfgang{emph?}\tommy{Okay} \emph{Shannon-Fano code}
+for $\mathrm{Bernoulli}(\alpha)$ bit strings of length $n$
+\cite{fano:transmission,shannon:mathematical}. \wolfgang{I find the
+  next sentence a bit clunky, rephrase?}\tommy{Okay} More generally, a
+Shannon-Fano code $C : X \to \{0, 1\}^*$ is parametrized over a
+probability density $p : X \to [0, 1]$ such that
+\[
+  |C(x)| = \ceil{\log (1/p_x)} \enspace .
+\]
+Moreover, we can construct such a code deterministically, even when
+$X$ is countably infinite.
 
 Again, as we will see in \secref{el}, we can omit the ceiling in the
 expression for $|C_\alpha(x)|$.  This is true for any value of $n$. In
@@ -452,11 +460,10 @@ since $1+x\le e^x$ for all $x\in\mathbb{R}$. \Eqref{entropy-i} is a
 useful approximation when $\alpha$ is close to zero, in which case 
 $H(\alpha)$ is also close to zero.
 
-For $\alpha$ close to $1/2$ (in which case $H(\alpha)$ is close to 1), we
-obtain a good approximation from the Taylor series expansion at
-$1/2$. 
-\wolfgang{Provide more details on the derivation of the Taylor series?}
-In particular, for $\alpha=(1-\eps)/2$,
+For $\alpha$ close to $1/2$ (in which case $H(\alpha)$ is close to 1),
+we obtain a good approximation from the Taylor series expansion at
+$1/2$.  \wolfgang{Provide more details on the derivation of the Taylor
+  series?}  In particular, for $\alpha=(1-\eps)/2$,
 \begin{align}
   H(\alpha) & = 1-\frac{1}{2\ln 2}\sum_{i=1}^{\infty}\frac{(1-2\alpha)^{2i}}{i(2i-1)} 
               \notag \\ 
@@ -472,60 +479,52 @@ a well-known and extremely useful result typically attributed to
 Chernoff \cite{chernoff:bound}.
 
 \begin{thm}\thmlabel{chernoff-basic}
-  Let $x\in\{0,1\}^n$ be chosen uniformly at random. Then,
-  \wolfgang{for any $\eps \geq 0$,}
+  Let $x\in\{0,1\}^n$ be chosen uniformly at random. Then, for any
+  $\eps \geq 0$,
   \[
-    \Pr\{n_1(x) \le n(1-\eps)/2\} < e^{-\eps^2n/2} \enspace .
+    \Pr\{n_1(x) \le n(1-\eps)/2\} \le e^{-\eps^2n/2} \enspace .
   \]
 \end{thm}
 
 \begin{proof}
-  Encode the bit string $x$ using a Shannon-Fano code, $C_\alpha$,
-  with $\alpha=(1-\eps)/2$ \wolfgang{A bit imprecise, see next comment}.
-  Then the length of the codeword for $x$
-  is
+  Encode the bit string $x$ using a Shannon-Fano code $C_\alpha$ with
+  $\alpha=(1-\eps)/2$ \wolfgang{A bit imprecise, see next comment}.
+  Then, the length of the codeword for $x$ is
   \[
     |C_\alpha(x)| = n_1(x)\log(1/\alpha) + n_0(x)\log (1/(1-\alpha))
     \enspace .
   \]
-  Since $\alpha < 1/2$, $\log(1/\alpha) > \log(1/(1-\alpha))$, so
-  $|C_\alpha(x)|$ is maximal when $n_1(x)$ is maximal.  Under the
-  conditions of the theorem \wolfgang{I find this a bit unclear,
-  you mean that we derive a partial code for bit strings with at most 
-  $\alpha n$ one bits}, 
-  this happens when $n_1(x)=\alpha n$.
-  Therefore,
+  Since $\alpha < 1/2$, then $\log(1/\alpha) > \log(1/(1-\alpha))$, so
+  $|C_\alpha(x)|$ is maximal when $n_1(x)$ is maximal. \wolfgang{I
+    find this a bit unclear, you mean that we derive a partial code
+    for bit strings with at most $\alpha n$ one bits} \tommy{I changed
+    some of the wording. As far as I can tell, we don't necessarily
+    need to think about partial codes} Thus, if $n_1(x) \le \alpha n$,
+  then
   \begin{align*}
     |C_\alpha(x)| & \le \alpha n\log(1/\alpha) + (1-\alpha)n\log(1/(1-\alpha))\\
-                  & = n H(\alpha) \\
-                  & \le n\left(1-\frac{\eps^2}{2\ln 2}\right) \enspace ,
+                  & = n H(\alpha) \le n\left(1-\frac{\eps^2}{2\ln 2}\right) = n - s \enspace ,
   \end{align*}
-  where the second inequality is an application of \eqref{entropy-ii}.
-  Now, $x$ was chosen uniformly at random from a set of size $2^n$.
-  Therefore, this encoding saves:
-  \[  
-    s = n-\left(n\left(1-\frac{\eps^2}{2\ln 2}\right)\right) =
-    \frac{\eps^2n}{2\ln 2}
-  \]
-  bits.  By the Uniform Encoding Lemma, this happens with probability 
-  at most
+  where the second inequality is an application of \eqref{entropy-ii},
+  and where $s = \eps^2 n/(2 \ln 2)$.  Now, $x$ was chosen uniformly at
+  random from a set of size $2^n$. By the Uniform Encoding Lemma, we
+  obtain that
   \[
-    2^{-s} = e^{-\eps^2n/2} \enspace . \qedhere
+    \Pr\{n_1(x) \leq \alpha n\} \le \Pr\{|C_\alpha(x)| \le n - s\} \le 2^{-s} = e^{-\eps^2n/2} \enspace . \qedhere
   \]
 \end{proof}
 In \secref{chernoff}, after developing a Non-Uniform Encoding Lemma,
-we will extend this argument to binary strings where each bit is set
-independently to 1 with probability $p$ and to 0  with probability 
-$1-p$ \wolfgang{The Binomial distribution was already introduced above,
-use it here?}
+we will extend this argument to $\mathrm{Bernoulli}(\alpha)$ bit
+strings. \wolfgang{The Binomial distribution was already introduced
+  above, use it here?}\tommy{Okay}
 
 \subsection{Factorials and Binomial Coefficients}
 \seclabel{stirling}
 
 Before moving on to some more advanced encoding arguments, it will be
 helpful to remind the reader of a few inequalities that can be derived
-from Stirling's Approximation of the factorial
-\wolfgang{reference}.  Recall that Stirling's
+from Stirling's Approximation of the factorial~\cite{robbins:stirling}
+\wolfgang{reference}\tommy{Okay}.  Recall that Stirling's
 Approximation states that
 \begin{equation}
   n! = \left(\frac{n}{e}\right)^n\sqrt{2\pi n}\left(1+\Theta\left(\frac{1}{n}\right)\right) \enspace .
@@ -1794,7 +1793,8 @@ the special case of this result for $\mathrm{Bernoulli}(1/2)$ bit
 strings.
 
 \begin{thm}\thmlabel{chernoff}
-  If $B$ is a $\mathrm{Binomial}(n,p)$ random variable, then
+  If $B$ is a $\mathrm{Binomial}(n,p)$ random variable, then for any
+  $\eps \geq 0$,
   \[
     \Pr\{B\le(p-\eps)n\} \le 2^{-nD(p-\eps \| p)} \enspace ,
   \]
