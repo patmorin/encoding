@@ -304,7 +304,7 @@ a run of significantly more than $\log n$ one bits.  (See
   $x_1, x_2, \dots, x_{i - 1}, x_{i + t}, x_{i + t + 1}, \dots,
   x_n$. Thus, $C$ is a partial code whose domain is the set of binary
   strings of length $n$ having a run of $t$ or more ones.  It is also
-  easy to see that $C$ is prefix free, in particular since all
+  easy to see that $C$ is prefix-free, in particular since all
   codewords are unique and have the same length.
 
   Now, $x$ was chosen uniformly at random from a set of size $2^{n}$.
@@ -569,22 +569,33 @@ for $p$ could serve. However, it seems easier to simply design our
 codes by hand, rather than find appropriate distributions.
 
 A code is prefix-free if and only if any message consisting of a
-sequence of its codewords can be decoded unambiguously as it is read
-from left to right \wolfgang{This is quite vague}. 
-This idea allows us to more easily design the
-codes in this section, which were originally given by
+sequence of its codewords can be decoded unambiguously and
+instantaneously as it is read from left to right: Consider some
+sequence of codewords $M = y_1 y_2 \cdots y_k$ from a prefix-free code
+$C$. Since $C$ is prefix-free, then $C$ has no codeword $z$ which is a
+prefix of $y_1$, so reading $M$ from left to right, the first codeword
+of $C$ which we recognize is precisely $y_1$. Continuing in this
+manner, we can decode the whole message $M$. Conversely, if for each
+codeword $y$ of $C$, a message consisting of this single codeword can
+be decoded unambiguously and instantaneously from left to right, we
+know that $y$ has no prefix among the codewords of $C$, \emph{i.e.}
+$C$ is prefix-free. \wolfgang{This is quite vague} \tommy{Alright,
+  attempted clarification} This idea allows us to more easily design
+the codes in this section, which were originally given by
 Elias~\cite{elias:coding}.
 
 The \emph{unary encoding} of an integer $i \in \N$ begins with $i$ 1
 bits which are punctuated with a 0 bit. This code is not particularly
-useful in itself \wolfgang{but can be improved as follows}. 
-The \emph{Elias $\gamma$-code} for $i$ begins with
-the unary encoding of the number of bits in $i$, and then the binary
-encoding of $i$ itself (minus its leading bit). The \emph{Elias
-  $\delta$-code} for $i$ begins with an Elias $\gamma$-code for the
-number of bits in $i$, and then the binary encoding of $i$ itself
-(minus its leading bit). This process can be continued recursively to
-obtain the \emph{Elias $\omega$-code}.
+useful in itself \wolfgang{but can be improved as
+  follows}\tommy{Okay}, but can be improved as follows: The
+\emph{Elias $\gamma$-code} for $i$ begins with the unary encoding of
+the number of bits in $i$, and then the binary encoding of $i$ itself
+(minus its leading bit). The \emph{Elias $\delta$-code} for $i$ begins
+with an Elias $\gamma$-code for the number of bits in $i$, and then
+the binary encoding of $i$ itself (minus its leading bit). This
+process can be continued recursively to obtain the \emph{Elias
+  $\omega$-code}. Each of these codes has a decoding procedure as in
+the preceding paragraph, which establishes their prefix-freeness.
 
 The most important properties of these codes are their codeword
 lengths:
@@ -594,9 +605,23 @@ lengths:
   |E_\delta(i)| &= \log i + 2 \log \log i + O(1) \enspace , \tag{Elias $\delta$-code} \\
   |E_\omega(i)| &= \log i + \log \log i + \dots + \underbrace{\log \cdots \log}_{\text{$\log^* i$ times}}i + O(\log^* i) \enspace . \tag{Elias $\omega$-code}
 \end{align*}
-It may be worth noting that the lengths of Elias $\gamma$-codes
-correspond to the lengths of Shannon-Fano codes for a discrete Cauchy
-distribution. \wolfgang{meaning what? Reference}
+It may be worth noting that the lengths of unary codes correspond to
+the lengths of Shannon-Fano codes for a geometric distribution with
+density $p_i = 1/2^{i + 1}$, so
+\[
+  \log (1/p_i) = \log 2^{i + 1} = |U(i)| \enspace ,
+\]
+and the lengths of Elias $\gamma$-codes correspond to the lengths of
+Shannon-Fano codes for a discrete Cauchy distribution with density
+$p_i = c/i^2$ for a normalizing constant $c$, so
+\[
+  \log (1/p_i) = 2 \log i - \log c = |E_\gamma(i)| + O(1) \enspace .
+\]
+The lengths of Elias $\gamma$-codes and $\omega$-codes do not seem to
+arise as the lengths of Shannon-Fano codes for named distributions.
+
+\wolfgang{meaning what? Reference}\tommy{Clarified a bunch. Reference
+  still needed?}
 
 \section{Applications of the Uniform Encoding Lemma}
 \seclabel{applications-i}
@@ -647,9 +672,9 @@ argument.
   That is, a clique or independent set of size $t$ costs $O(t\log n)$ bits
   to encode, but saves $\Omega(t^2)$ bits in the encoding of $G$'s 
   adjacency matrix.
-  Clearly, for $t>C\log n$ with $C$ sufficiently large, this has the form 
+  Clearly, for $t>c\log n$ with $c$ sufficiently large, this has the form 
   \[ |C(G)|  = \binom{n}{2} - \Omega(t^2) \enspace . \]
-  At this point, it is just a matter of determining the dependence on $C$.
+  At this point, it is just a matter of determining the dependence on $c$.
   Continuing from \eqref{tst-1}, we have
   \begin{align*}
     |C(G)| 
@@ -695,10 +720,10 @@ that, when we do this, no urn contains more than $O(\log n/\log\log
 n)$ balls.
 
 \begin{thm}\thmlabel{urns}
-  Let $t$ be such that $t\log(t/e) \ge s+\log n$ and suppose we throw
-  $n$ balls independently and uniformly at random into $n$ urns. Then,
-  for sufficiently large $n$, the probability that any urn contains
-  more than $t$ balls is at most $2^{-s}$.
+  Let $t$ be such that $t\log(t/e) \ge \log n + s$ and suppose we
+  throw $n$ balls independently and uniformly at random into $n$
+  urns. Then, for sufficiently large $n$, the probability that any urn
+  contains more than $t$ balls is at most $2^{-s}$.
 \end{thm}
 
 Before proving \thmref{urns}, we note that, for any constant $\eps >0$
@@ -706,9 +731,21 @@ and all sufficiently large $n$, taking
 \[
   t = \Ceil{\frac{(1+\eps)\log n}{\log\log n}}
 \] 
-satisfies the requirements of \thmref{urns} \wolfgang{Justify?}.
+satisfies the requirements of \thmref{urns} \wolfgang{Justify?} \tommy{Okay}:
+\begin{align*}
+  t \log t &\ge \frac{(1 + \eps) \log n}{\log \log n} \log \left( \frac{(1 + \eps) \log n}{\log \log n}\right) \\
+  &= (1 + \eps) \log n \frac{\log \log n}{\log \log n} - (1 + \eps) \log n \frac{\log \left(\frac{\log \log n}{1 + \eps}\right)}{\log \log n} \\
+  &= \log n + \eps \log n - \eps' \log n \\
+  &= \log n + \eps'' \log n
+\end{align*}
+for an arbitrarily small choice of $\eps' > 0$ which is made to be
+less than $\eps$ by a sufficiently large choice for $n$. Then,
+\[
+  t \log (t/e) = t \log t - t \log e \ge \log n + \eps'' \log n + o(\log n) \ge \log n + s \enspace ,
+\]
+as claimed.
 
-\begin{proof}
+\begin{proof}[Proof of \thmref{urns}]
   For each $i\in\{1,\ldots,n\}$, let $b_i$ denote the index of the urn
   chosen for the $i$\textsuperscript{th} ball. The
   sequence $b = (b_1,\ldots,b_n)$ is sampled uniformly at random from a
@@ -766,8 +803,7 @@ consecutive.)
     (h(x_1),h(x_2),\ldots,h(x_n)) \enspace ,
   \]
   which is drawn uniformly at random from a set of size
-  \wolfgang{$m^n = (cn)^n$}.
-  $n^{m}=n^{cn}$.
+  $m^n = (cn)^n$.
   
   We encode $h$ by the first index $b$ of the block containing $x$;
   followed by the $t-1$ elements $y_1,\ldots,y_{t-1}$ of this block
@@ -800,7 +836,7 @@ consecutive.)
   The proof of \thmref{linear-probing} requires that the linear
   probing hash table has size $cn$ for some $c>e$.  We know from
   previous analysis that this is not necessary, and any $c>1$ is
-  sufficient \wolfgang{Reference}. 
+  sufficient \wolfgang{Reference}\tommy{Okay}\cite[Theorem~9.8]{flajolet.sedgewick:aofa}. 
   We leave it as an open problem to find an encoding proof
   of \thmref{linear-probing} that works for any $c>1$.
 \end{rem}
@@ -830,7 +866,7 @@ alternative to classic perfect hashing \cite{pagh.rodler:cuckoo}.
 We present a clever proof, due to Mihai Pătraşcu, that cuckoo hashing
 succeeds with probability $1-O(1/n)$ \cite{patrascu:cuckoo}.
 \wolfgang{Reference to Therese's Bachelor thesis? But it is in
-German.}
+German.} \tommy{I don't know anything about this...?}
 
 %The main object of study in cuckoo hashing is the \emph{cuckoo graph},
 %a random bipartite multigraph $G=(A,B,E)$ where $|A|=|B|=m$ for $m =
@@ -842,24 +878,48 @@ German.}
 %path is a path that uses each edge of the multiset $E$ at most once.)
 
 We again hash the elements $x_1, \ldots, x_n$. The hash table consists
-of two arrays $A$ and $B$ of size $m = 2n$, and two hash functions $h,
-g : \{x_1, \ldots, x_n\} \to \{1, \ldots, m\}$ which are uniform
+of two arrays $A$ and $B$ of size $m = 2n$, and two hash functions
+$h, g : \{x_1, \ldots, x_n\} \to \{1, \ldots, m\}$ which are uniform
 random variables. To insert an element $x$ into the hash table, we
 insert it into $A[h(x)]$; if $A[h(x)]$ already contains an element
 $y$, we insert $y$ into $B[g(y)]$; if $B[g(y)]$ already contains some
 element $z$, we insert $z$ into $A[h(z)]$, etc. If an empty location
-is eventually found, the algorithm terminates successfully. If a cycle
-is detected, then the hash table is rebuilt using different,
-newly sampled, hash
-functions. Any element $x$ either is held in $A[h(x)]$ or $B[g(x)]$,
-so we can search for $x$ in constant time.
-\wolfgang{Pseudocode?}
+is eventually found, the algorithm terminates successfully. If the
+algorithm runs for too long without successfully completing the
+insertion, then we say that the insertion failed, and the hash table
+is rebuilt using different newly sampled hash functions. Any element
+$x$ either is held in $A[h(x)]$ or $B[g(x)]$, so we can search for $x$
+in constant time.  \wolfgang{Pseudocode?}\tommy{Okay} The following
+pseudocode describes this procedure more precisely:
 
-To study the performance of insertion in cuckoo hashing, we consider the
-random bipartite \emph{cuckoo graph} $G = (A, B, E)$, where $|A| = |B|
-= m$ and $|E| = n$, with each vertex corresponding either to a
-location in the array $A$ or $B$ above, and with edge multiset $E =
-\{(h(x_i), g(x_i)) : 1 \leq i \leq n\}$.
+\noindent{$\textsc{Insert}(x):$}
+\begin{algorithmic}[1]
+  \IF{$x = A[h(x)]$ \OR $x = B[g(x)]$}
+    \RETURN
+  \ENDIF
+
+  \FOR{MaxLoop iterations}
+    \IF{$A[h(x)]$ is empty}
+      \STATE{$A[h(x)] \gets x$} 
+      \RETURN
+    \ENDIF
+    \STATE{$x \gets A[h(x)]$}
+    \IF{$B[g(x)]$ is empty}
+      \STATE{$B[g(x)] \gets x$}
+      \RETURN
+    \ENDIF
+    \STATE{$x \gets B[g(x)]$}
+  \ENDFOR
+  \STATE{$\mathrm{Rehash}()$}
+  \STATE{$\mathrm{Insert}(x)$}
+\end{algorithmic}
+
+The threshold `MaxLoop' is to be specified later. To study the
+performance of insertion in cuckoo hashing, we consider the random
+bipartite \emph{cuckoo graph} $G = (A, B, E)$, where $|A| = |B| = m$
+and $|E| = n$, with each vertex corresponding either to a location in
+the array $A$ or $B$ above, and with edge multiset
+$E = \{(h(x_i), g(x_i)) : 1 \leq i \leq n\}$.
 
 An \emph{edge-simple} path is a path that uses each edge at most once. Such
 a path in $G$ describes the possible motion of elements during a
@@ -873,8 +933,8 @@ paths in the cuckoo graph, we bound the worst case insertion time.
 \begin{proof}
   We encode $G$ by presenting its set of edges. Since each endpoint of
   an edge is chosen independently and uniformly at random from a set
-  of size \wolfgang{m} $n$, the set of all edges is chosen uniformly at random
-  from a set of size $m^{2n}$.
+  of size $m$, the set of all edges is chosen uniformly at random from
+  a set of size $m^{2n}$.
 
   Suppose some vertex $v$ is the endpoint of an edge-simple path
   of length $t$; such a path has $t + 1$ vertices and $t$ edges. In
@@ -892,7 +952,9 @@ paths in the cuckoo graph, we bound the worst case insertion time.
   Encoding Lemma.
 \end{proof}
 This immediately implies that a successful insertion takes time at
-most $2 \log n + O(1)$ with probability $1 - O(1/n)$.
+most $2 \log n + O(1)$ with probability $1 - O(1/n)$. Moreover,
+selecting `MaxLoop' to be $2\log n + O(1)$, we see that a rehash
+happens only with probability $O(1/n)$.
 
 The cuckoo hashing insertion algorithm can fail if some subgraph of
 the cuckoo graph contains more edges than vertices, since edges
@@ -933,11 +995,12 @@ correspond to keys, and vertices correspond to array locations.
   and the edges $e_1$ and $e_2$; and finally the remaining $2n - 2(t +
   1)$ endpoints of edges in the graph. Such a code has length
   \wolfgang{Should the first term be $\log m$, since $v$ is a vertex?
-    I am a bit confused about the calculation...}
+    I am a bit confused about the calculation...} \tommy{Okay, clarified}
   \begin{align*}
-    |C(G)| &= \log n + (t - 1)(\log n + \log m) + 2\log n + (2n - 2(t + 1))\log m + O(\log t) \\
-           &= 2n \log m + \log n - 2\log m - t + O(\log t) \\
-           &\leq \log m^{2n} - \log n + O(1) \enspace .
+    |C(G)| &= \log m + O(\log t) + (t - 1)(\log n + \log m) + 2\log n + (2n - 2(t + 1))\log m \\
+           &= 2n \log m + (t + 2) \log n - (t + 3) \log m + O(\log t) \\
+           &= 2n \log m + (t + 2) \log n - (t + 3) \log n - t + O(\log t) \tag{since $m = 2n$} \\
+           &\le \log m^{2n} - \log n + O(1) \enspace .
   \end{align*}
   We finish by applying the Uniform Encoding Lemma.
 \end{proof}
@@ -1020,8 +1083,7 @@ $E = \{(h(x), g(x)) : x \in X\}$.
   $(2/\log (c/4))\log n + O(1)$ with probability $O(1/n)$.
 \end{proof}
 
-Suppose that when $x$ is inserted, it is placed in \wolfgang{an?} 
-urn with $t$
+Suppose that when $x$ is inserted, it is placed in an urn with $t$
 other elements. Then, we say that the \emph{age} of $x$ is $a(x) = t$.
 \begin{thm}
   The cost of searching in 2-choice hashing in a table of size $cn$
@@ -1047,15 +1109,15 @@ other elements. Then, we say that the \emph{age} of $x$ is $a(x) = t$.
   \]
   is connected.
 
-  Suppose that some node appears more than once on a level of
-  $T$. By the discussion above \wolfgang{Which discussion? Figure?}, 
-  this means that some component of $G$ has a
-  cycle. If this happens twice, then $G$ has a subgraph with more
-  edges than vertices. By \lemref{two-choice-two-cycles}, this happens
-  with probability $O(1/n)$. If instead this happens at most once,
-  then $T$ has at most one subtree removed \wolfgang{This is a bit
-  vague, maybe: "is a complete binary tree with at most one
-  subtree removed"?}, so $T$ has at least $2^t$
+  Suppose that some node appears more than once on a level of $T$. By
+  the discussion above \wolfgang{Which discussion? Figure?}, this
+  means that some component of $G$ has a cycle. If this happens twice,
+  then $G$ has a subgraph with more edges than vertices. By
+  \lemref{two-choice-two-cycles}, this happens with probability
+  $O(1/n)$. If instead this happens at most once, then $T$ is a
+  complete binary tree with at most one subtree removed \wolfgang{This
+    is a bit vague, maybe: "is a complete binary tree with at most one
+    subtree removed"?} \tommy{Okay}, so $T$ has at least $2^t$
   nodes. If we choose $t = \ceil{\log \log n + d}$, then $T$ has at
   least $2^d \log n$ nodes, which we know from
   \lemref{two-choice-component-size} happens with probability $O(1/n)$
@@ -1064,16 +1126,18 @@ other elements. Then, we say that the \emph{age} of $x$ is $a(x) = t$.
 
 \begin{rem}
   The arguments in this section can be refined by more carefully
-  encoding the shape of trees using Cayley's formula \wolfgang{reference}.
-  In particular, a
-  rooted tree with $t$ nodes and $m$ choices for distinct node labels
-  can be encoded using $\log \binom{m}{t} + (t - 2) \log t$ bits
-  instead of $t \log m + 2(t - 1)$ bits. We would then recover the
-  same results for hash tables of size $m = cn$ for $c > e$ instead of
-  $c > 4$. In fact, it \wolfgang{is known that it.. reference?} 
-  suffices that $c > 0$ for searching to take
-  time $O(\log \log n)$ in 2-choice hashing. We leave it as an open
-  problem to find an encoding argument for this result when $c > 0$.
+  encoding the shape of trees using Cayley's formula, which says that
+  there are $t^{t - 2}$ rooted labelled trees on $t$
+  nodes~\cite{cayley:theorem}. In particular, a rooted tree with $t$
+  nodes and $m$ choices for distinct node labels can be encoded using
+  $\log \binom{m}{t} + (t - 2) \log t$ bits instead of
+  $t \log m + 2(t - 1)$ bits. We would then recover the same results
+  for hash tables of size $m = cn$ for $c > e$ instead of $c > 4$. In
+  fact, it \wolfgang{reference?}\tommy{Okay} is known that it suffices
+  that $c > 0$ for searching to take time $1/c + O(\log \log n)$ in
+  2-choice hashing~\cite{berenbrink:densehashing}. We leave it as an
+  open problem to find an encoding argument for this result when
+  $c > 0$.
 \end{rem}
 
 \begin{rem}
@@ -1091,39 +1155,38 @@ other elements. Then, we say that the \emph{age} of $x$ is $a(x) = t$.
 
 \subsection{Bipartite Expanders}
 
-Expanders are families of graphs which share some isoperimetric
-quality, \emph{i.e.}~where subgraphs ``expand'' in their
-neighbourhoods. \wolfgang{This description seems to
-undersell expanders. Maybe: "...of sparse graphs with
-share many connectivity properties with complete graphs"} 
-These graphs have received much research attention,
-and have led to many applications in computer
-science. See, for instance, the survey by Hoory, Linial, and
-Wigderson~\cite{hoory.linial.ea:expander}.
+Expanders are families of sparse graphs which share many connectivity
+properties with complete graphs.  \wolfgang{This description seems to
+  undersell expanders. Maybe: "...of sparse graphs with share many
+  connectivity properties with complete graphs"}\tommy{Got it.}  These
+graphs have received much research attention, and have led to many
+applications in computer science. See, for instance, the survey by
+Hoory, Linial, and Wigderson~\cite{hoory.linial.ea:expander}.
 
-\wolfgang{maybe a sentence like: "the existence of expanders
-was originally established through probabilistic arguments."}
+\wolfgang{maybe a sentence like: "the existence of expanders was
+  originally established through probabilistic
+  arguments."}\tommy{Okay} The existence of expanders was originally
+established through probabilistic arguments~\cite{pinsker:expanders}.
 We offer an encoding argument to prove that a certain random bipartite
 graph is an expander with high probability. There are many different
 notions of expansion. We will consider what is commonly known as
-\emph{vertex expansion} in bipartite graphs: 
-For some fixed $0 < \alpha \leq
-1$, a bipartite graph $G = (A, B, E)$ is called a \emph{$(c,
-  \alpha)$-expander} if
+\emph{vertex expansion} in bipartite graphs: For some fixed
+$0 < \alpha \leq 1$, a bipartite graph $G = (A, B, E)$ is called a
+\emph{$(c, \alpha)$-expander} if
 \begin{align*}
   \min_{\substack{{A' \subseteq A}\\{|A'| \leq \alpha |A|}}} \frac{|N(A')|}{|A'|} \geq c \enspace ,
 \end{align*}
 where $N(A') \subseteq B$ is the set of neighbours of $A'$ in $G$.
 \wolfgang{say it in words, figure?}
 
-Let $G = (A, B, E)$ be a random bipartite multigraph where $|A| = |B|
-= n$ and where each vertex of $A$ is connected to three vertices of
-$B$ chosen independently and uniformly at random (with
+Let $G = (A, B, E)$ be a random bipartite multigraph where
+$|A| = |B| = n$ and where each vertex of $A$ is connected to three
+vertices of $B$ chosen independently and uniformly at random (with
 replacement). The following theorem shows that $G$ is an expander.
 The proof of this theorem usually involves a messy sum that contains
 binomial coefficients and probabilities: see, for example, Motwani and
 Raghavan~\cite[Theorem~5.3]{motwani.raghavan:randomized},
-Pinsker~\cite[Lemma~1]{pinsker:on}, or Hoory, Linial, and
+Pinsker~\cite[Lemma~1]{pinsker:expanders}, or Hoory, Linial, and
 Wigderson~\cite[Lemma~1.9]{hoory.linial.ea:expander}.
 
 \begin{thm}
