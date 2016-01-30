@@ -1403,6 +1403,7 @@ permutation for which $\sigma$ takes on a value strictly smaller than
 $\sigma_1$, including an explicit encoding of the induced permutation
 on the elements at those indices; and a recursive encoding of the
 permutation induced on the elements strictly larger than $\sigma_1$.
+\wolfgang{Omit "note that"?}
 Note that the number of recursive invocations is equal to the
 number of records in $\sigma$.
 
@@ -1435,7 +1436,11 @@ random permutation.
   bit string $x = (x_1, \dots, x_t) \in \{0, 1\}^t$, where $x_i = 0$
   if and only if $r_i$ lies in the first half of the interval
   $[r_{i - 1}, n]$. It follows that $n_1(x) \leq \log n$, so
-  $n_1(x)/t \leq 1/c$.
+  $n_1(x)/t \leq 1/c$ \wolfgang{What is $n_1$ again (maybe good
+  to remind the reader)? And how
+  do you define $r_0$ (i.e., how do you get $x_1$?
+  Finally, maybe it is better to define $x$ in terms of
+  $x_i = 1$, since afterwards you talk about $n_1$?}.
 
   To begin our encoding of $\sigma$, we encode the bit string $x$ by
   giving the set of $n_1(x)$ ones in $x$; followed by the incremental
@@ -1446,7 +1451,9 @@ random permutation.
   record. More precisely, if the number of choices for each record
   $r_i$ in the original encoding is $m_i$, such that $m_1 > \dots >
   m_t$, then the number of bits spent encoding records in the new code
-  is at most
+  is at most \wolfgang{Mention again that you used $\ln (1+x) = 1 + O(x)$
+  for small $x$? Also, do you assume that $c$ is constant? The
+  bound $H_t = O(\log\log n)$ is a bit fishy otherwise.}
   \begin{align*}
     \sum_{i = 1}^t \log \ceil{m_i/2} &\leq \sum_{i = 1}^t \log (m_i/2
     + 1)
@@ -1488,14 +1495,17 @@ Lucier \emph{et al.}~\cite{lucier.jiang.li:quicksort} use an encoding
 argument via Kolmogorov complexity to study the height of
 $\text{BST}(\sigma)$. They show that for a uniformly chosen
 permutation $\sigma$, the tree $\text{BST}(\sigma)$ has height at most
-$c \log n$ with probability $1 - O(1/n)$ for $c = 15.498...$; we can
-extend our result on records to obtain a tighter result.
+$c \log n$ with probability $1 - O(1/n)$ for $c = 15.498\dots$; we can
+extend our result on records to obtain a tighter result
+\wolfgang{This is a bit strange. Why this specific constant $c$? Why
+is there no tradeoff between the probability and $c$?}.
 
 For a node $u$, let $s(u)$ denote the number of nodes in the tree
 rooted at $u$. Then, $u$ is called \emph{balanced} if $s(u^L), s(u^R)
 > s(u)/4$, where $u^L$ and $u^R$ are the left and right subtrees of
 $u$ respectively. In other words, a node is said to be balanced if it
-occurs in the middle half of its subrange.
+occurs in the middle half of its subrange \wolfgang{"middle half" sounds
+a bit strange to me. Maybe "middle interval of size $s/2$?}.
 
 \begin{thm}\thmlabel{bst-height}
   Let $\sigma$ be a uniformly random permutation of size $n$. Then,
@@ -1522,13 +1532,13 @@ occurs in the middle half of its subrange.
   right subtree of $r$, including an explicit encoding of the
   permutation induced by these values; and recursively encode the
   permutation of values in the left subtree of $r$. If, instead, $Y$
-  goes to the right of $r$, we proceed symmetrically.
+  goes to the right of $r$, proceed symmetrically.
  
   The first part of our encoding uses at most
   \[
     \log n + t H(n_1(x)/t)
   \]
-  bits. The same analysis as performed in \thmref{records} shows that
+  bits. The same analysis as in the proof of \thmref{records} shows that
   the second part of our encoding has length at most
   \[
     \log n! - t + O(\log \log n) \enspace .
@@ -1539,7 +1549,7 @@ occurs in the middle half of its subrange.
   \[
     c \left(1 - H\left(\frac{1}{c \log (4/3)}\right)\right) > 1 \enspace ,
   \]
-  and a computer-aided calculation shows that $c = 8.12669...$ is the
+  and a computer-aided calculation shows that $c = 8.12669\dots$ is the
   minimal solution so this inequality.
 \end{proof}
 
@@ -1579,7 +1589,8 @@ partitions it into the arrays $\sigma^L$ and $\sigma^R$ which contain
 the values strictly smaller and strictly larger than $\sigma_1$,
 respectively. The element $\sigma_1$ is called a \emph{pivot}. It is
 easy to see how $\textsc{Partition}$ can be implemented so as to
-perform only $n - 1$ comparisons. The algorithm $\textsc{Find}$ is
+perform only $n - 1$ comparisons \wolfgang{Reference?}. 
+The algorithm $\textsc{Find}$ is
 then implemented as follows:
 
 \noindent{$\textsc{Find}(k, \sigma)$}:
@@ -1593,11 +1604,11 @@ then implemented as follows:
   \RETURN{$\sigma_k$}
 \end{algorithmic}
 
-As the algorithm executes, it sequentially identifies $t$ pivots
+Suppose the algorithm sequentially identifies $t$ pivots
 $x_1, \dots, x_t$ before finding the solution. Let $\sigma^{(i)}$
 denote the value of $\sigma$ in the $i{\text{th}}$ recursive call and let $n_i=|\sigma^{(i)}|$,
 so that $\sigma^{(0)}=(\sigma_1,\ldots,\sigma_n)$ and $n_0=n$.  We will say that
-the $i{\text{th}}$ pivot is \emph{good} if its rank, in $\sigma^{(i)}$
+the $i{\text{th}}$ pivot is \emph{good} if its rank, in $\sigma^{(i)}$,
 is in the interval $[n_i/4, 3n_i/4]$. Note that
 a good pivot causes the algorithm to recurse in a problem of size at
 most $3n_i/4$.
@@ -1615,7 +1626,10 @@ most $3n_i/4$.
   n_i \leq (3/4)^{\alpha i} n
   \]
   for each $t_0 \leq i \leq t$, and the total number of comparisons
-  made by $\textsc{Find}$ is at most
+  made by $\textsc{Find}$ is at most \wolfgang{Why $+1$? Above, you
+  said that Partition makes $n-1$ comparisons? Or do you count the
+  two comparisons that evaluate the size of $\sigma^L$? Should they
+  count? They are not comparisons among elements of the permutation?}
   \[
   \sum_{i=0}^t (n_i + 1) \le t_0(n + 1) + t + \sum_{i=t_0}^t n_i \le
   O(n) + n \sum_{i = t_0}^t (3/4)^{\alpha i} = O(n) \enspace . \qedhere
@@ -1655,6 +1669,10 @@ most $3n_i/4$.
 
 \subsection{$k$-SAT and the Lov\'{a}sz Local Lemma}
 
+\wolfgang{Here, I think we are missing an introductory sentence.
+"We now consider the question of satisfiability of propositional
+formulas. Let us start with some definitions.". Or something
+like this.}
 A \emph{variable} $x$ is either $\textsf{true}$ or
 $\textsf{false}$. The negation of $x$ is denoted by $\neg x$. A
 \emph{literal} is either a variable or its negation. A
@@ -1672,39 +1690,54 @@ Two clauses will be said to intersect if their supports intersect. The
 truth value which a formula $\varphi$ evaluates to under the
 assignment of values $\alpha$ to its support will be denoted
 $\varphi(\alpha)$, and such a formula is said to be \emph{satisfiable}
-if $\varphi(\alpha) = \textsf{true}$ for some $\alpha$. For example,
+if there exists an $\alpha$ with $\varphi(\alpha) = \textsf{true}$. 
+For example,
 the clause in \eqref{clause-example} is satisfied for all truth
 assignments except
 \[
 (x_1, x_2, x_3) = (\textsf{false}, \textsf{true}, \textsf{false}) \enspace ,
 \]
-and indeed any clause is satisfied by any but one truth assignment for
+and indeed any clause is satisfied by all but one truth assignments for
 its support. The formulas we are concerned with are conjunctions of
 clauses, which are said to be in \emph{conjunctive normal form}
-(CNF). More specifically, when each clause has $k$ literals, we call
+(CNF). More specifically, when each clause has 
+\wolfgang{exactly or at most} $k$ literals, we call
 it a $k$-CNF formula.
 
 The $k$-SAT decision problem asks to determine whether or not a given
 $k$-CNF formula is satisfiable. In general, this problem is hard. Of
-course, any satisfiable truth assignment to the variables in a CNF
-formula induces a truth assignment for each of its clauses; the
-converse is true if each clause is pairwise disjoint, and as we will
+course, any \wolfgang{satidfying} satisfiable truth assignment to 
+the variables in a CNF
+formula induces a \emph{satisfying} truth assignment for each of its 
+clauses; the
+converse is true if each clause is pairwise disjoint
+\wolfgang{I do not understand this. What is "the converse"?
+It the clauses are pairwise disjoint, then the union of their
+satisfying assignments gives a satisfying assignment for $\varphi$?
+Also, I am not sure it makes sense to say "each clause is 
+pairwise disjoint".}, 
+and as we will
 see, even if each clause is only nearly pairwise disjoint, \emph{i.e.}
 their intersection has size less than $2^k/e$.
 
 This result has been well known as a consequence of the Lov\'{a}sz
 Local Lemma~\cite{lovasz:locallemma}, whose original proof is
-non-constructive, and so would not produce a satisfying truth
-assignment as applied to an instance of $k$-SAT. Some constructive
+non-constructive, and so does not produce a satisfying truth
+assignment when applied to an instance of $k$-SAT \wolfgang{in
+polynomial time}. Some constructive
 solutions to $k$-SAT have been known, but only for suboptimal clause
-intersection sizes. Moser and Tardos~\cite{moser:locallemma} famously
+intersection sizes. 
+\wolfgang{Maybe say that Moser first considered the case
+ of $k$-SAT, and that Moser and Tardos then generalized it to
+ the full LLL (if I remember the history correctly)?}
+Moser and Tardos~\cite{moser:locallemma} famously
 presented the first constructive proof of the full Lov\'{a}sz Local
 Lemma, which also gives a construction for $k$-SAT. The analysis which
 we reproduce in this section comes from Fortnow's rephrasing of
 Moser's proof for $k$-SAT using the incompressibility
 method~\cite{fortnow:ksat}.
 
-Moser's algorithm is remarkably naive, and can be described in only a
+Moser's algorithm is remarkably naive, and it can be described in only a
 few sentences: Pick a uniformly random truth assignment for the
 variables of $\varphi$. For each unsatisfied clause, attempt to fix it
 by producing a new uniformly random truth assignment for its support,
@@ -1742,6 +1775,8 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
   such that each clause intersects at most $r \le 2^{k - 3}$ other
   clauses, the probability that $\textsc{Solve}(\varphi)$ calls
   $\textsc{Fix}$ at least $s + m \log m$ times is at most $2^{-s}$.
+  \wolfgang{That is a bit unclear. You mean the \emph{total number}
+    of invocations of FIX, right? Not just from Solve?}
 \end{thm}
 \begin{proof}
   Suppose that $\textsc{Solve}(\varphi)$ calls $\textsc{Fix}$
@@ -1759,7 +1794,9 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
   ordered) \emph{recursion tree} $T$ on $t + 1$ nodes as follows: The
   root of $T$ corresponds to the initial call to
   $\textsc{Solve}(\varphi)$, and its children $D_1, \ldots, D_d$
-  recursively correspond to the sequence of calls to
+  recursively correspond 
+  \wolfgang{Explain a bit more what "recursively correspond" means?}
+  to the sequence of calls to
   $\textsc{Fix}(\varphi, \alpha, D_1), \ldots, \textsc{Fix}(\varphi,
   \alpha, D_d)$. In particular, each (non-root) node in the tree is
   assigned a clause and its uniformly random truth assignment produced
@@ -1767,13 +1804,16 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
   of this tree describes the order of function calls in the
   algorithm's execution.
 
-  The string $\gamma$ can be recovered from the bottom-up from our
+  The string $\gamma$ can be recovered in a bottom-up manner from our
   knowledge of the tree $T$ and the final assignment
   $\alpha$. Specifically, let $D_1, \dots, D_t$ be the clauses
-  encountered in a pre-order traversal of $T$, so that in particular
+  encountered in a pre-order traversal of $T$. In particular,
   $D_t$ is the last fixed clause in the execution. Since $D_t$ was not
   satisfied before its reassignment, this allows us to deduce $k$
-  values of $\alpha$ before $D_t$ was fixed. Pruning $D_t$ from the
+  values \wolfgang{It is not really $\alpha$, right? The assignment
+  can oscillate quite a bit during execution, no? Maybe say,
+  "the previous assignment"?}
+  of $\alpha$ before $D_t$ was fixed. Pruning $D_t$ from the
   tree and continuing in this manner at $D_{t - 1}$, we eventually
   recover the original truth assignment produced in
   $\textsc{Solve}(\varphi)$.
@@ -1783,6 +1823,8 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
   and the sequence of at most $m$ clauses which are children of the
   root of $T$; and the at most $t$ clauses involved in the calls to
   $\textsc{Fix}$ in a pre-order traversal of $T$.
+  \wolfgang{Oh, I see. There is some notation clash, because above
+  you defined $\alpha$ to be the \emph{initial} assignment...}
 
   The key savings come from the fact that each clause intersects at
   most $r$ other clauses, so each clause (which is not a child of the
@@ -1804,7 +1846,8 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
 \begin{rem}
   By more carefully encoding of the shape of the recursion tree above,
   Messner and Thierauf~\cite{messner:ksat} gave an encoding argument
-  for the above result in which $r < 2^k/e$. Their refinement follows
+  for the above result in which $r < 2^k/e$. Specifically, their 
+  refinement follows
   from a more careful counting of the number of trees with nodes of
   bounded degree.
 \end{rem}
@@ -1812,11 +1855,14 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
 \section{The Non-Uniform Encoding Lemma and Shannon-Fano Codes}
 \seclabel{nuel}
 
-Thus far, we have been lucky to study applications that could always
+Thus far, we have focused on applications that could always
 be modelled as choosing some element $x$ uniformly at random from a
-set $X$. To encompass even more applications, it is helpful to have an
-Encoding Lemma that deals with non-uniform distributions over
-$X$. First, recall the following useful classic results:
+finite set $X$. To encompass even more applications, it is helpful 
+to have an
+Encoding Lemma that deals with \emph{non-uniform} distributions over
+$X$. First, we recall the following useful classic results:
+\wolfgang{Notation clash: $X$ used to be a set, now it is a random
+variable.}
 \begin{thm}[Markov's Inequality]
   For any non-negative random variable $X$ with finite expectation,
   and any $a > 0$,
@@ -1867,7 +1913,7 @@ serves for non-uniform input distributions:
   is obtained.
 \end{proof}
 
-Notice that the Non-Uniform Encoding Lemma is a strict generalization
+The Non-Uniform Encoding Lemma is a strict generalization
 of the Uniform Encoding Lemma: Take $p_x=1/|X|$ for all $x\in X$ and
 we obtain the Uniform Encoding Lemma.
 
@@ -1937,13 +1983,18 @@ strings.
 \subsection{Percolation on the Torus}
 
 Percolation theory studies the emergence of large components in random
-graphs. We give an encoding argument proving that percolation occurs
-on the torus when edge survival rate is greater than $2/3$. Our line
+graphs.\wolfgang{Reference}
+We give an encoding argument proving that percolation occurs
+on the torus when edge survival rate is greater than $2/3$. 
+\wolfgang{What does it mean that "percolation occurs", and 
+what is an "edge survival rate"?}
+Our line
 of reasoning follows what is known as a \emph{Peierls argument}. For
 more precise results, including a general study of percolation theory,
 see the book by Grimmett~\cite{grimmett:percolation}.
+\wolfgang{Maybe put the reference a bit further up?}
 
-When $\sqrt{n}$ is an integer, the \emph{$\sqrt{n} \times \sqrt{n}$
+Suppose that $\sqrt{n}$ is an integer. The \emph{$\sqrt{n} \times \sqrt{n}$
   torus grid graph} is defined to be the graph with vertex set
 $\{1, \ldots, \sqrt{n}\}^2$, where $(i, j)$ is adjacent to $(k, l)$
 if
@@ -1953,6 +2004,7 @@ if
 \end{itemize}
 
 \begin{thm}
+\wolfgang{Suppose that $\sqrt{n}$ is an integer.}
   Let $G$ be a subgraph of the $\sqrt{n} \times \sqrt{n}$ torus grid
   graph in which each edge is chosen with probability $p < 1/3$. Then,
   the probability that $G$ contains a cycle of length at least
@@ -1969,7 +2021,7 @@ if
   moves along from $u$; and a Shannon-Fano code with parameter $p$ for
   the remaining edges of $G$.
 
-  Note that there are four possibilities for the direction of the
+  There are four possibilities for the direction of the
   first step taken by $C'$ from $u$, but only three for each
   subsequent choice. Thus, this sequence can be specified by
   $2 + (t - 1) \log 3$ bits. The total length of our code is then
@@ -1987,7 +2039,9 @@ The torus grid graph can be drawn in the obvious way without crossings
 on the surface of a torus. This graph drawing gives rise to a dual
 graph, in which each vertex corresponds to a face in the primal
 drawing, and two vertices are adjacent if and only their primal faces
-are incident to the same edge. In this sense, the torus grid graph is
+are incident to the same edge. \wolfgang{This dual graph
+is isomporphic to the original torus grid graph.} 
+In this sense, the torus grid graph is
 self-dual.
 
 The obvious drawing of the torus grid graph also induces drawings for
@@ -1997,6 +2051,7 @@ vertices are adjacent if and only if their corresponding faces are
 incident to the same edge of the original subgraph.
 
 \begin{thm}
+  \wolfgang{Suppose that $\sqrt{n}$ is an integer.}
   Let $G$ be a subgraph of the $\sqrt{n} \times \sqrt{n}$ torus grid
   graph in which each edge is chosen with probability greater than
   $2/3$. Then, $G$ has at most one component of size
@@ -2009,7 +2064,8 @@ incident to the same edge of the original subgraph.
   whose length is $\omega(\log n)$. From the discussion above, such a
   cycle corresponds to a cycle of $\omega(\log n)$ missing edges in
   the dual graph, as in \figref{peierlsrare}. From the preceding
-  result, we know that this does not happen with high probability.
+  result \wolfgang{specific reference?}, we know that this does not 
+  happen with high probability.
 \end{proof}
 
 \begin{figure}
@@ -2036,7 +2092,7 @@ Recall that the Erd\H{o}s-R\'{e}nyi random graph $G_{n,p}$ is the
 space of undirected graphs with vertex set $V=\{1,\ldots,n\}$ and in
 which each edge $\{u, w\} \in \binom{V}{2}$ is present with
 probability $p$ and absent with probability $1-p$, independently of
-the other edges.
+the other edges.\wolfgang{reference}
 
 The expected number of triangles (cycles of length 3) in $G_{n,p}$ is
 easily seen to be $p^3\binom{n}{3}$.  For $p=(6c)^{1/3}/n$, this
@@ -2046,7 +2102,8 @@ probability that $G_{n,p}$ contains at least one triangle. Indeed,
 this typically requires the use of the second moment method, which
 involves computing the variance of the number of triangles in
 $G_{n,p}$. To show that $G_{n, p}$ has a triangle with exponential
-probability is even more complicated, and a proof of this result would
+probability is even more complicated 
+\wolfgang{What is "exponential probability"?}, and a proof of this result would
 still typically rely on an advanced probabilistic
 inequality~\cite{alon:probabilistic}. Here we show how this can be
 accomplished with an encoding argument.
@@ -2128,22 +2185,27 @@ accomplished with an encoding argument.
 
 Together, \thmref{triangles-up} and \thmref{triangles-down} establish
 that $1/n$ is a threshold function for triangle-freeness.
+\wolfgang{What is a \emph{threshold function}?}
 
 \section{Encoding with Kraft's Condition}
 \seclabel{el}
 
+\wolfgang{As promised in Section X,}
 We finally discuss why it has made sense to omit ceilings in all of
 our encoding arguments.
 
 Let $[0, \infty]$ denote the set of extended non-negative real
 numbers, supporting all the usual extended arithmetic operations and
-identities, including $1/0 = \infty$. Recall that a function
+identities, including $1/0 = \infty$
+\wolfgang{I am not sure I know what is "usual" here. For example,
+what is $0 \cdot \infty$ or $\infty/\infty$? Is there
+a reference?}. Recall \wolfgang{from Section X} that a function
 $\ell : X \to [0, \infty]$ \emph{satisfies Kraft's condition} if
 \[
   \sum_{x \in X} 2^{-\ell(x)} \leq 1 \enspace .
 \]
 
-Observe that neither the (Non-)Uniform Encoding Lemma nor any of its
+The main observation is that neither the (Non-)Uniform Encoding Lemma nor any of its
 applications has required the specification of any prefix-free code:
 We know, by construction, that every such code is prefix-free, but we
 could also deduce from Kraft's inequality that, since our described
@@ -2164,9 +2226,9 @@ not be integers.
   The proof is identical to that of \lemref{nuel}.
 \end{proof}
 
-The sum of functions $\ell : X \to [0, \infty]$ and
-$\ell' : X' \to [0, \infty]$ is the function
-$\ell + \ell' : X \times X' \to [0, \infty]$, where
+The \emph{sum} of two functions $\ell : X \to [0, \infty]$ and
+$\ell' : X' \to [0, \infty]$ is a function
+$\ell + \ell' : X \times X' \to [0, \infty]$ defined by
 $(\ell + \ell') (x, x') = \ell(x) + \ell'(x')$. Note that for any
 partial codes
 $C : X \nrightarrow \{0, 1\}^*, C' : X' \nrightarrow \{0, 1\}^*$, any
@@ -2174,7 +2236,8 @@ $x \in X$, and any $x' \in X'$,
 \[
 (|C| + |C'|)(x, x') = |C(x)| + |C'(x')| = |(C \cdot C')|(x, x') \enspace .
 \]
-In other words, the sum of these functions describes the length of
+In other words, the sum of these functions 
+\wolfgang{Which functions? $|C|$?}describes the length of
 codewords in composed codes.
 
 \begin{lem}\lemlabel{composition-tight}
@@ -2190,7 +2253,8 @@ codewords in composed codes.
   . \qedhere
   \]
 \end{proof}
-This is analogous to the fact that the composition of prefix-free
+This is analogous to the fact that the composition
+\wolfgang{Concatenation?} of prefix-free
 codes is prefix-free.
 
 \begin{lem}\lemlabel{fixed-length-tight}
@@ -2210,7 +2274,7 @@ encoding.
 
 We now give a tight notion corresponding to Elias codes.
 \begin{thm}[Beigel~\cite{beigel:elias}]\thmlabel{elias-tight}
-  Fix some $0 < \eps < e - 1$. Let $\ell : \N \to \R$ have
+  Fix some $0 < \eps < e - 1$. Let $\ell : \N \to \R$ be defined as
   \[
   \ell(i) = \log i + \log \log i + \cdots + \underbrace{\log \cdots
     \log}_{\text{$\log^* i$ times}} i - (\log \log (e - \eps)) \log^*
@@ -2228,7 +2292,9 @@ We now give a tight notion corresponding to Elias codes.
 
 It is not hard to see how \lemref{el}, \lemref{composition-tight},
 \lemref{fixed-length-tight}, and \thmref{elias-tight} can be used to
-give encoding arguments with real-valued codeword lengths. Indeed,
+give encoding arguments with real-valued codeword lengths. 
+\wolfgang{For example,}
+Indeed,
 recall how the result of \thmref{runs-i} carried an artifact of binary
 encoding. Using our new tools, we can now refine this and recover the
 exact result.
