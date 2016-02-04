@@ -450,7 +450,20 @@ $H(\alpha)$ is also close to zero.
 
 For $\alpha$ close to $1/2$ (in which case $H(\alpha)$ is close to 1),
 we obtain a good approximation from the Taylor series expansion at
-$1/2$.  \wolfgang{Provide more details on the derivation of the Taylor
+$1/2$.  Indeed, a simple calculation shows that
+\[
+  H'(\alpha) = \log (1/\alpha) - \log (1/(1-\alpha))
+\]
+and
+\[
+  H^{(i)}(\alpha) = \frac{(i-2)!}{\ln 2} \left( \frac{(-1)^{i-1}}{\alpha^{i-1}} - \frac{1}{(1-\alpha)^{i-1}}\right) ,
+\]
+for $i \geq 2$. Hence, $H^{(i)}(1/2) = 0$, for $i$ odd, and
+\[
+  H^{(i)}(1/2) = -\frac{(i-2)!\, 2^i}{\ln 2}, 
+\]
+for $i$ even.
+\wolfgang{Provide more details on the derivation of the Taylor
   series?}  In particular, for $\alpha=(1-\eps)/2$,
 \begin{align}
   H(\alpha) & = 1-\frac{1}{2\ln 2}\sum_{i=1}^{\infty}\frac{(1-2\alpha)^{2i}}{i(2i-1)} 
