@@ -173,8 +173,10 @@ A finite length \emph{binary string}, or \emph{bit string}, is a
 finite (possibly empty) sequence of elements from $\{0, 1\}$. For
 $k \in \N$, we denote by $\{0, 1\}^k$ the set of all binary strings of
 length $k$, and by $\{0,1\}^*$ the set of all finite strings.
-For a binary string, $s$, we use $|s|$ to denote the length of $s$.  A
+For a binary string, $x$, we use $|x|$ to denote the length of $x$.  A
 binary string of length $n$ will be called an $n$-bit string. 
+Furthermore, we denote by $n_1(x)$ the number of $1$-bits in
+$x$, and by $n_0(x)$ the number of zero bits.
 Given a (finite or countable) set $X$, a
 \emph{code} $C\from X\to \{0,1\}^*$ is a one-to-one function from 
 $X$ to the set of finite length binary strings.  The elements of
@@ -216,7 +218,7 @@ modified into a code $\widehat C$, in which every codeword of length
 $\ell <k$ is extended---by appending $k-\ell$ zeros---so that it has
 length exactly $k$. The prefix-freeness of $C$ ensures that $\widehat C$
 is also prefix-free. The number of $\widehat C$'s codewords of
-length $k$ is equal to the the number of $C$'s codewords of length at
+length $k$ is equal to the number of $C$'s codewords of length at
 most $k$; since codewords are just binary strings, there are not more
 than $2^k$ of these.
 
@@ -228,6 +230,21 @@ leading zeros), which has length $\lceil\log |X|\rceil$, since
 $i\in\{0,\ldots,|X|-1\}$.  We call this encoding the \emph{fixed-length
 code} for $X$, and we will use it implicitly in many arguments.
 
+Given a (finite or countable) set $X$, a \emph{probability distribution} 
+$p: X \rightarrow [0,1]$ on $X$ is a function with
+$\sum_{x \in X} p(x) = 1$. We sometimes write $p_x$
+instead of $p(x)$. 
+The \emph{uniform distribution} is given by $p_x = 1/|X|$ for
+all $x \in X$.
+Fix a number $n \in \N$ and a
+parameter $\alpha \in [0,1]$.
+A probability distribution on $X = \{0, 1\}^n$
+that is of particular interest to us is the \emph{Bernoulli
+distribution} with parameter $\alpha$, denoted 
+$\mathrm{Bernoulli}(\alpha)$. In this distribution, a
+random bit string $x$ is sampled by setting each bit
+to $1$ with probability $\alpha$ and to $0$ with probability $1-\alpha$,
+independently of the other bits.
 
 The following lemma provides the foundation on which this
 survey is built. The lemma is folklore, but as we will see in
@@ -462,13 +479,18 @@ for $i \geq 2$. Hence, $H^{(i)}(1/2) = 0$, for $i$ odd, and
 \[
   H^{(i)}(1/2) = -\frac{(i-2)!\, 2^i}{\ln 2}, 
 \]
-for $i$ even.
-\wolfgang{Provide more details on the derivation of the Taylor
-  series?}  In particular, for $\alpha=(1-\eps)/2$,
+for $i$ even. The Taylor series expansion at $1/2$ now gives
 \begin{align}
-  H(\alpha) & = 1-\frac{1}{2\ln 2}\sum_{i=1}^{\infty}\frac{(1-2\alpha)^{2i}}{i(2i-1)} 
+  H(\alpha) &= 
+  H(1/2) + \sum_{i = 1}^{\infty} \frac{H^{(i)}(1/2)}{i!}
+     \left(\alpha-(1/2)\right)^i \notag\\
+ &= 
+1 - \frac{1}{\ln 2}\sum_{i = 1}^{\infty} \frac{(2i-2)! 2^{2i}}{(2i)!2^{2i}}
+     \left(2\alpha-1\right)^{2i}\notag\\
+&= 1-\frac{1}{2\ln 2}\sum_{i=1}^{\infty}\frac{(2\alpha-1)^{2i}}{i(2i-1)} .
               \notag \\ 
-            & = 1-\frac{1}{2\ln 2}\sum_{i=1}^{\infty}\frac{\eps^{2i}}{i(2i-1)} 
+\intertext{ In particular, for $\alpha=(1-\eps)/2$,}
+H(\alpha) & = 1-\frac{1}{2\ln 2}\sum_{i=1}^{\infty}\frac{\eps^{2i}}{i(2i-1)} 
               \notag \\ 
             & < 1-\frac{\eps^2}{2\ln 2} \enspace .\eqlabel{entropy-ii}
 \end{align}
