@@ -167,7 +167,7 @@ directions for future research.
 This section presents the necessary background on prefix-free codes
 and binomial coefficients.
 
-\subsection{Prefix-free Codes and the Uniform Encoding Lemma}
+\subsection{Basic Definitions, Prefix-free Codes and the Uniform Encoding Lemma}
 
 A finite length \emph{binary string}, or \emph{bit string}, is a
 finite (possibly empty) sequence of elements from $\{0, 1\}$. For
@@ -242,7 +242,7 @@ A probability distribution on $X = \{0, 1\}^n$
 that is of particular interest to us is the \emph{Bernoulli
 distribution} with parameter $\alpha$, denoted 
 $\mathrm{Bernoulli}(\alpha)$. In this distribution, a
-random bit string $x$ is sampled by setting each bit
+random bit string $x \in \{0, 1\}^n$ is sampled by setting each bit
 to $1$ with probability $\alpha$ and to $0$ with probability $1-\alpha$,
 independently of the other bits.
 
@@ -471,15 +471,15 @@ $1/2$.  Indeed, a simple calculation shows that
 \[
   H'(\alpha) = \log (1/\alpha) - \log (1/(1-\alpha))
 \]
-and
+and that
 \[
   H^{(i)}(\alpha) = \frac{(i-2)!}{\ln 2} \left( \frac{(-1)^{i-1}}{\alpha^{i-1}} - \frac{1}{(1-\alpha)^{i-1}}\right) ,
 \]
-for $i \geq 2$. Hence, $H^{(i)}(1/2) = 0$, for $i$ odd, and
+for $i \geq 2$. Hence, $H^{(i)}(1/2) = 0$, for $i \geq 1$ odd, and
 \[
   H^{(i)}(1/2) = -\frac{(i-2)!\, 2^i}{\ln 2}, 
 \]
-for $i$ even. The Taylor series expansion at $1/2$ now gives
+for $i \geq 2$ even. The Taylor series expansion at $1/2$ now gives
 \begin{align}
   H(\alpha) &= 
   H(1/2) + \sum_{i = 1}^{\infty} \frac{H^{(i)}(1/2)}{i!}
@@ -511,18 +511,15 @@ Chernoff \cite{chernoff:bound}.
 
 \begin{proof}
   Encode the bit string $x$ using a Shannon-Fano code $C_\alpha$ with
-  $\alpha=(1-\eps)/2$ \wolfgang{A bit imprecise, see next comment}.
+  $\alpha=(1-\eps)/2$. 
   Then, the length of the codeword for $x$ is
   \[
     |C_\alpha(x)| = n_1(x)\log(1/\alpha) + n_0(x)\log (1/(1-\alpha))
     \enspace .
   \]
-  Since $\alpha < 1/2$, then $\log(1/\alpha) > \log(1/(1-\alpha))$, so
-  $|C_\alpha(x)|$ is maximal when $n_1(x)$ is maximal. \wolfgang{I
-    find this a bit unclear, you mean that we derive a partial code
-    for bit strings with at most $\alpha n$ one bits} \tommy{I changed
-    some of the wording. As far as I can tell, we don't necessarily
-    need to think about partial codes} Thus, if $n_1(x) \le \alpha n$,
+  Since $\alpha < 1/2$, we have $\log(1/\alpha) > \log(1/(1-\alpha))$, so
+  $|C_\alpha(x)|$ is maximal when $n_1(x)$ is maximal. 
+    Thus, if $n_1(x) \le \alpha n$,
   then
   \begin{align*}
     |C_\alpha(x)| & \le \alpha n\log(1/\alpha) + (1-\alpha)n\log(1/(1-\alpha))\\
@@ -538,16 +535,15 @@ Chernoff \cite{chernoff:bound}.
 \end{proof}
 In \secref{chernoff}, after developing a Non-Uniform Encoding Lemma,
 we will extend this argument to $\mathrm{Bernoulli}(\alpha)$ bit
-strings. \wolfgang{The Binomial distribution was already introduced
-  above, use it here?}\tommy{Okay}
+strings. 
 
 \subsection{Factorials and Binomial Coefficients}
 \seclabel{stirling}
 
 Before moving on to some more advanced encoding arguments, it will be
 helpful to remind the reader of a few inequalities that can be derived
-from Stirling's Approximation of the factorial~\cite{robbins:stirling}
-\wolfgang{reference}\tommy{Okay}.  Recall that Stirling's
+from Stirling's Approximation of the factorial~\cite{robbins:stirling}.  
+Recall that Stirling's
 Approximation states that
 \begin{equation}
   n! = \left(\frac{n}{e}\right)^n\sqrt{2\pi n}\left(1+\Theta\left(\frac{1}{n}\right)\right) \enspace .
@@ -555,7 +551,8 @@ Approximation states that
 \end{equation}
 
 In many cases, we are interested in representing a set of size $n!$
-using a fixed-length code.  The length of the codewords in such a code
+using a fixed-length code.  By \eqref{stirling}, and using once again that
+$1+x \leq e^x$ for all $x \in \R$, the length of the codewords in such a code
 is
 \begin{align}
   \log n!
@@ -602,15 +599,14 @@ manner, we can decode the whole message $M$. Conversely, if for each
 codeword $y$ of $C$, a message consisting of this single codeword can
 be decoded unambiguously and instantaneously from left to right, we
 know that $y$ has no prefix among the codewords of $C$, \emph{i.e.}
-$C$ is prefix-free. \wolfgang{This is quite vague} \tommy{Alright,
-  attempted clarification} This idea allows us to more easily design
+$C$ is prefix-free. 
+This idea allows us to more easily design
 the codes in this section, which were originally given by
 Elias~\cite{elias:coding}.
 
 The \emph{unary encoding} of an integer $i \in \N$ begins with $i$ 1
 bits which are punctuated with a 0 bit. This code is not particularly
-useful in itself \wolfgang{but can be improved as
-  follows}\tommy{Okay}, but can be improved as follows: The
+useful in itself, but it can be improved as follows: The
 \emph{Elias $\gamma$-code} for $i$ begins with the unary encoding of
 the number of bits in $i$, and then the binary encoding of $i$ itself
 (minus its leading bit). The \emph{Elias $\delta$-code} for $i$ begins
@@ -630,21 +626,18 @@ lengths:
 \end{align*}
 It may be worth noting that the lengths of unary codes correspond to
 the lengths of Shannon-Fano codes for a geometric distribution with
-density $p_i = 1/2^{i + 1}$, so
+density $p_i = 1/2^{i + 1}$, that is, 
 \[
   \log (1/p_i) = \log 2^{i + 1} = |U(i)| \enspace ,
 \]
 and the lengths of Elias $\gamma$-codes correspond to the lengths of
 Shannon-Fano codes for a discrete Cauchy distribution with density
-$p_i = c/i^2$ for a normalizing constant $c$, so
+$p_i = c/i^2$ for a normalization constant $c$, that is,
 \[
   \log (1/p_i) = 2 \log i - \log c = |E_\gamma(i)| + O(1) \enspace .
 \]
 The lengths of Elias $\gamma$-codes and $\omega$-codes do not seem to
 arise as the lengths of Shannon-Fano codes for named distributions.
-
-\wolfgang{meaning what? Reference}\tommy{Clarified a bunch. Reference
-  still needed?}
 
 \section{Applications of the Uniform Encoding Lemma}
 \seclabel{applications-i}
