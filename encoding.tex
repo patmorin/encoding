@@ -147,19 +147,17 @@ accessible, yet versatile tool for answering many questions.  Most of
 these arguments can be applied after learning almost no probability
 theory beyond the Encoding Lemma mentioned above.
 
-\wolfgang{Maybe provide a bit more variety in the phrasing in this 
-paragraph, (e.g., another verb in place of ``present''}
 The remainder of this article is organized as follows: In
 \secref{uel}, we present necessary background, including the
 \emph{Uniform Encoding Lemma}, which is the basis of most of our
-encoding arguments.  \Secref{applications-i} presents applications of
-the Uniform Encoding Lemma to a variety of problems.  \Secref{nuel}
-presents a more general Non-Uniform Encoding Lemma that can handle a
-larger variety of applications, some of which are presented in
-\secref{applications-ii}.  \Secref{el} presents an alternative view of
-encoding arguments, justifying the use of non-integer codeword
-lengths.  \Secref{summary} summarizes and concludes with some
-directions for future research.
+encoding arguments. In \Secref{applications-i} we show how the Uniform
+Encoding Lemma can be applied to a variety of problems. In
+\Secref{nuel}, we introduce a more general Non-Uniform Encoding Lemma
+that can handle a larger variety of applications, some of which are
+given in \secref{applications-ii}.  \Secref{el} presents an
+alternative view of encoding arguments, justifying the use of
+non-integer codeword lengths.  \Secref{summary} summarizes and
+concludes with some directions for future research.
 
 \section{Background}
 \seclabel{uel}
@@ -286,7 +284,7 @@ a run of significantly more than $\log n$ one bits.  (See
 
 \begin{thm}\thmlabel{runs-i}
   Let $x=(x_1,\ldots,x_n)\in\{0,1\}^n$ be chosen uniformly at random
-  and let $t = \ceil{\ceil{\log n} + s}$. Then, the probability that
+  and let $t = \Ceil{\ceil{\log n} + s}$. Then, the probability that
   there exists an $i\in\{1,\ldots,n-t+1\}$ such that
   $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$ is at most $2^{-s}$.
 \end{thm}
@@ -546,7 +544,7 @@ from Stirling's Approximation of the factorial~\cite{robbins:stirling}.
 Recall that Stirling's
 Approximation states that
 \begin{equation}
-  n! = \left(\frac{n}{e}\right)^n\sqrt{2\pi n}\left(1+\Theta\left(\frac{1}{n}\right)\right) \enspace .
+  n! = \left(\frac{n}{e}\right)^n\sqrt{2\pi n}\left(1+\varTheta\left(\frac{1}{n}\right)\right) \enspace .
   \eqlabel{stirling}
 \end{equation}
 
@@ -556,9 +554,9 @@ $1+x \leq e^x$ for all $x \in \R$, the length of the codewords in such a code
 is
 \begin{align}
   \log n!
-  & = n\log n - n\log e + (1/2)\log n + \log \sqrt{2 \pi} + \log(1+\Theta(1/n)) \notag \\
-  & = n\log n - n\log e + (1/2)\log n + \log \sqrt{2 \pi} + \Theta(1/n) \notag \\
-  & = n\log n - n\log e + \Theta(\log n) \eqlabel{stirling-loose}
+  & = n\log n - n\log e + (1/2)\log n + \log \sqrt{2 \pi} + \log(1+\varTheta(1/n)) \notag \\
+  & = n\log n - n\log e + (1/2)\log n + \log \sqrt{2 \pi} + \varTheta(1/n) \notag \\
+  & = n\log n - n\log e + \varTheta(\log n) \eqlabel{stirling-loose}
     \enspace .
 \end{align}
 
@@ -684,12 +682,12 @@ argument.
     detailed calculation?}
   At this point, we should pause and examine \eqref{tst-1}, which has
   the rough form:
-  \[ |C(G)|  = \binom{n}{2} + t\log n - \Omega(t^2) \enspace . \]
+  \[ |C(G)|  = \binom{n}{2} + t\log n - \varOmega(t^2) \enspace . \]
   That is, a clique or independent set of size $t$ costs $O(t\log n)$ bits
-  to encode, but saves $\Omega(t^2)$ bits in the encoding of $G$'s 
+  to encode, but saves $\varOmega(t^2)$ bits in the encoding of $G$'s 
   adjacency matrix.
   Clearly, for $t>c\log n$ with $c$ sufficiently large, this has the form 
-  \[ |C(G)|  = \binom{n}{2} - \Omega(t^2) \enspace . \]
+  \[ |C(G)|  = \binom{n}{2} - \varOmega(t^2) \enspace . \]
   At this point, it is just a matter of determining the dependence on $c$.
   Continuing from \eqref{tst-1}, we have
   \begin{align*}
@@ -1226,10 +1224,11 @@ Wigderson~\cite[Lemma~1.9]{hoory.linial.ea:expander}.
   bits devoted to elements in $A'$.  The key savings here come because
   $N(A')$ should take $3k\log n$ bits to encode, but can actually be
   encoded in roughly $3k\log(3k/2)$ bits. Our code then has length
-  \wolfgang{The calculation is a bit short. More details?}
   \begin{align*}
-    |C(G)| &= 2\log k + \log {n \choose k} + \log {n \choose 3k/2} + 3k \log (3k/2) + (3n - 3k)\log n + O(1) \\
-           &\leq 3n \log n - (k/2)\log n + (k/2)\log k + \beta k + 2 \log k + O(1) \tag{by \eqref{log-n-choose-k}}\\
+    |C(G)| &= 2\log k + \log {n \choose k} + \log {n \choose 3k/2} + 3k \log (3k/2) + (3n - 3k) \log n + O(1) \\
+           &\le 2\log k + k\log n - k\log k + k\log e + (3k/2)\log n - (3k/2) \log (3k/2) \\
+           & \hphantom{{}=2\log k} + (3k/2) \log e + 3k \log (3k/2) + (3n - 3k) \log n + O(1) \tag{by \eqref{log-n-choose-k}} \\
+           &= 3n\log n - (k/2)\log n + (k/2)\log k + \beta k + 2\log k + O(1) \\
            &= \log n^{3n} - s(k)
   \end{align*}
   bits, where $\beta = (3/2) \log (3/2) + (5/2) \log e$. Since
@@ -1249,7 +1248,7 @@ Wigderson~\cite[Lemma~1.9]{hoory.linial.ea:expander}.
     s(\alpha n) = (\alpha n/2)\log \left(\frac{1}{2^{2\beta}
         \alpha}\right) - 2 \log \alpha n
   \]
-  and $2^{-s(\alpha n)} = 2^{-\Omega(n)}$ for
+  and $2^{-s(\alpha n)} = 2^{-\varOmega(n)}$ for
   $\alpha < (1/2)^{2\beta} \approx 0.002$. In each case, the Uniform
   Encoding Lemma gives the desired result, and in particular,
   $2^{-s(k)} \leq O(n^{-1/2})$.
@@ -1257,18 +1256,13 @@ Wigderson~\cite[Lemma~1.9]{hoory.linial.ea:expander}.
 
 \subsection{Permutations and Binary Search Trees}
 
-A \emph{permutation} $\sigma$ of size $n$ is a sequence of $n$
-pairwise distinct integers, sometimes denoted
-$\sigma = (\sigma_1, \ldots, \sigma_n)$
-\wolfgang{This definition is a bit surprising. Maybe indicate
-that it is somewhat non-standard ("for our purposes")
-In particular, this definition is a bit dirty, because
-the notion of "uniform random permutation" does not make
-much sense if the numbers are not fixed.}. 
-Except when explicitly
-stated, we will assume that the set of integers involved in a
-permutation of size $n$ is precisely $\{1, \ldots, n\}$. The number of
-such permutations is $n!$.
+We define a \emph{permutation} $\sigma$ of size $n$ to be a sequence
+of $n$ pairwise distinct integers, sometimes denoted by
+$\sigma = (\sigma_1, \dots, \sigma_n)$. This slightly unusual
+definition will serve us for the purpose of encoding. Except when
+explicitly stated, we will assume that the set of integers involved in
+a permutation of size $n$ is precisely $\{1, \dots, n\}$. The number
+of such permutations is $n!$.
 
 \subsubsection{Analysis of Insertion Sort}
 \seclabel{insertion-sort}
@@ -1288,67 +1282,78 @@ $\sigma = (\sigma_1,\ldots,\sigma_n)$ of $n$ elements:
   \ENDFOR
 \end{algorithmic}
 
-A typical question asks the expected number of times Line~4 executes
-if $\sigma$ is a uniformly random permutation of size $n$
-\wolfgang{What kind of question? Where is it typical?
-"A typical task in the average-case analysis of algorithms is to"}.  
-The answer
+A typical task in the average-case analysis of algorithms is to
+determine the number of times Line~4 executes if $\sigma$ is a
+uniformly random permutation of size $n$.  The answer
 $\binom{n}{2}/2$ is an easy application of linearity of expectation:
 For every one of the $\binom{n}{2}$ pairs $p,q\in\{1,\ldots,n\}$ with
 $p<q$, the values initially stored at positions $\sigma_p$ and
 $\sigma_q$ will eventually be swapped if and only if
 $\sigma_p > \sigma_q$, which happens with probability $1/2$ in a
-uniformly random permutation \wolfgang{mention the
-concept of inversion?}.
+uniformly random permutation. Such a pair is called an
+\emph{inversion}, so the number of times Line~4 executes is the number
+of inversions of $\sigma$.
 
 A more advanced question is to ask for a concentration result on the
-number of executions of Line~4. This is a harder question to tackle;
-because $>$ is transitive, the $\binom{n}{2}$ events being studied
-have a lot of interdependence. In the following, we show how to obtain
-a concentration result with an encoding argument.  The argument
+number of inversions. This is a harder question to tackle; because $>$
+is transitive, the $\binom{n}{2}$ events being studied have a lot of
+interdependence. In the following, we show how to obtain a
+concentration result with an encoding argument.  The argument
 presented here follows the same outline as Vit\'{a}nyi's analysis of
 bubble sort \cite{vitanyi:analysis}, though without all the trappings
 of Kolmogorov complexity.
 
 \begin{thm}\thmlabel{insertion-sort}
-  For a uniformly random permutation $\sigma$ of size $n$, the
-  probability that Line~4 of $\textsc{InsertionSort}(\sigma)$ executes
-  fewer than $\alpha n^2 - n + 2$ times is at most $2^{n\log(\alpha
-    e^2)+O(\log n)}$ \wolfgang{This is a bit hard to parse}.  
-    In particular, for a fixed $\alpha < 1/e^2$,
-  this probability is $2^{-\Omega(n)}$.
+  A uniformly random permutation $\sigma$ of size $n$ has at most
+  $\alpha n^2 - n + 2$ inversions with probability at most
+  $2^{n \log(\alpha e^2) + O(\log n)}$. In particular, for a fixed
+  $\alpha < 1/e^2$, this probability is $2^{-\varOmega(n)}$.
+  %
+  %For a uniformly random permutation $\sigma$ of size $n$, the
+  %probability that Line~4 of $\textsc{InsertionSort}(\sigma)$ executes
+  %fewer than $\alpha n^2 - n + 2$ times is at most $2^{n\log(\alpha
+  %  e^2)+O(\log n)}$ \wolfgang{This is a bit hard to parse}.  
+  %  In particular, for a fixed $\alpha < 1/e^2$,
+  %this probability is $2^{-\Omega(n)}$.
 \end{thm}
 
 \begin{proof}
-  %Let $\sigma$ be the permutation of $\{1,\ldots,n\}$ that defines the
-  %sorted order of $x_1,\ldots,x_n$, so that $x_{\sigma(j)}$ is the
-  %element that appears at position $j$ after sorting. Notice that
-  %$\sigma$ is chosen uniformly at random among all $n!$ permutations
-  %of of $\{1,\ldots,n\}$.
-  %
   We encode the permutation $\sigma$ by recording the execution of
-  \textsc{InsertionSort} on $\sigma$. In particular, we record
-  for each $i\in\{2,\ldots,n\}$, the number of times $m_i$ that Line~4
+  \textsc{InsertionSort} on $\sigma$. In particular, we record for
+  each $i\in\{2,\ldots,n\}$, the number of times $m_i$ that Line~4
   executes during the $i$\textsuperscript{th} iteration of
   $\textsc{InsertionSort}(\sigma)$. With this information, one can run
-  the following algorithm to recover $\sigma$
-  \wolfgang{More explanation here? I would have expected
-  $i$ to go from $n$ downto $2$ and $j$ to go up, corresponding
-  to a reverse execution of insertion sort. For the
-  pseudocode below, correctness is not obvious to me (but
-  maybe I should try some examples by hand)}:
+  the following algorithm to recover $\sigma$ \wolfgang{More
+    explanation here? I would have expected $i$ to go from $n$ downto
+    $2$ and $j$ to go up, corresponding to a reverse execution of
+    insertion sort. For the pseudocode below, correctness is not
+    obvious to me (but maybe I should try some examples by hand)}
+  \tommy{You're right: regardless of whether or not the other
+    algorithm was correct, this one makes more sense}:
   
-  \noindent{$\textsc{InsertionSortReconstruct}(m_2,\ldots,m_n)$}:
+  \noindent{$\textsc{InsertionSortReconstruct}(m_2, \dots, m_n)$}:
   \begin{algorithmic}[1]
-    \STATE{$\sigma \gets (1,\ldots,n)$}
-    \FOR{$i\gets 2$ \TO $n$}
-       \FOR{$j\gets i \textbf{ down to } i-m_i+1$}
-           \STATE{$\sigma_j \leftrightarrow \sigma_{j-1}$
-              \COMMENT{ swap }}
-       \ENDFOR
+    \STATE{$\sigma \gets (1, \dots, n)$}
+    \FOR{$i \gets n \textbf{ down to } 2$}
+      \FOR{$j \gets i - m_i + 1$ \TO $i$}
+        \STATE{$\sigma_j \leftarrow \sigma_{j-1}$
+          \COMMENT{ swap }}
+      \ENDFOR
     \ENDFOR
     \RETURN{$\sigma$}
   \end{algorithmic}
+
+  %\noindent{$\textsc{InsertionSortReconstruct}(m_2,\ldots,m_n)$}:
+  %\begin{algorithmic}[1]
+  %  \STATE{$\sigma \gets (1,\ldots,n)$}
+  %  \FOR{$i\gets 2$ \TO $n$}
+  %     \FOR{$j\gets i \textbf{ down to } i-m_i+1$}
+  %         \STATE{$\sigma_j \leftrightarrow \sigma_{j-1}$
+  %            \COMMENT{ swap }}
+  %     \ENDFOR
+  %  \ENDFOR
+  %  \RETURN{$\sigma$}
+  %\end{algorithmic}
    
   To make this work, we have to be slightly clever with this
   encoding. Rather than encode $m_2,m_3,\ldots,m_n$ directly, we first
@@ -1369,7 +1374,7 @@ of Kolmogorov complexity.
   \begin{align*}
     |C(\sigma)| & \le (n-2)\log(m+n-2) - (n-2)\log(n-2)  + (n-2)\log e + O(\log n) \\
       & \le n\log(m+n-2) - n\log n   + n\log e + O(\log n) \\
-      & \le n\log(\alpha n^2) - n\log n  + n\log e + O(\log n) \\
+      & \le n\log(\alpha n^2) - n\log n  + n\log e + O(\log n) \tag{since $m \le \alpha n^2 - n + 2$}\\
       & = 2n\log n + n\log\alpha - n\log n  + n\log e + O(\log n) \\
       & = n\log n + n\log\alpha + n\log e + O(\log n) \\
       & = \log n! + n\log\alpha + 2n\log e + O(\log n) \tag{by \eqref{stirling-loose}} \\
@@ -1380,7 +1385,6 @@ of Kolmogorov complexity.
 
 
 \begin{rem}
-  Although\wolfgang{Why although? Omit this whole auxiliary sentence?} it doesn't require any advanced probability,
   \thmref{insertion-sort} is not sharp; it only gives a non-trivial
   probability when $\alpha < 1/e^2$.  To obtain a sharp bound, one can
   use the fact that $m_2,\ldots,m_n$ are independent and $m_i$ is
@@ -1391,10 +1395,10 @@ of Kolmogorov complexity.
 
 \subsubsection{Records}
 
-A \emph{(max) record}
-\wolfgang{I know it as a "peak"} 
-in a permutation $\sigma$ of size $n$ is some
-value $\sigma_i$ with $1 \leq i \leq n$ such that
+A \emph{(max) record} \wolfgang{I know it as a "peak"}\tommy{From what
+  I can quickly see, the usual definition of peak doesn't agree with
+  our definition of max records.}  in a permutation $\sigma$ of size
+$n$ is some value $\sigma_i$ with $1 \leq i \leq n$ such that
 \[
   \sigma_i = \max\{\sigma_1, \dots, \sigma_i\} \enspace .
 \]
@@ -1418,10 +1422,9 @@ of the permutation $\sigma_1$; followed by the set of indices of the
 permutation for which $\sigma$ takes on a value strictly smaller than
 $\sigma_1$, including an explicit encoding of the induced permutation
 on the elements at those indices; and a recursive encoding of the
-permutation induced on the elements strictly larger than $\sigma_1$.
-\wolfgang{Omit "note that"?}
-Note that the number of recursive invocations is equal to the
-number of records in $\sigma$.
+permutation induced on the elements strictly larger than
+$\sigma_1$. The number of recursive invocations is equal to the number
+of records in $\sigma$.
 
 If $\sigma$ contains $k$ elements strictly smaller than $\sigma_1$,
 then the length $\ell(n)$ of the codeword for $\sigma$ satisfies the
@@ -1467,17 +1470,17 @@ random permutation.
   record. More precisely, if the number of choices for each record
   $r_i$ in the original encoding is $m_i$, such that $m_1 > \dots >
   m_t$, then the number of bits spent encoding records in the new code
-  is at most \wolfgang{Mention again that you used $\ln (1+x) = 1 + O(x)$
-  for small $x$? Also, do you assume that $c$ is constant? The
-  bound $H_t = O(\log\log n)$ is a bit fishy otherwise.}
+  is at most
   \begin{align*}
     \sum_{i = 1}^t \log \ceil{m_i/2} &\leq \sum_{i = 1}^t \log (m_i/2
-    + 1)
-    \leq \sum_{i = 1}^t \log (m_i/2) + \sum_{i = 1}^t O(1/m_i) \\
-    &\leq \sum_{i = 1}^t \log (m_i/2) + O(H_t) = \sum_{i = 1}^t \log
-    m_i - t + O(\log \log n) \enspace .
+                                       + 1)
+    \\
+                                     &\leq \sum_{i = 1}^t \log (m_i/2) + \sum_{i = 1}^t O(1/m_i) \tag{since $\log (1 + x) = \log x + O(1/x)$} \\
+                                     &\leq \sum_{i = 1}^t \log (m_i/2) + O(H_t) \\
+                                     &= \sum_{i = 1}^t \log
+                                       m_i - t + O(\log \log n) \enspace ,
   \end{align*}
-  Thus, the total length of the code is
+  since $c$ is a constant. Thus, the total length of the code is
   \begin{align*}
     |C(\sigma)| &\leq \binom{t}{n_1(x)} + \log n! - t + O(\log \log n) \\
                 &\leq \log n! - t (1 - H(n_1(x)/t)) + O(\log \log n) \tag{by \eqref{log-n-choose-k}}\\
@@ -1517,11 +1520,21 @@ extend our result on records to obtain a tighter result
 is there no tradeoff between the probability and $c$?}.
 
 For a node $u$, let $s(u)$ denote the number of nodes in the tree
-rooted at $u$. Then, $u$ is called \emph{balanced} if $s(u^L), s(u^R)
-> s(u)/4$, where $u^L$ and $u^R$ are the left and right subtrees of
-$u$ respectively. In other words, a node is said to be balanced if it
-occurs in the middle half of its subrange \wolfgang{"middle half" sounds
-a bit strange to me. Maybe "middle interval of size $s/2$?}.
+rooted at $u$. Then, $u$ is called \emph{balanced} if
+$s(u^L), s(u^R) > s(u)/4$, where $u^L$ and $u^R$ are the left and
+right subtrees of $u$ respectively. In other words, since each node
+$u$ determines an interval $[v, w]$, where $v$ is the smallest node in
+the subtree rooted at $u$, and $w$ is the largest such node, then $u$
+is balanced if and only if
+\[
+  u \in \left[\frac{w + v}{2} - \frac{w - v}{4}, \frac{w + v}{2} + \frac{w - v}{4}\right] \enspace ,
+\]
+\emph{i.e.}~$u$ is called balanced if it occurs in the middle interval
+of length $(w - v)/2$ of its subrange.
+
+%de is said to be balanced if it
+%occurs in the middle half of its subrange \wolfgang{"middle half" sounds
+%a bit strange to me. Maybe "middle interval of size $s/2$?}.
 
 \begin{thm}\thmlabel{bst-height}
   Let $\sigma$ be a uniformly random permutation of size $n$. Then,
@@ -1675,7 +1688,7 @@ most $3n_i/4$.
   length
   \[
     |C(\sigma)| \le \log n! - i + i H(\alpha) + \log i + O(\log \log
-    i) = \log n! - \Omega(i) \enspace ,
+    i) = \log n! - \varOmega(i) \enspace ,
   \]
   since $\alpha < 1/2$. The proof is completed by applying the Uniform
   Encoding Lemma, and by observing that $k_0 \leq i$ can be made
@@ -1999,16 +2012,14 @@ strings.
 \subsection{Percolation on the Torus}
 
 Percolation theory studies the emergence of large components in random
-graphs.\wolfgang{Reference}
-We give an encoding argument proving that percolation occurs
-on the torus when edge survival rate is greater than $2/3$. 
-\wolfgang{What does it mean that "percolation occurs", and 
-what is an "edge survival rate"?}
-Our line
-of reasoning follows what is known as a \emph{Peierls argument}. For
-more precise results, including a general study of percolation theory,
-see the book by Grimmett~\cite{grimmett:percolation}.
-\wolfgang{Maybe put the reference a bit further up?}
+graphs. For a general study of percolation theory, see the book by
+Grimmett~\cite{grimmett:percolation}.  We give an encoding argument
+proving that percolation occurs on the torus when edge survival rate
+is greater than $2/3$, \emph{i.e.}~in random subgraphs of the torus
+grid graph in which each edge is included independently at random with
+probability at least $2/3$, only at most one large component
+emerges. Our line of reasoning follows what is known as a
+\emph{Peierls argument}.
 
 Suppose that $\sqrt{n}$ is an integer. The \emph{$\sqrt{n} \times \sqrt{n}$
   torus grid graph} is defined to be the graph with vertex set
@@ -2019,11 +2030,11 @@ if
 \item $|i - k| = 0$ and $|j - l| \equiv 1 \pmod{\sqrt{n}}$.
 \end{itemize}
 
-\begin{thm}
-\wolfgang{Suppose that $\sqrt{n}$ is an integer.}
-  Let $G$ be a subgraph of the $\sqrt{n} \times \sqrt{n}$ torus grid
-  graph in which each edge is chosen with probability $p < 1/3$. Then,
-  the probability that $G$ contains a cycle of length at least
+\begin{thm}\thmlabel{percolation-long-cycles}
+  Suppose that $\sqrt{n}$ is an integer.  Let $G$ be a subgraph of the
+  $\sqrt{n} \times \sqrt{n}$ torus grid graph in which each edge is
+  chosen with probability $p < 1/3$. Then, the probability that $G$
+  contains a cycle of length at least
   \[
     \frac{s + \log n + O(1)}{\log (1/(3p))}
   \]
@@ -2055,10 +2066,8 @@ The torus grid graph can be drawn in the obvious way without crossings
 on the surface of a torus. This graph drawing gives rise to a dual
 graph, in which each vertex corresponds to a face in the primal
 drawing, and two vertices are adjacent if and only their primal faces
-are incident to the same edge. \wolfgang{This dual graph
-is isomporphic to the original torus grid graph.} 
-In this sense, the torus grid graph is
-self-dual.
+are incident to the same edge. This dual graph is isomporphic to the
+original torus grid graph.
 
 The obvious drawing of the torus grid graph also induces drawings for
 any of its subgraphs. Such a subgraph also has a dual, where each
@@ -2067,11 +2076,10 @@ vertices are adjacent if and only if their corresponding faces are
 incident to the same edge of the original subgraph.
 
 \begin{thm}
-  \wolfgang{Suppose that $\sqrt{n}$ is an integer.}
-  Let $G$ be a subgraph of the $\sqrt{n} \times \sqrt{n}$ torus grid
-  graph in which each edge is chosen with probability greater than
-  $2/3$. Then, $G$ has at most one component of size
-  $\omega(\log^2 n)$ with high probability.
+  Suppose that $\sqrt{n}$ is an integer.  Let $G$ be a subgraph of the
+  $\sqrt{n} \times \sqrt{n}$ torus grid graph in which each edge is
+  chosen with probability greater than $2/3$. Then, $G$ has at most
+  one component of size $\omega(\log^2 n)$ with high probability.
 \end{thm}
 \begin{proof}
   See \figref{peierls} for a visualization of this phenomenon. Suppose
@@ -2079,9 +2087,9 @@ incident to the same edge of the original subgraph.
   n)$. Then, there is a cycle of faces separating these components
   whose length is $\omega(\log n)$. From the discussion above, such a
   cycle corresponds to a cycle of $\omega(\log n)$ missing edges in
-  the dual graph, as in \figref{peierlsrare}. From the preceding
-  result \wolfgang{specific reference?}, we know that this does not 
-  happen with high probability.
+  the dual graph, as in \figref{peierlsrare}. From
+  \thmref{percolation-long-cycles}, we know that this does not happen
+  with high probability.
 \end{proof}
 
 \begin{figure}
@@ -2126,7 +2134,7 @@ accomplished with an encoding argument.
 
 \begin{thm}\thmlabel{triangles-up}
   For $p=c/n$, $G \in G_{n,p}$ contains at least one triangle with
-  probability at least $1-2^{-\Omega(c^3)}$.
+  probability at least $1-2^{-\varOmega(c^3)}$.
 \end{thm}
 
 \begin{proof}
@@ -2164,7 +2172,7 @@ accomplished with an encoding argument.
     the need to specify
     \[
       m = \sum_{i=1}^{n/2}\binom{m_i}{2} \ge (n/2) \binom{2
-        n_1(M)/n}{2} \ge (n/2)\binom{c/4}{2} = \Omega(c^2n) \enspace ,
+        n_1(M)/n}{2} \ge (n/2)\binom{c/4}{2} = \varOmega(c^2n) \enspace ,
     \]
     zeros in rows $n/2+1,\ldots,n$. We thus encode $G$ by giving a
     Shannon-Fano code with parameter $p$ for the first $n/2$ rows of
@@ -2177,7 +2185,7 @@ accomplished with an encoding argument.
     which results in a savings of
     \[
       s = \log(1/p_G) - |C(G)| = m\log(1/(1-p)) \ge
-      \Omega(c^2n)\log(1/(1-p)) = \Omega(c^3) \enspace . \qedhere
+      \varOmega(c^2n)\log(1/(1-p)) = \varOmega(c^3) \enspace . \qedhere
     \]
   \end{enumerate}
 \end{proof}
@@ -2252,9 +2260,8 @@ $x \in X$, and any $x' \in X'$,
 \[
 (|C| + |C'|)(x, x') = |C(x)| + |C'(x')| = |(C \cdot C')|(x, x') \enspace .
 \]
-In other words, the sum of these functions 
-\wolfgang{Which functions? $|C|$?}describes the length of
-codewords in composed codes.
+In other words, the sum of the functions of codeword lengths describes
+the length of codewords in concatenated codes.
 
 \begin{lem}\lemlabel{composition-tight}
   If $\ell : X \to [0, \infty]$ and $\ell' : X' \to [0,
@@ -2269,8 +2276,7 @@ codewords in composed codes.
   . \qedhere
   \]
 \end{proof}
-This is analogous to the fact that the composition
-\wolfgang{Concatenation?} of prefix-free
+This is analogous to the fact that the concatenation of prefix-free
 codes is prefix-free.
 
 \begin{lem}\lemlabel{fixed-length-tight}
@@ -2308,12 +2314,10 @@ We now give a tight notion corresponding to Elias codes.
 
 It is not hard to see how \lemref{el}, \lemref{composition-tight},
 \lemref{fixed-length-tight}, and \thmref{elias-tight} can be used to
-give encoding arguments with real-valued codeword lengths. 
-\wolfgang{For example,}
-Indeed,
-recall how the result of \thmref{runs-i} carried an artifact of binary
-encoding. Using our new tools, we can now refine this and recover the
-exact result.
+give encoding arguments with real-valued codeword lengths. For
+example, recall how the result of \thmref{runs-i} carried an artifact
+of binary encoding. Using our new tools, we can now refine this and
+recover the exact result.
 \begin{customthm}{\ref*{thm:runs-i}b}
   Let $x=(x_1,\ldots,x_n)\in\{0,1\}^n$ be chosen uniformly at random
   and let $t = \ceil{\log n + s}$. Then, the probability that there
