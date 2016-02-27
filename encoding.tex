@@ -165,7 +165,8 @@ concludes with some directions for future research.
 This section presents the necessary background on prefix-free codes
 and binomial coefficients.
 
-\subsection{Basic Definitions, Prefix-free Codes and the Uniform Encoding Lemma}
+\subsection{Basic Definitions, Prefix-free Codes and the Uniform 
+Encoding Lemma}
 
 A finite length \emph{binary string}, or \emph{bit string}, is a
 finite (possibly empty) sequence of elements from $\{0, 1\}$. For
@@ -827,7 +828,7 @@ consecutive.)
   \]
   and fix some $x\in X$. 
   Then the probability that the block containing
-  $x$ has size at least $t$,
+  $x$ has size $t$
   is at most $2^{-s}$.
 \end{thm}
 
@@ -840,12 +841,9 @@ consecutive.)
   that is drawn uniformly at random from a set of size
   $m^n = (cn)^n$.
   
-  Suppose that $x$ lies in a block with at least $t$ elements.
-  We assume that this block has exactly $t$ elements
-  (by ignoring elements at the beginning and/or the end,
-  if necessary).
+  Suppose that $x$ lies in a block with $t$ elements.
   We encode $h$ by the first index $b$ of the block containing $x$;
-  followed by the $t-1$ elements $y_1,\ldots,y_{t-1}$ of this block
+  followed by the $t-1$ elements $y_1,\dots,y_{t-1}$ of this block
   (excluding $x$); followed by information to decode the hash
   values of $x$ and of $y_1,\dots,y_{t-1}$; followed by
   the $n-t$ hash values for the remaining elements in $X$.
@@ -886,7 +884,7 @@ consecutive.)
 be that for any \emph{fixed} $x$, the search time is $O(1)$.
 In contrast, there always exists \emph{some} $x$ such that
 the search time for $x$ is $\Omega(\log n)$, no? 
-If I am wrong, please correct my.}
+If I am wrong, please correct me.}
 \begin{cor}
   Let $n \in \N$, $c > e$.
   Suppose that a set $X = \{x_1, \dots, x_n\}$ of $n$ items 
@@ -900,18 +898,17 @@ If I am wrong, please correct my.}
   Let $T$ denote the size of the block containing $x$ in the
   hash table. Let $t_0$ be a large enough constant. 
   Then, by \thmref{linear-probing}, the probability
-  that $T \geq t + t_0$ is at most $2^{-t\log(c/e)/2}$,
+  that $T = t + t_0$ is at most $2^{-t\log(c/e)/2}$,
   since then
   \[(t  + t_0)\log(c/e) - \log(t+t_0)
   \geq
 (t  + t_0)\log(c/e)/2
-    \geq t\log(c/e)/2 + t_0/2 
     \geq t\log(c/e)/2 + O(1) \enspace. 
     \]
   Thus, the expected search time for $x$ is
   \begin{align*}
-    \E\{T\} &= \sum_{t = 1}^\infty \Pr\{T \ge t\} = \sum_{t=1}^{t_0} \Pr\{T \ge t\} + \sum_{t = 1}^\infty \Pr\{T \ge t + t_0\} \\
-            &\le t_0 + \sum_{t = 1}^\infty 2^{-t \log (c/e)/2} = t_0 + \sum_{t = 1}^\infty (c/e)^{-t/2} = O(1) \enspace . \qedhere
+   E\{T\} &= \sum_{t = 1}^\infty t\Pr\{T = t\} = \sum_{t=1}^{t_0} t\Pr\{T = t\} + \sum_{t = 1}^\infty (t+t_0)\Pr\{T = t + t_0\} \\
+            &\le t_0^2 + \sum_{t = 1}^\infty (t+t_0)2^{-t \log (c/e)/2} = t_0^2 + \sum_{t = 1}^\infty (t+t_0)(c/e)^{-t/2} = O(1) \enspace . \qedhere
   \end{align*}
 \end{proof}
 
