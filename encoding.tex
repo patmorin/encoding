@@ -1109,7 +1109,7 @@ $E = \{(h(x), g(x)) : x \in X\}$.
   in the encoding, indicating whether $u = h(x)$ and $v = g(x)$, or $u
   = g(x)$ and $v = h(x)$. Our code thus has length
   \begin{align*}
-    |C(G)| &= \log n + (t - 1)(\log n + \log m) + 2 \log n + (2n - 2(t + 1))\log m + t + O(\log t) \\
+    |C(G)| &= \log m + (t - 1)(\log n + \log m) + 2 \log n + (2n - 2(t + 1))\log m + t + O(\log t) \\
            &= 2n \log m - \log n - t \log c + t + O(\log t) \\
            &\le \log m^{2n} - \log n + O(1) \enspace ,
   \end{align*}
@@ -1121,8 +1121,8 @@ $E = \{(h(x), g(x)) : x \in X\}$.
   with probability $O(1/n)$.
 \end{lem}
 \begin{proof}
-  Suppose $G$ has a connected component with $t - 1$ edges and at most
-  $t$ vertices. This component has a spanning tree $T$. Pick an
+  Suppose $G$ has a connected component with $t$ vertices and at least
+  $t-1$ edges. This component has a spanning tree $T$. Pick an
   arbitrary vertex as the root of $T$. To encode $G$, we specify
   first the $t - 1$ edges and $t$ vertices encountered in a pre-order
   traversal of $T$; then a bit string encoding the shape of $T$; and
@@ -1150,41 +1150,57 @@ $E = \{(h(x), g(x)) : x \in X\}$.
 Suppose that when $x$ is inserted, it is placed in an urn with $t$
 other elements. Then, we say that the \emph{age} of $x$ is $a(x) = t$.
 \begin{thm}
-  The cost of searching in 2-choice hashing in a table of size $cn$
-  with $c > 4$ is at most $\log \log n + O(1)$ with probability $1 -
-  O(1/n)$.
+  Fix $c > 4$ and
+  suppose we insert $n$ elements into a table of size $cn$
+  using $2$-choice hashing.
+  With probability $1 - O(1/n)$
+  all positions in the hash table contain at most 
+  $\log \log n + O(1)$ elements.
 \end{thm}
 \begin{proof}
   Suppose that some element $x$ has $a(x) = t$. This leads to a binary
   \emph{witness tree} $T$ of height $t$ as follows: The root of $T$ is
   the element $x$. When $x$ was inserted into the hash table, it had
   to choose between the urns $h(x)$ and $g(x)$, both of which
-  contained at least $t - 1$ elements; in particular, $h(x)$ has an
-  element $x_h$ with $a(x_h) = t - 1$, and $g(x)$ has an element $x_g$
-  with $a(x_g) = t - 1$. The elements $x_h$ and $x_g$ become left and
-  right children of $x$ in $T$. The process continues recursively. If
+  contained at least $t - 1$ elements; in particular, $h(x)$ has a unique
+  element $x_h$ with $a(x_h) = t - 1$, and $g(x)$ has a unique 
+  element $x_g$
+  with $a(x_g) = t - 1$. The elements $x_h$ and $x_g$ become the left and
+  the right child of $x$ in $T$. The process continues recursively. If
   some element appears more than once on a level, we only recurse on
   its leftmost occurrence \wolfgang{Figure?}. 
-  Note that each vertex of $T$ corresponds to
-  an edge $(h(x), g(x))$ of $G$. Moreover, the subgraph of $G$
-  induced by the edges
-  \[
-    \{(h(x), g(x)) : x \text{ is a vertex of } T\}
-  \]
-  is connected.
 
-  Suppose that some node appears more than once on a level of $T$. By
-  the discussion above \wolfgang{Which discussion? Figure?}, this
-  means that some component of $G$ has a cycle. If this happens twice,
-  then $G$ has a subgraph with more edges than vertices. By
-  \lemref{two-choice-two-cycles}, this happens with probability
-  $O(1/n)$. If instead this happens at most once, then $T$ is a
-  complete binary tree with at most one subtree removed \wolfgang{This
-    is a bit vague, maybe: "is a complete binary tree with at most one
-    subtree removed"?} \tommy{Okay}, so $T$ has at least $2^t$
-  nodes. If we choose $t = \ceil{\log \log n + d}$, then $T$ has at
-  least $2^d \log n$ nodes, which we know from
-  \lemref{two-choice-component-size} happens with probability $O(1/n)$
+  Using $T$, we can iteratively define a connected subgraph $G_T$ of $G$.
+  Initially, $G_T$ consists of the single node in $V$ corresponding
+  to the bucket that contains the root element $x$ of $T$.
+  Now, to construct $G_T$, we go through $T$ level by level, 
+  starting from the root.
+  For $i =  t,\dots, 0$, let
+  $L_i$ be all elements in $T$ with age $i$, and let
+  $E_i = \{(h(x), g(x)) : x \in L_i\}$ be the corresponding
+  edges in $G$.
+  When considering $L_i$, we add 
+  to $G_T$ all edges in $E_i$, together with their endpoints,
+  if they are not in $G_T$ already.
+  Since every element appears at most once in $T$, this
+  adds $|L_i|$ new edges to $G_T$. The number of vertices in $G_T$
+  increases by at most $|L_i|$. In the end, $G_T$ contains
+  $\sum_{i = 0}^{t} |L_i|$ edges. Since $G_T$ is connected, 
+  with probability $1 - O(1/n)$, the number of edges in $G_T$ does not 
+  exceed the number of vertices, by \lemref{two-choice-two-cycles}. 
+  We assume that this is the case.
+  Since initially $G_T$ had 
+  one vertex and zero edges, the iterative procedure must add
+  at least $\sum_{i = 0}^{t} |L_i| - 1$ new vertices to $G_T$.
+  This means that all nodes in $T$ but one must
+  have two children, so we can conclude that $T$ is a
+  complete binary tree with at most one subtree removed. It follows
+  that $T$ (and hence $G_T$) has at least $2^{t}$ vertices.
+  If we choose $t = \ceil{\log \log n + d}$, then 
+  $2^t \geq 2^d \log n$. 
+  We know from
+  \lemref{two-choice-component-size} that this 
+  happens with probability $O(1/n)$
   for a sufficiently large choice of the constant $d$.
 \end{proof}
 
