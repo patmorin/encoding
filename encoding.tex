@@ -817,6 +817,11 @@ We call a maximal consecutive sequence of occupied table locations a
 \emph{block}. (The table locations $m-1$ and $0$ are considered
 consecutive.)
 
+\wolfgang{I rephrased the theorem for block size \emph{exactly}
+$t$. I think otherwise the encoding argument would not be correct
+as written,
+because you could not guarantee that the hash values of the elements
+in the block can be represented with $\log t$ bits each.}
 \begin{thm}\thmlabel{linear-probing}
   Let $n \in \N$, $c > e$.
   Suppose that a set $X = \{x_1, \dots, x_n\}$ of $n$ items 
@@ -917,21 +922,12 @@ If I am wrong, please correct me.}
 Cuckoo hashing is relatively new hashing scheme that offers an
 alternative to classic perfect hashing \cite{pagh.rodler:cuckoo}. 
 We present a clever proof, due to Mihai Pătraşcu, that cuckoo hashing
-succeeds with probability $1-O(1/n)$ \cite{patrascu:cuckoo}.
-\wolfgang{Reference to Therese's Bachelor thesis? But it is in
-German.} \tommy{I don't know anything about this...?}
-
-%The main object of study in cuckoo hashing is the \emph{cuckoo graph},
-%a random bipartite multigraph $G=(A,B,E)$ where $|A|=|B|=m$ for $m =
-%2n$, and $|E|=n$.  For each $i\in\{1,\ldots,n\}$, each edge $e_i$ of
-%$E$ is obtained by randomly choosing (with replacement) an endpoint
-%$a_i\in A$ and an endpoint $b_i\in B$.  The cuckoo hashing algorithm
-%may fail if this graph contains a long edge-simple path or if it
-%contains a component with more edges than vertices.  (An edge-simple
-%path is a path that uses each edge of the multiset $E$ at most once.)
+succeeds with probability $1-O(1/n)$ \cite{patrascu:cuckoo}
+(see also \cite{haimberger:cuckoo} for a detailed exposition of the 
+argument).
 
 We again hash the elements of the set $X = \{x_1, \ldots, x_n\}$. The
-hash table consists of two arrays $A$ and $B$ of size $m = 2n$, and
+hash table consists of two arrays $A$ and $B$, each of size $m = 2n$, and
 two hash functions $h, g : X \to \{1, \ldots, m\}$ which are uniform
 random variables. To insert an element $x$ into the hash table, we
 insert it into $A[h(x)]$; if $A[h(x)]$ already contains an element
@@ -942,7 +938,7 @@ algorithm runs for too long without successfully completing the
 insertion, then we say that the insertion failed, and the hash table
 is rebuilt using different newly sampled hash functions. Any element
 $x$ either is held in $A[h(x)]$ or $B[g(x)]$, so we can search for $x$
-in constant time.  \wolfgang{Pseudocode?}\tommy{Okay} The following
+in constant time.  The following
 pseudocode describes this procedure more precisely:
 
 \noindent{$\textsc{Insert}(x):$}
@@ -956,12 +952,12 @@ pseudocode describes this procedure more precisely:
       \STATE{$A[h(x)] \gets x$} 
       \RETURN
     \ENDIF
-    \STATE{$x \gets A[h(x)]$}
+    \STATE{$x \leftrightarrow A[h(x)]$}
     \IF{$B[g(x)]$ is empty}
       \STATE{$B[g(x)] \gets x$}
       \RETURN
     \ENDIF
-    \STATE{$x \gets B[g(x)]$}
+    \STATE{$x \leftrightarrow B[g(x)]$}
   \ENDFOR
   \STATE{$\textsc{Rehash}()$}
   \STATE{$\textsc{Insert}(x)$}
@@ -974,24 +970,35 @@ and $|E| = n$, with each vertex corresponding either to a location in
 the array $A$ or $B$ above, and with edge multiset
 $E = \{(h(x_i), g(x_i)) : 1 \leq i \leq n\}$.
 
-An \emph{edge-simple} path is a path that uses each edge at most once. Such
-a path in $G$ describes the possible motion of elements during a
-hash table insertion. Thus, in bounding the length of edge-simple
+An \emph{edge-simple} path is a path that uses each edge at most once. 
+One can check that if a successful insertion 
+takes at least $2t$ steps, then the cuckoo
+graph contains an edge simple path with at least $t$ edges.
+Thus, in bounding the length of edge-simple
 paths in the cuckoo graph, we bound the worst case insertion time.
 
 \begin{lem}\lemlabel{cuckoo-path-length}
-  The cuckoo graph has an edge-simple path of length at least
+  Let $s \in \N$. Suppose that we insert a set $X = \{x_1, \dots, x_n\}$
+  into a hash table using cuckoo hashing.
+  Let $G$ be the resulting cuckoo graph. Then, 
+  $G$ has an edge-simple path of length at least
   $s + \log n + O(1)$ with probability at most $2^{-s}$.
 \end{lem}
 \begin{proof}
-  We encode $G$ by presenting its set of edges. Since each endpoint of
+  We encode $G$ by presenting its set of edges. Since 
+  each endpoint of
   an edge is chosen independently and uniformly at random from a set
   of size $m$, the set of all edges is chosen uniformly at random from
   a set of size $m^{2n}$.
 
-  Suppose some vertex $v$ is the endpoint of an edge-simple path
-  of length $t$; such a path has $t + 1$ vertices and $t$ edges. In
-  the encoding, we present the $t$ edges of the path in order; then,
+  Suppose some vertex $v \in A \cup B$ is the endpoint of an 
+  edge-simple path
+  of length $t$; such a path has $t + 1$ vertices and $t$ edges. 
+  Each edge in the path corresponds to an element in $X$.
+  In
+  the encoding, we present the indices of the elements in $X$ corresponding
+  to the $t$ edges of the path 
+  in order; then,
   we indicate whether $v \in A$ or $v \in B$; and we give the $t + 1$
   vertices in order starting from $v$; followed by the remaining
   $2n - 2t$ endpoints of edges of the graph. This code has length
@@ -1005,11 +1012,13 @@ paths in the cuckoo graph, we bound the worst case insertion time.
   Encoding Lemma.
 \end{proof}
 This immediately implies that a successful insertion takes time at
-most $2 \log n + O(1)$ with probability $1 - O(1/n)$. Moreover,
-selecting `MaxLoop' to be $2\log n + O(1)$, we see that a rehash
+most $4 \log n + O(1)$ with probability $1 - O(1/n)$. Moreover,
+selecting `MaxLoop' to be $4\log n + O(1)$, we see that a rehash
 happens only with probability $O(1/n)$.
 
-The cuckoo hashing insertion algorithm can fail if some subgraph of
+One can prove that
+the cuckoo hashing insertion algorithm fails if and only if  
+some subgraph of
 the cuckoo graph contains more edges than vertices, since edges
 correspond to keys, and vertices correspond to array locations.
 \begin{lem}\lemlabel{cuckoo-failure}
@@ -1043,16 +1052,17 @@ correspond to keys, and vertices correspond to array locations.
   \end{figure}
 
   We encode $G$ by giving the vertex $v$; and presenting Elias
-  $\delta$-codes for the values of $t_1$ and $t_2$; then the edges of
+  $\delta$-codes for the values of $t_1$ and $t_2$ and the
+  positions of the endpoints of $e_1$ and $e_2$; then the indices
+  of the edges of
   the above paths in order; then the vertices of the paths in order;
-  and the edges $e_1$ and $e_2$; and finally the remaining $2n - 2(t +
+  and the indices of the edges $e_1$ and $e_2$; and finally the 
+  remaining $2n - 2(t +
   1)$ endpoints of edges in the graph. Such a code has length
-  \wolfgang{Should the first term be $\log m$, since $v$ is a vertex?
-    I am a bit confused about the calculation...} \tommy{Okay, clarified}
   \begin{align*}
     |C(G)| &= \log m + O(\log t) + (t - 1)(\log n + \log m) + 2\log n + (2n - 2(t + 1))\log m \\
-           &= 2n \log m + (t + 2) \log n - (t + 3) \log m + O(\log t) \\
-           &= 2n \log m + (t + 2) \log n - (t + 3) \log n - t + O(\log t) \tag{since $m = 2n$} \\
+           &= 2n \log m + (t + 1) \log n - (t + 2) \log m + O(\log t) \\
+           &= 2n \log m + (t + 1) \log n - (t + 2) \log n - t + O(\log t) \tag{since $m = 2n$} \\
            &\le \log m^{2n} - \log n + O(1) \enspace .
   \end{align*}
   We finish by applying the Uniform Encoding Lemma.
