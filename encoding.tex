@@ -1206,25 +1206,26 @@ other elements. Then, we say that the \emph{age} of $x$ is $a(x) = t$.
 
 \begin{rem}
   The arguments in this section can be refined by more carefully
-  encoding the shape of trees using Cayley's formula, which says that
+  encoding the shape of trees using \emph{Cayley's formula}, which says 
+  that
   there are $t^{t - 2}$ rooted labelled trees on $t$
   nodes~\cite{cayley:theorem}. In particular, a rooted tree with $t$
   nodes and $m$ choices for distinct node labels can be encoded using
   $\log \binom{m}{t} + (t - 2) \log t$ bits instead of
   $t \log m + 2(t - 1)$ bits. We would then recover the same results
-  for hash tables of size $m = cn$ for $c > e$ instead of $c > 4$. In
-  fact, it \wolfgang{reference?}\tommy{Okay} is known that it suffices
-  that $c > 0$ for searching to take time $1/c + O(\log \log n)$ in
-  2-choice hashing~\cite{berenbrink:densehashing}. We leave it as an
+  for hash tables of size $m = cn$ with $c > e$ instead of $c > 4$. In
+  fact, it is known that for \emph{any}
+  $c > 0$ searching in 2-choice hashing takes time 
+  $1/c + O(\log \log n)$~\cite{berenbrink:densehashing}. We leave it as an
   open problem to find an encoding argument for this result when
   $c > 0$.
 \end{rem}
 
 \begin{rem}
-  Robin Hood hashing is another hashing solution which achieves
+  \emph{Robin Hood hashing} is another hashing solution which achieves
   $O(\log \log n)$ worst case running time for all
   operations~\cite{devroye:robin}. The original analysis is difficult,
-  but might be amenable to a similar kind of analysis as we used in
+  but might be amenable to a similar approach as we used in
   this section. Indeed, when a Robin Hood hashing operation takes a
   significant amount of time, a large witness tree is again implied,
   which suggests an easy encoding argument. Unfortunately, this
@@ -1236,16 +1237,12 @@ other elements. Then, we say that the \emph{age} of $x$ is $a(x) = t$.
 \subsection{Bipartite Expanders}
 
 Expanders are families of sparse graphs which share many connectivity
-properties with complete graphs.  \wolfgang{This description seems to
-  undersell expanders. Maybe: "...of sparse graphs with share many
-  connectivity properties with complete graphs"}\tommy{Got it.}  These
+properties with the complete graph. These
 graphs have received much research attention, and have led to many
 applications in computer science. See, for instance, the survey by
 Hoory, Linial, and Wigderson~\cite{hoory.linial.ea:expander}.
 
-\wolfgang{maybe a sentence like: "the existence of expanders was
-  originally established through probabilistic
-  arguments."}\tommy{Okay} The existence of expanders was originally
+The existence of expanders was originally
 established through probabilistic arguments~\cite{pinsker:expanders}.
 We offer an encoding argument to prove that a certain random bipartite
 graph is an expander with high probability. There are many different
@@ -1257,7 +1254,10 @@ $0 < \alpha \leq 1$, a bipartite graph $G = (A, B, E)$ is called a
   \min_{\substack{{A' \subseteq A}\\{|A'| \leq \alpha |A|}}} \frac{|N(A')|}{|A'|} \geq c \enspace ,
 \end{align*}
 where $N(A') \subseteq B$ is the set of neighbours of $A'$ in $G$.
-\wolfgang{say it in words, figure?}
+That is, in a $(c, \alpha)$-expander, every set  of vertices in
+$A$ that is not too large is ``expanded'' by a factor $c$ by taking
+one step in the graph.
+\wolfgang{figure?}.
 
 Let $G = (A, B, E)$ be a random bipartite multigraph where
 $|A| = |B| = n$ and where each vertex of $A$ is connected to three
@@ -1287,7 +1287,8 @@ Wigderson~\cite[Lemma~1.9]{hoory.linial.ea:expander}.
   To encode $G$, we first give $k$ using an Elias $\gamma$-code; together 
   with the sets $A'$ and $N(A')$; and the edges between $A'$ and
   $N(A')$. Then we encode the rest of $G$, skipping the $3k\log n$
-  bits devoted to elements in $A'$.  The key savings here come because
+  bits devoted to edges incident to $A'$.  The key savings here come 
+  because
   $N(A')$ should take $3k\log n$ bits to encode, but can actually be
   encoded in roughly $3k\log(3k/2)$ bits. Our code then has length
   \begin{align*}
