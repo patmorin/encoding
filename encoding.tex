@@ -1298,12 +1298,17 @@ Wigderson~\cite[Lemma~1.9]{hoory.linial.ea:expander}.
            &= 3n\log n - (k/2)\log n + (k/2)\log k + \beta k + 2\log k + O(1) \\
            &= \log n^{3n} - s(k)
   \end{align*}
-  bits, where $\beta = (3/2) \log (3/2) + (5/2) \log e$. Since
+  bits, where $\beta = (3/2) \log (3/2) + (5/2) \log e$ and
+  \[
+  s(k) = (k/2)\log n - (k/2)\log k - \beta k -
+  2 \log k - O(1) \enspace.
+  \]
+  Since
   \[
     \frac{d^2}{dk^2} s(k) = \frac{4 - k}{2 k^2} \log e \enspace ,
   \]
   the function $s(k)$ is concave for all $k \geq 4$. Thus, $s(k)$ is
-  minimized either when $k = 1, 2, 3, 4$, or $k = \alpha n$. We have
+  minimized either when $k = 1, 2, 3, 4$, or when $k = \alpha n$. We have
   \begin{align*}
     s(1) &= (1/2)\log n + c_1 \enspace , & 
     s(2) &= \log n + c_2 \enspace , \\
@@ -1313,12 +1318,16 @@ Wigderson~\cite[Lemma~1.9]{hoory.linial.ea:expander}.
   for constants $c_1, c_2, c_3, c_4$. For $k=\alpha n$ we have
   \[
     s(\alpha n) = (\alpha n/2)\log \left(\frac{1}{2^{2\beta}
-        \alpha}\right) - 2 \log \alpha n
+        \alpha}\right) - 2 \log \alpha n + c_5,
   \]
-  and $2^{-s(\alpha n)} = 2^{-\varOmega(n)}$ for
-  $\alpha < (1/2)^{2\beta} \approx 0.002$. In each case, the Uniform
-  Encoding Lemma gives the desired result, and in particular,
-  $2^{-s(k)} \leq O(n^{-1/2})$.
+  for some constant $c_5$.
+  Thus, $2^{-s(\alpha n)} = 2^{-\varOmega(n)}$ for
+  $\alpha < (1/2)^{2\beta} \approx 0.002$. Now the Uniform Encoding
+  Lemma gives the desired result. Indeed, the encoding works
+  for all values of $k$, and it always saves at least 
+  $s(1) = (1/2)\log n + O(1)$ bits.
+  Thus, the probability that the construction fails is
+  at most $O(n^{-1/2})$.
 \end{proof}
 
 \subsection{Permutations and Binary Search Trees}
