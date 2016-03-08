@@ -86,14 +86,22 @@ recommends a total of 6 Tier-1 hours and 2 Tier-2 hours spent on
 discrete probability, as part of the discrete structures curriculum
 \cite[Page~77]{computing-curricula:computer}.
 
-\wolfgang{As above, maybe one could also emphasize that
-the uniform coding lemma is basically a bijection counting argument.}
-In this expository paper, we survey applications of ``encoding
-arguments'' that transform the problem of upper-bounding the
-probability of a specific event, $\mathcal{E}$, into the problem of
-devising a code for the set of elementary events in $\mathcal{E}$.
-Encoding arguments have several advantages over traditional
-probabilistic analysis:
+\wolfgang{As above, maybe one could also emphasize that the uniform
+  coding lemma is basically a bijection counting argument.}
+\tommy{Added a little bit, is this enough?} In this expository paper,
+we survey applications of ``encoding arguments'' that transform the
+problem of upper-bounding the probability of a specific event,
+$\mathcal{E}$, into the problem of devising a code for the set of
+elementary events in $\mathcal{E}$. Such a problem could also be
+approached using a traditional probabilistic analysis or, since we are
+only concerned with finite spaces, by directly counting the size of
+$\mathcal{E}$. Of course, the probabilistic method offers many
+theoretical and intuitive advantages over direct counting, even though
+a probabilistic argument is only effectively a sophisticated
+rephrasing of a counting argument. Accordingly, an encoding argument
+offers its own set of advantages over an alternative proof technique,
+even though it also effectively is a rephrased form of counting. More
+specifically:
 
 \begin{enumerate}
 \item Encoding arguments are almost ``probability-free.''  Except for
@@ -889,7 +897,7 @@ in the block can be represented with $\log t$ bits each.}
 be that for any \emph{fixed} $x$, the search time is $O(1)$.
 In contrast, there always exists \emph{some} $x$ such that
 the search time for $x$ is $\Omega(\log n)$, no? 
-If I am wrong, please correct me.}
+If I am wrong, please correct me.} \tommy{Yes, I think you are right.}
 \begin{cor}
   Let $n \in \N$, $c > e$.
   Suppose that a set $X = \{x_1, \dots, x_n\}$ of $n$ items 
@@ -1168,7 +1176,17 @@ other elements. Then, we say that the \emph{age} of $x$ is $a(x) = t$.
   with $a(x_g) = t - 1$. The elements $x_h$ and $x_g$ become the left and
   the right child of $x$ in $T$. The process continues recursively. If
   some element appears more than once on a level, we only recurse on
-  its leftmost occurrence \wolfgang{Figure?}. 
+  its leftmost occurrence. See \figref{2-choice-example} for an example. 
+
+  \begin{figure}
+    \centering
+    \includegraphics{2choiceexample.pdf}
+    \caption{The tree $T$ is a witness tree for the 2-choice hashing
+      instance with elements $\dots, x_5, x_6, x_7, x_8, x_9, x_{10}$
+      inserted in order and according to the hash functions $h$ and
+      $g$.}
+    \figlabel{2-choice-example}
+  \end{figure}
 
   Using $T$, we can iteratively define a connected subgraph $G_T$ of $G$.
   Initially, $G_T$ consists of the single node in $V$ corresponding
