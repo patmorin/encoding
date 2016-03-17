@@ -893,11 +893,6 @@ in the block can be represented with $\log t$ bits each.}
   of \thmref{linear-probing} that works for any $c>1$.
 \end{rem}
 
-\wolfgang{I rephrased the corollary. I think the statement should
-be that for any \emph{fixed} $x$, the search time is $O(1)$.
-In contrast, there always exists \emph{some} $x$ such that
-the search time for $x$ is $\Omega(\log n)$, no? 
-If I am wrong, please correct me.} \tommy{Yes, I think you are right.}
 \begin{cor}
   Let $n \in \N$, $c > e$.
   Suppose that a set $X = \{x_1, \dots, x_n\}$ of $n$ items 
@@ -931,7 +926,7 @@ Cuckoo hashing is relatively new hashing scheme that offers an
 alternative to classic perfect hashing \cite{pagh.rodler:cuckoo}. 
 We present a clever proof, due to Mihai Pătraşcu, that cuckoo hashing
 succeeds with probability $1-O(1/n)$ \cite{patrascu:cuckoo}
-(see also \cite{haimberger:cuckoo} for a detailed exposition of the 
+(see also \cite{haimberger:cuckoo} for a more detailed exposition of the 
 argument).
 
 We again hash the elements of the set $X = \{x_1, \ldots, x_n\}$. The
@@ -1352,11 +1347,15 @@ Wigderson~\cite[Lemma~1.9]{hoory.linial.ea:expander}.
 
 We define a \emph{permutation} $\sigma$ of size $n$ to be a sequence
 of $n$ pairwise distinct integers, sometimes denoted by
-$\sigma = (\sigma_1, \dots, \sigma_n)$. This slightly unusual
+$\sigma = (\sigma_1, \dots, \sigma_n)$. The set
+$\{\sigma_1, \dots, \sigma_n\}$ is called the
+\emph{support} of $\sigma$. This slightly unusual
 definition will serve us for the purpose of encoding. Except when
-explicitly stated, we will assume that the set of integers involved in
-a permutation of size $n$ is precisely $\{1, \dots, n\}$. The number
-of such permutations is $n!$.
+explicitly stated, we will assume that the support of a permutation
+of size $n$
+is precisely $\{1, \dots, n\}$. For any fixed support of
+size $n$, the number of distinct permutations 
+is $n!$.
 
 \subsubsection{Analysis of Insertion Sort}
 \seclabel{insertion-sort}
@@ -1368,36 +1367,41 @@ $\sigma = (\sigma_1,\ldots,\sigma_n)$ of $n$ elements:
 \begin{algorithmic}[1]
   \FOR{$i\gets 2$ \TO $n$}
      \STATE{$j \gets i$}
-     \WHILE{$j>1$ \AND $x_{j-1} > x_j$}
+     \WHILE{$j>1$ \AND $\sigma_{j-1} > \sigma_j$}
          \STATE{$\sigma_j \leftrightarrow \sigma_{j-1}$
-            \COMMENT{ swap }}
+            \COMMENT{ swap }}\label{alg:isort:swap}
          \STATE{$j\gets j-1$}
      \ENDWHILE
   \ENDFOR
 \end{algorithmic}
 
 A typical task in the average-case analysis of algorithms is to
-determine the number of times Line~4 executes if $\sigma$ is a
+determine the number of times Line~\ref{alg:isort:swap} executes 
+if $\sigma$ is a
 uniformly random permutation of size $n$.  The answer
 $\binom{n}{2}/2$ is an easy application of linearity of expectation:
-For every one of the $\binom{n}{2}$ pairs $p,q\in\{1,\ldots,n\}$ with
+For every one of the $\binom{n}{2}$ pairs of indices 
+$p,q\in\{1,\dots,n\}$ with
 $p<q$, the values initially stored at positions $\sigma_p$ and
 $\sigma_q$ will eventually be swapped if and only if
-$\sigma_p > \sigma_q$, which happens with probability $1/2$ in a
-uniformly random permutation. Such a pair is called an
-\emph{inversion}, so the number of times Line~4 executes is the number
+$\sigma_p > \sigma_q$. This happens with probability $1/2$ in a
+uniformly random permutation. A pair $p, q \in \{1, \dots, n\}$ with
+$p < q$ and $\sigma_p > \sigma_q$ is called an
+\emph{inversion}, so the number of times Line~\ref{alg:isort:swap} 
+executes is the number
 of inversions of $\sigma$.
 
 A more advanced question is to ask for a concentration result on the
-number of inversions. This is a harder question to tackle; because $>$
+number of inversions. This is harder to tackle; because $>$
 is transitive, the $\binom{n}{2}$ events being studied have a lot of
-interdependence. In the following, we show how to obtain a
-concentration result with an encoding argument.  The argument
+interdependence. In the following, we show how an encoding argument
+leads to a concentration result.  The argument
 presented here follows the same outline as Vit\'{a}nyi's analysis of
 bubble sort \cite{vitanyi:analysis}, though without all the trappings
 of Kolmogorov complexity.
 
 \begin{thm}\thmlabel{insertion-sort}
+  Let $\alpha \in (0, 1/e^2)$.
   A uniformly random permutation $\sigma$ of size $n$ has at most
   $\alpha n^2 - n + 2$ inversions with probability at most
   $2^{n \log(\alpha e^2) + O(\log n)}$. In particular, for a fixed
@@ -1414,23 +1418,18 @@ of Kolmogorov complexity.
 \begin{proof}
   We encode the permutation $\sigma$ by recording the execution of
   \textsc{InsertionSort} on $\sigma$. In particular, we record for
-  each $i\in\{2,\ldots,n\}$, the number of times $m_i$ that Line~4
+  each $i\in\{2,\ldots,n\}$, the number of times $m_i$ that 
+  Line~\ref{alg:isort:swap}
   executes during the $i$-th iteration of
   $\textsc{InsertionSort}(\sigma)$. With this information, one can run
-  the following algorithm to recover $\sigma$ \wolfgang{More
-    explanation here? I would have expected $i$ to go from $n$ downto
-    $2$ and $j$ to go up, corresponding to a reverse execution of
-    insertion sort. For the pseudocode below, correctness is not
-    obvious to me (but maybe I should try some examples by hand)}
-  \tommy{You're right: regardless of whether or not the other
-    algorithm was correct, this one makes more sense}:
+  the following algorithm to recover $\sigma$:
   
   \noindent{$\textsc{InsertionSortReconstruct}(m_2, \dots, m_n)$}:
   \begin{algorithmic}[1]
     \STATE{$\sigma \gets (1, \dots, n)$}
     \FOR{$i \gets n \textbf{ down to } 2$}
       \FOR{$j \gets i - m_i + 1$ \TO $i$}
-        \STATE{$\sigma_j \leftarrow \sigma_{j-1}$
+        \STATE{$\sigma_j \leftrightarrow \sigma_{j-1}$
           \COMMENT{ swap }}
       \ENDFOR
     \ENDFOR
@@ -1449,15 +1448,15 @@ of Kolmogorov complexity.
   %  \RETURN{$\sigma$}
   %\end{algorithmic}
    
-  To make this work, we have to be slightly clever with this
-  encoding. Rather than encode $m_2,m_3,\ldots,m_n$ directly, we first
+  We have to be slightly clever with the
+  encoding. Rather than encode $m_2, m_3, \dots, m_n$ directly, we first
   encode $m=\sum_{i=2}^{n} m_i$ using $2\log n$ bits (since
-  $m < n^2$). Given $m$, what remains is to describe the partition of
+  $m < n^2$). Given $m$, it remains to describe the partition of
   $m$ into $n-1$ non-negative integers $m_2,\ldots,m_n$; there are
   $\binom{m+n-2}{n-2}$ such partitions.\footnote{To see this, draw
     $m+n-2$ white dots on a line, then choose $n-2$ dots to colour
-    black. This splits the remaining $m$ white dots up into $n-1$
-    groups, which determine the values of $m_2,\ldots,m_n$.}
+    black. This splits the remaining $m$ white dots into $n-1$
+    groups whose sizes determine the values of $m_2,\ldots,m_n$.}
   
   Therefore, the values of $m_2,\ldots,m_n$ can be encoded using
   \[
@@ -1481,23 +1480,21 @@ of Kolmogorov complexity.
 \begin{rem}
   \thmref{insertion-sort} is not sharp; it only gives a non-trivial
   probability when $\alpha < 1/e^2$.  To obtain a sharp bound, one can
-  use the fact that $m_2,\ldots,m_n$ are independent and $m_i$ is
-  uniform over $\{0,\ldots,i-1\}$ and then use the method of bounded
-  differences \cite{mcdiarmid:on} to show that $m$ is concentrated in
+  use the fact that $m_2,\ldots,m_n$ are independent and that $m_i$ is
+  uniform over $\{0,\ldots,i-1\}$ together with the method of bounded
+  differences \cite{mcdiarmid:on}. This shows that $m$ is concentrated in
   an interval of size $O(n^{3/2})$.
 \end{rem}
 
 \subsubsection{Records}
 
-A \emph{(max) record} \wolfgang{I know it as a "peak"}\tommy{From what
-  I can quickly see, the usual definition of peak doesn't agree with
-  our definition of max records.}  in a permutation $\sigma$ of size
-$n$ is some value $\sigma_i$ with $1 \leq i \leq n$ such that
+A \emph{(max) record} in a permutation $\sigma$ of size
+$n$ is some value $\sigma_i$, $1 \leq i \leq n$, such that
 \[
   \sigma_i = \max\{\sigma_1, \dots, \sigma_i\} \enspace .
 \]
-It is easy to see that the probability that $\sigma_i$ is a record is
-exactly $1/i$ if $\sigma$ is chosen uniformly at random, in which case
+If $\sigma$ is chosen uniformly at random, the probability that 
+$\sigma_i$ is a record is exactly $1/i$. Thus, 
 the expected number of records in such a permutation is
 \[
   H_n = \sum_{i = 1}^n 1/i = \ln n + O(1) \enspace ,
@@ -1508,69 +1505,77 @@ the independence of certain random variables, which quickly becomes
 tedious. We instead give an encoding argument to show concentration of
 the number of records, inspired by a technique used by Lucier \emph{et
   al.} to study the height of random binary search trees
-\cite{lucier.jiang.li:quicksort}.
+\cite{lucier.jiang.li:quicksort} (see also \secref{height}).
 
-First, we describe an incremental and recursive manner of encoding a
+First, we describe a recursive encoding of a
 permutation $\sigma$ of size $n$: Begin by providing the first value
-of the permutation $\sigma_1$; followed by the set of indices of the
-permutation for which $\sigma$ takes on a value strictly smaller than
-$\sigma_1$, including an explicit encoding of the induced permutation
-on the elements at those indices; and a recursive encoding of the
+of the permutation $\sigma_1$; then show the set of indices from
+$\{2, \dots, n\}$
+for which $\sigma$ takes on a value strictly smaller than
+$\sigma_1$ and an explicit encoding of the induced permutation
+on the elements at those indices; finally, give a recursive encoding of the
 permutation induced on the elements strictly larger than
 $\sigma_1$. The number of recursive invocations is equal to the number
 of records in $\sigma$.
 
 If $\sigma$ contains $k$ elements strictly smaller than $\sigma_1$,
-then the length $\ell(n)$ of the codeword for $\sigma$ satisfies the
-recurrence
+then the length $\ell(\sigma)$ of the codeword for $\sigma$ satisfies 
 \[
-  \ell(n) = \log n + \log \binom{n - 1}{k} + \log k! + \ell(n - k - 1) \enspace ,
+  \ell(\sigma) = \log n + \log \binom{n - 1}{k} + 
+    \log k! + \ell(\sigma') \enspace ,
 \]
-with $\ell(0) = 0$ and $\ell(1) = 0$. This solves to $\ell(n) = \log
+where $\sigma'$ is the induced permutation on the $n - k - 1$ 
+elements strictly
+larger than $\sigma_1$.
+Thus, we get the following recursion for the length $\ell(n)$ of the
+encoding for a permutation of size $n$:
+\[
+  \ell(n) = \max_{k \in \{1, \dots, n-1\}} \left(\log n + 
+  \log \binom{n - 1}{k} + 
+    \log k! + \ell(n-1-k)\right) \enspace ,
+\]
+with $\ell(0) = 0$ and $\ell(1) = 0$. 
+This solves to $\ell(n) = \log
 n!$, so the encoding described above is no better than a fixed-length
-encoding for $\sigma$. However, we can readily modify this encoding to
-obtain a result about the concentration of records in a uniformly
+encoding for $\sigma$. However, a simple modification of the scheme 
+yields a result about the concentration of records in a uniformly
 random permutation.
 
 \begin{thm}\thmlabel{records}
-  A uniformly random permutation $\sigma$ of size $n$ has at least $c
+  For any fixed $c > 2$, 
+  a uniformly random permutation $\sigma$ of size $n$ has at least $c
   \log n$ records with probability at most
   \[
-    2^{-c (1 - H(1/c)) \log n + O(\log \log n)}
+    2^{-c (1 - H(1/c)) \log n + O(\log \log n)}\enspace .
   \]
-  for $c > 2$.
 \end{thm}
 \begin{proof}
-  We encode the permutation $\sigma$ chosen uniformly at random from a
-  set of size $n!$.
+We describe an encoding scheme for permutations with at least 
+$t = \ceil{c \log n}$ records. 
+Suppose that the permutation $\sigma$ has $t$ records
+$r_1 < r_2 < \cdots < r_t$. First, we define a
+bit string $x = (x_1, \dots, x_t) \in \{0, 1\}^t$, where $x_1 = 0$
+and $x_i = 1$ if and only if $r_i$ lies in the second half of the
+interval $[r_{i - 1}, n]$, for $i = 2, \dots, t$. 
+Recalling that  $n_1(x)$ represents the 
+number of ones in the bit string $x$, it follows that 
+$n_1(x) \leq \log n$, so $n_1(x)/t \leq 1/c$.
 
-  Suppose that $\sigma$ has $t = \ceil{c\log n}$ records
-  $r_1 < r_2 < \cdots < r_t$, for some fixed $c > 2$. First, give a
-  bit string $x = (x_1, \dots, x_t) \in \{0, 1\}^t$, where $x_1 = 0$
-  and $x_i = 1$ if and only if $r_i$ lies in the second half of the
-  interval $[r_{i - 1}, n]$. If $n_1(x)$ represents the number of ones
-  in the bit string $x$, it follows that $n_1(x) \leq \log n$, so
-  $n_1(x)/t \leq 1/c$ \wolfgang{What is $n_1$ again (maybe good to
-    remind the reader)? And how do you define $r_0$ (i.e., how do you
-    get $x_1$?  Finally, maybe it is better to define $x$ in terms of
-    $x_i = 1$, since afterwards you talk about
-    $n_1$?}. \tommy{Alright}
-
-  To begin our encoding of $\sigma$, we encode the bit string $x$ by
-  giving the set of $n_1(x)$ ones in $x$; followed by the incremental
-  recursive encoding of $\sigma$ from earlier. Now, our knowledge of
-  the value of $x_i$ halves the size of the space of options for
-  encoding the record $r_i$. In other words, our knowledge of $x$
-  allows us to encode each record using roughly one less bit per
-  record. More precisely, if the number of choices for each record
-  $r_i$ in the original encoding is $m_i$, such that $m_1 > \dots >
+To begin our encoding of $\sigma$, we encode the bit string $x$ by
+giving the set of $n_1(x)$ ones in $x$; followed by the 
+recursive encoding of $\sigma$ from earlier. Now, our knowledge of
+the value of $x_i$ halves the size of the space of options for
+encoding the position $r_i$ . In other words, our knowledge of $x$
+allows us to encode each record using roughly one less bit per
+record. More precisely, if the number of choices for each record
+$r_i$ in the original encoding is $m_i$, such that $m_1 > \dots >
   m_t$, then the number of bits spent encoding records in the new code
   is at most
   \begin{align*}
     \sum_{i = 1}^t \log \ceil{m_i/2} &\leq \sum_{i = 1}^t \log (m_i/2
                                        + 1)
     \\
-                                     &\leq \sum_{i = 1}^t \log (m_i/2) + \sum_{i = 1}^t O(1/m_i) \tag{since $\log (1 + x) = \log x + O(1/x)$} \\
+                                     &\leq \sum_{i = 1}^t \log (m_i/2) + \sum_{i = 1}^t O(1/m_i) \tag{since $\log (x + 1) = \log x + O(1/x)$} \\
                                      &\leq \sum_{i = 1}^t \log (m_i/2) + O(H_t) \\
                                      &= \sum_{i = 1}^t \log
                                        m_i - t + O(\log \log n) \enspace ,
@@ -1581,12 +1586,14 @@ random permutation.
                 &\leq \log n! - t (1 - H(n_1(x)/t)) + O(\log \log n) \tag{by \eqref{log-n-choose-k}}\\
                 &\leq \log n! - c (1 - H(1/c))\log n + O(\log \log n) \enspace ,
   \end{align*}
-  where this last inequality follows since $c > 2$, so $H(n_1(x)/t)
-  \leq H(1/c)$. We finish by applying the Uniform Encoding Lemma.
+  where this last inequality follows since $c > 2$, so 
+  $0 \leq n_1(x)/t \leq 1/c < 1/2$, and $H(n_1(x)/t)
+  \leq H(1/c)$ since $H(\cdot)$ is increasing on $[0, 1/2]$. 
+  We finish by applying the Uniform Encoding Lemma.
 \end{proof}
 
 \begin{rem}\remlabel{records}
-  The preceding result only works for $c > 2$, but we already know
+  The preceding result only works for $c > 2$, but it is  known
   that the number of records in a uniformly random permutation is
   concentrated around $\ln n + O(1)$, where $\ln n = \alpha \log n$
   for $\alpha = 0.6931...$. We leave as an open problem whether or not
