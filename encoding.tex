@@ -1603,6 +1603,8 @@ $r_i$ in the original encoding is $m_i$, such that $m_1 > \dots >
 
 \subsubsection{The Height of a Random Binary Search Tree}
 \seclabel{height}
+\wolfgang{We should revisit these sections once more. I am not
+sure I get all the details (about pinning down the constants.}
 
 Every permutation $\sigma$ determines a binary search tree
 $\text{BST}(\sigma)$ created through the sequential insertion of the
@@ -1649,12 +1651,16 @@ of length $(w - v - 1)/2$ of its subrange.
   $1 - O(1/n)$.
 \end{thm}
 \begin{proof}
-  Suppose that the tree $\text{BST}(\sigma)$ has a root-to-leaf path
-  $Y = (y_1, \ldots, y_t)$ of length $t = \ceil{c \log n}$ for some
-  fixed $c > 2/\log (4/3)$.
+  Let $c > 2/\log (4/3)$,
+  and suppose that the tree $\text{BST}(\sigma)$ contains a path
+  $Y = (y_1, \ldots, y_t)$ of length $t = \ceil{c \log n}$ that
+  starts at the root and in which $y_{i+1}$ is a child of $y_i$,
+  for $i = 1, \dots, t-1$.
 
-  Our encoding for $\sigma$ has two parts. The first part includes an
-  encoding of the value $y_t$, and a bit string
+  Our encoding for $\sigma$ has two parts. 
+  \wolfgang{ I removed $y_t$. It was not clear to me why we needed it?} 
+  The first part consists of
+  a bit string
   $x = (x_1, \dots, x_t)$, where $x_i = 1$ if and only if $y_i$ is
   balanced. From our definition, if $y_i$ is balanced, then
   $s(y_{i + 1}) \leq (3/4) s(y_i)$. Since $n_1(x)$ counts the
@@ -1664,16 +1670,21 @@ of length $(w - v - 1)/2$ of its subrange.
   \]
 
   The second part of our encoding is recursive: First, encode the
-  value of the root $r$ using $\log \ceil{n/2}$ bits. If the
-  path $Y$ goes to the left of $r$, then specify the values in the
-  right subtree of $r$, including an explicit encoding of the
+  value of the root $y_1$ using $\log \ceil{n/2}$ bits. Note that since 
+  we know whether $y_1$ is balanced or not, there are only $n/2$ 
+  possibilities
+  for the root value, by the discussion above. If $y_2$ is 
+  the left child $y_1$, then specify the values in the
+  right subtree of $y_1$, including an explicit encoding of the
   permutation induced by these values; and recursively encode the
-  permutation of values in the left subtree of $r$. If, instead, $Y$
-  goes to the right of $r$, proceed symmetrically.
+  permutation of values in subtree of $y_2$. If, instead, $y_2$
+  is the right child of  $y_1$, proceed symmetrically.
+  Once we reach $y_t$, we encode the permutations of the two subtrees
+  of $y_t$ explicitly.
  
   The first part of our encoding uses at most
   \[
-    \log n + t H(n_1(x)/t)
+    t H(n_1(x)/t)
   \]
   bits. The same analysis as in the proof of \thmref{records} shows that
   the second part of our encoding has length at most
@@ -1683,19 +1694,16 @@ of length $(w - v - 1)/2$ of its subrange.
   Thus, we get 
   a savings of
   \begin{align*}
-  &t - O(\log\log n) - \log n - tH(n_1(x)/t)\\
-  &\geq c\log n - O(\log\log n) - \log n - 
+  &t - O(\log\log n) - tH(n_1(x)/t)\\
+  &\geq c\log n - O(\log\log n) -  
   c\log nH\left(\frac{1}{c\log(4/3)}\right)\\
-  &= c\left(1 - 1/c - H\left(\frac{1}{c\log(4/3)}\right)\right)\log n
+  &= c\left(1 - H\left(\frac{1}{c\log(4/3)}\right)\right)\log n
     - O(\log\log n)
   \end{align*}
   bits, where the second inequality uses the fact that
   $c > 2/\log(4/3)$. Applying the Uniform Encoding Lemma, we see that
   $\text{BST}(\sigma)$ has height at most $c \log n$ with probability
   $1 - O(1/n)$ for $c > 2/\log (4/3)$ satisfying
-  \wolfgang{I get $c(1-1/c-H(\cdot)) > 1$ for this inequality.
-    What happened to the $\log n$ summand for the encoding of
-    the first part? Do we need to update the value for $c$?}
   \[
     c \left(1 - H\left(\frac{1}{c \log (4/3)}\right)\right) > 1 \enspace ,
   \]
@@ -1729,7 +1737,7 @@ of length $(w - v - 1)/2$ of its subrange.
 
 \subsubsection{Hoare's Find Algorithm}
 
-In this section, we analyze the number of comparisons made in the
+In this section, we analyze the number of comparisons made in an
 execution of Hoare's classic \textsc{Find} algorithm~\cite{hoare:find}
 which returns the $k$-th smallest element in an array of $n$
 elements. The analysis is similar to that of the preceding section.
@@ -1791,26 +1799,28 @@ $3n_i/4$.
   n_i \leq (3/4)^{\alpha i} n
   \]
   for each $t_0 \leq i \leq t$, and the total number of comparisons
-  made by $\textsc{Find}$ is at most \wolfgang{Why $+1$? Above, you
-    said that Partition makes $n-1$ comparisons? Or do you count the
-    two comparisons that evaluate the size of $\sigma^L$? Should they
-    count? They are not comparisons among elements of the
-    permutation?} \tommy{Yes, alright, they should not count.}
+  made by $\textsc{Find}$ is at most 
   \[
     \sum_{i=0}^t n_i \le t_0 n + \sum_{i=t_0}^t n_i \le O(n) + n
     \sum_{i = t_0}^t (3/4)^{\alpha i} = O(n) \enspace . \qedhere
   \]
 \end{proof}
 
+\wolfgang{I rephrased the lemma, because I was not sure what
+exactly we mean by ``high probability''}
 \begin{thm}
-  For a uniformly random permutation $\sigma$ and any $k$,
-  $\textsc{Find}(k, \sigma)$ executes $O(n)$ comparisons with high
-  probability.
+  Let $\sigma$ be a uniformly random permutation. Then, for 
+  every fixed probability $p \in (0,1)$, there exists
+  a constant $c$ such that 
+  $\textsc{Find}(k, \sigma)$ executes at most $cn$ comparisons with 
+  probability at least $p$, for any $k$.
 \end{thm}
 \begin{proof}
-  We again encode the permutation $\sigma$. Suppose that the
-  conditions of the preceding lemma are not satisfied,
-  \emph{i.e.}~there is an $i$ such that the number of good pivots
+  We again encode the permutation $\sigma$. Set $\alpha = 1/4$ and
+  let $t_0$ be a constant depending on $p$. Suppose that the
+  conditions of the preceding lemma are not satisfied for $\alpha$ and 
+  $t_0$,
+  \emph{i.e.}~there is an $i \geq t_0$ such that the number of good pivots
   among $x_1, \dots, x_i$ is less than $\alpha i$. We encode $\sigma$
   in two parts. The first part of our encoding gives the value of $i$
   using an Elias $\delta$-code, followed by the set of indices of the
@@ -1821,24 +1831,22 @@ $3n_i/4$.
   Note that the pivots $x_1, \dots, x_i$ trace a path from the root in
   $\text{BST}(\sigma)$. Therefore, the second part of our encoding is
   the recursive encoding presented in \secref{height}, in which each
-  pivot can be encoded using one less bit. In total, our code then has
-  length
+  pivot can be encoded using one less bit, since
+  knowng whether $x_j$ is a good pivot or not narrows down
+  the range of possible values for $x_j$ by $1/2$. In total, our code 
+  then has length
   \[
     |C(\sigma)| \le \log n! - i + i H(\alpha) + \log i + O(\log \log
     i) = \log n! - \varOmega(i) \enspace ,
   \]
-  since $\alpha < 1/2$. The proof is completed by applying the Uniform
-  Encoding Lemma, and by observing that $k_0 \leq i$ can be made
+  since $\alpha = 1/4 < 1/2$. The proof is completed by applying 
+  the Uniform
+  Encoding Lemma, and by observing that $t_0 \leq i$ can be made
   arbitrarily large.
 \end{proof}
 
 
 \subsection{$k$-SAT and the Lov\'{a}sz Local Lemma}
-
-\wolfgang{Here, I think we are missing an introductory sentence.
-"We now consider the question of satisfiability of propositional
-formulas. Let us start with some definitions.". Or something
-like this.} \tommy{Okay, that sounds good}
 
 We now consider the question of satisfiability of propositional
 formulas. Let us start with some definitions.
