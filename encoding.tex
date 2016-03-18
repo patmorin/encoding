@@ -1487,6 +1487,7 @@ of Kolmogorov complexity.
 \end{rem}
 
 \subsubsection{Records}
+\seclabel{records}
 
 A \emph{(max) record} in a permutation $\sigma$ of size
 $n$ is some value $\sigma_i$, $1 \leq i \leq n$, such that
@@ -1617,35 +1618,35 @@ argument via Kolmogorov complexity to study the height of
 $\text{BST}(\sigma)$. They show that for a uniformly chosen
 permutation $\sigma$, the tree $\text{BST}(\sigma)$ has height at most
 $c \log n$ with probability $1 - O(1/n)$ for $c = 15.498\dots$; we can
-extend our result on records to obtain a tighter result \wolfgang{This
-  is a bit strange. Why this specific constant $c$? Why is there no
-  tradeoff between the probability and $c$?} \tommy{Their result works
-  in essentially the same way as ours, but there is some tradeoff
-  between the probability and $c$. In fact, $c > 2/\log(4/3)$ suffices
-  in our case to get nonzero probability, but then the concentration
-  is weaker than $O(1/n)$. I chose to obtain the same concentration
-  result as Lucier et al but with a better constant}.
+extend our result on records from~\secref{records} to obtain a 
+tighter result.
+%\wolfgang{This
+%  is a bit strange. Why this specific constant $c$? Why is there no
+%  tradeoff between the probability and $c$?} \tommy{Their result works
+%  in essentially the same way as ours, but there is some tradeoff
+%  between the probability and $c$. In fact, $c > 2/\log(4/3)$ suffices
+%  in our case to get nonzero probability, but then the concentration
+%  is weaker than $O(1/n)$. I chose to obtain the same concentration
+%  result as Lucier et al but with a better constant}.
 
 For a node $u$, let $s(u)$ denote the number of nodes in the tree
 rooted at $u$. Then, $u$ is called \emph{balanced} if
 $s(u^L), s(u^R) > s(u)/4$, where $u^L$ and $u^R$ are the left and
-right subtrees of $u$ respectively. In other words, since each node
+right subtrees of $u$, respectively. In other words, since each node
 $u$ determines an interval $[v, w]$, where $v$ is the smallest node in
 the subtree rooted at $u$, and $w$ is the largest such node, then $u$
 is balanced if and only if
 \[
-  u \in \left[\frac{w + v}{2} - \frac{w - v}{4}, \frac{w + v}{2} + \frac{w - v}{4}\right] \enspace ,
+  u \in \left(\frac{w + v}{2} - \frac{w - v - 1}{4}, \frac{w + v}{2} + \frac{w - v - 1}{4}\right) \enspace ,
 \]
-\emph{i.e.}~$u$ is called balanced if it occurs in the middle interval
-of length $(w - v)/2$ of its subrange.
-
-%de is said to be balanced if it
-%occurs in the middle half of its subrange \wolfgang{"middle half" sounds
-%a bit strange to me. Maybe "middle interval of size $s/2$?}.
+\emph{i.e.}~$u$ is called balanced if it occurs inside the middle interval
+of length $(w - v - 1)/2$ of its subrange.
 
 \begin{thm}\thmlabel{bst-height}
-  Let $\sigma$ be a uniformly random permutation of size $n$. Then,
-  $\text{BST}(\sigma)$ has height $O(\log n)$ with high probability.
+  Let $\sigma$ be a uniformly random permutation of size $n$. 
+  There is a constant $c = 8.12669\dots$ such that 
+  $\text{BST}(\sigma)$ has height at most $c\log n$ with probability
+  $1 - O(1/n)$.
 \end{thm}
 \begin{proof}
   Suppose that the tree $\text{BST}(\sigma)$ has a root-to-leaf path
@@ -1654,10 +1655,10 @@ of length $(w - v)/2$ of its subrange.
 
   Our encoding for $\sigma$ has two parts. The first part includes an
   encoding of the value $y_t$, and a bit string
-  $x = (x_1, \ldots, x_t)$, where $x_i = 1$ if and only if $y_i$ is
+  $x = (x_1, \dots, x_t)$, where $x_i = 1$ if and only if $y_i$ is
   balanced. From our definition, if $y_i$ is balanced, then
-  $s(y_{i + 1}) \leq (3/4) s(y_i)$, and since $n_1(x)$ counts the
-  number of balanced nodes along $Y$, then
+  $s(y_{i + 1}) \leq (3/4) s(y_i)$. Since $n_1(x)$ counts the
+  number of balanced nodes along $Y$, we get
   \[
     1 \leq (3/4)^{n_1(x)} n \iff n_1(x) \leq \log_{4/3} n \enspace .
   \]
@@ -1679,14 +1680,29 @@ of length $(w - v)/2$ of its subrange.
   \[
     \log n! - t + O(\log \log n) \enspace .
   \]
-  Applying the Uniform Encoding Lemma, we see that
+  Thus, we get 
+  a savings of
+  \begin{align*}
+  &t - O(\log\log n) - \log n - tH(n_1(x)/t)\\
+  &\geq c\log n - O(\log\log n) - \log n - 
+  c\log nH\left(\frac{1}{c\log(4/3)}\right)\\
+  &= c\left(1 - 1/c - H\left(\frac{1}{c\log(4/3)}\right)\right)\log n
+    - O(\log\log n)
+  \end{align*}
+  bits, where the second inequality uses the fact that
+  $c > 2/\log(4/3)$. Applying the Uniform Encoding Lemma, we see that
   $\text{BST}(\sigma)$ has height at most $c \log n$ with probability
   $1 - O(1/n)$ for $c > 2/\log (4/3)$ satisfying
+  \wolfgang{I get $c(1-1/c-H(\cdot)) > 1$ for this inequality.
+    What happened to the $\log n$ summand for the encoding of
+    the first part? Do we need to update the value for $c$?}
   \[
     c \left(1 - H\left(\frac{1}{c \log (4/3)}\right)\right) > 1 \enspace ,
   \]
   and a computer-aided calculation shows that $c = 8.12669\dots$ is the
-  minimal solution so this inequality.
+  minimal solution to this inequality.
+  \wolfgang{What is the ``minimal'' solution? This is a strict inequality.
+    How do we know that the solution set has a minimum?}
 \end{proof}
 
 \begin{rem}
