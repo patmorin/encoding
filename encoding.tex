@@ -1963,7 +1963,7 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
   to $\textsc{Fix}$. The children of a node correspond 
    to the sequence of calls to $\textsc{Fix}$ that the procedure
   performs, ordered from left to right.
-  In particular, each (non-root) node in the tree is assigned a clause
+  Each (non-root) node in the tree is assigned a clause
   and its uniformly random truth assignment produced during the call
   to $\textsc{Fix}$. Moreover, a pre-order traversal of this tree
   describes the order of function calls in the algorithm's execution.
@@ -1980,14 +1980,11 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
   in this manner at $D_{t - 1}$, we eventually recover the original
   truth assignment $\alpha$ produced in $\textsc{Solve}(\varphi)$.
 
-  Therefore, to encode $\gamma$, we first give the final truth
+  Therefore, to encode $\gamma$, we give the final truth
   assignment $\alpha'$; and a description of the shape of the tree
   $T$; and the sequence of at most $m$ clauses which are children of
   the root of $T$; and the at most $t$ clauses involved in the calls
-  to $\textsc{Fix}$ in a pre-order traversal of $T$.  \wolfgang{Oh, I
-    see. There is some notation clash, because above you defined
-    $\alpha$ to be the \emph{initial} assignment...} \tommy{Ah
-    yeah. Fixed}
+  to $\textsc{Fix}$ in a pre-order traversal of $T$.  
 
   The key savings come from the fact that each clause intersects at
   most $r$ other clauses, so each clause (which is not a child of the
