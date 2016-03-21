@@ -1603,8 +1603,6 @@ $r_i$ in the original encoding is $m_i$, such that $m_1 > \dots >
 
 \subsubsection{The Height of a Random Binary Search Tree}
 \seclabel{height}
-\wolfgang{We should revisit these sections once more. I am not
-sure I get all the details (about pinning down the constants.}
 
 Every permutation $\sigma$ determines a binary search tree
 $\text{BST}(\sigma)$ created through the sequential insertion of the
@@ -2050,6 +2048,8 @@ results: \wolfgang{Notation clash: $X$ used to be a set, now it is a
   can use $Y$ for random variables I guess. Or $\mathbf{X}$? But then
   maybe I'd have to go back and bold some other random variables (like
   hash functions)? I'd appreciate a suggestion.}
+\wolfgang{It seems to me that using $Y$ for the random variable would
+  be the least disruptive route.}
 \begin{thm}[Markov's Inequality]
   For any non-negative random variable $Y$ with finite
   expectation, and any $a > 0$,
@@ -2065,7 +2065,7 @@ We will say that a real-valued function $\ell : X \to \R$
 \]
 \begin{lem}[Kraft's Inequality]
   If $C : X \nrightarrow \{0,1\}^*$ is a partial prefix-free code,
-  then $|C(\cdot)|$ satisfies Kraft's condition. Conversely, for any
+  then the function  $\ell : x \mapsto |C(x)|$ satisfies Kraft's condition. Conversely, for any
   function $\ell : X \to \N$ satisfying Kraft's condition, there
   exists a prefix-free code $C : X \to \{0, 1\}^*$ such that
   $|C(x)| = \ell(x)$ for all $x \in X$.
@@ -2075,9 +2075,10 @@ The following generalization of the Uniform Encoding Lemma, which was
 originally proven by Barron~\cite[Theorem~3.1]{barron:dissertation},
 serves for non-uniform input distributions:
 \begin{lem}[Non-Uniform Encoding Lemma]\lemlabel{nuel}  
-  Let $C\from X\nrightarrow\{0,1\}^*$ be a partial prefix-free code
-  and let $x\in X$ be drawn randomly where $p_x > 0$ denotes the
-  probability of drawing $x$.  Then
+  Let $C\from X\nrightarrow\{0,1\}^*$ be a partial prefix-free code,
+  and let $p_x$, $x \in X$, be a probability distribution on $X$.
+  Suppose we draw $x \in X$ randomly according to $p_x$.
+  Then, for any $s \geq 0$.
   \[
     \Pr\{ |C(x)| \le \log(1/p_x)-s\} \le 2^{-s} \enspace .
   \]
@@ -2129,11 +2130,11 @@ strings.
   If $B$ is a $\mathrm{Binomial}(n,p)$ random variable, then for any
   $\eps \geq 0$,
   \[
-    \Pr\{B\le(p-\eps)n\} \le 2^{-nD(p-\eps \| p)} \enspace ,
+    \Pr\{B\le(p-\eps)n\} \le 2^{-nD(p-\eps \,\|\, p)} \enspace ,
   \]
   where 
   \[ 
-    D(p \| q)= p\log (p/q) + (1-p)\log ((1 - p)/(1 - q))
+    D(p\, \|\, q)= p\log (p/q) + (1-p)\log ((1 - p)/(1 - q))
   \]
   is the \emph{Kullback-Liebler divergence} or \emph{relative entropy}
   between $\mathrm{Bernoulli}(p)$ and $\mathrm{Bernoulli}(q)$ random
@@ -2154,14 +2155,16 @@ strings.
   Now, $x$ appears with probability
   $p_x = p^{n_1(x)} (1 - p)^{n_0(x)}$, so
   \begin{align*}
-    |C_{p - \eps}(x)| &= \log(1/p_x) + n_1(x) \log (p/(p - \eps)) + (n - n_1(x)) \log ((1 - p)/(1 - p + \eps)) \\
-                      &= \log (1/p_x) + n_1(x) \log \left(1 + \frac{\eps}{p - \eps}\right) + (n_1(x) - n) \log \left(1 + \frac{\eps}{1 - p}\right) \enspace ,
+    |C_{p - \eps}(x)| &= \log(1/p_x) + 
+         n_1(x) \log (p/(p - \eps)) + (n - n_1(x)) \log ((1 - p)/(1 - p + \eps)) \\
+         &= \log (1/p_x) + n_1(x) \log \left(1 + \frac{\eps}{p - \eps}\right) + 
+(n_1(x) - n) \log \left(1 + \frac{\eps}{1 - p}\right) \enspace ,
   \end{align*}
   and $|C_{p - \eps}(x)|$ increases as a function of
   $n_1(x)$. Therefore, if $n_1(x) \le (p - \eps)n$, then
   \begin{align*}
     |C_{p - \eps}(x)| &\le \log (1/p_x) - n (p - \eps) \log ((p - \eps)/p) - n (1 - p + \eps) \log ((1 - p + \eps)/(1 - p)) \\
-                      &= \log (1/p_x) - n D(p - \eps \| p) \enspace .
+                      &= \log (1/p_x) - n D(p - \eps \,\|\, p) \enspace .
   \end{align*}
   The Chernoff bound is obtained by applying the Non-Uniform Encoding
   Lemma.
@@ -2199,8 +2202,12 @@ if
   is at most $2^{-s}$.
 \end{thm}
 \begin{proof}
-  Let $A$ be the bitstring of length $2n$ encoding the existence of
-  edges in $G$. Suppose that $G$ contains a cycle $C'$ of length
+  Let $A$ be the bitstring of length $2n$ encoding the edge set of
+  $G$. then the probability $p_G$ that teh graph $G$ is sampled is
+  \[
+     p_G  = p^{n_1(A)}(1-p)^{n_0(A)} \enspace .
+  \]
+  Suppose that $G$ contains a cycle $C'$ of length
   $t \geq (s + \log n + O(1))/\log (1/(3p))$. Encode $A$ by giving a
   single vertex $u$ in $C'$; the sequence of directions that the cycle
   moves along from $u$; and a Shannon-Fano code with parameter $p$ for
@@ -2271,36 +2278,40 @@ incident to the same edge of the original subgraph.
 \subsection{Triangles in $G_{n,p}$}
 
 Recall as in \secref{ramsey} that the Erd\H{o}s-R\'{e}nyi random graph
-$G_{n,p}$ is the space of undirected graphs with vertex set
+$G_{n,p}$ is the probability space of undirected graphs with vertex set
 $V=\{1,\ldots,n\}$ and in which each edge $\{u, w\} \in \binom{V}{2}$
 is present with probability $p$ and absent with probability $1-p$,
 independently of the other edges.
 
-The expected number of triangles (cycles of length 3) in $G_{n,p}$ is
-easily seen to be $p^3\binom{n}{3}$.  For $p=(6c)^{1/3}/n$, this
+By linearity of expectation, the expected number of triangles (cycles of length 3) 
+in $G_{n,p}$ is $p^3\binom{n}{3}$.  For $p=(6c)^{1/3}/n$, this
 expectation is $c-O(1/n)$.  Unfortunately, even when $c$ is a large
 constant, it still takes some work to show that there is a constant
 probability that $G_{n,p}$ contains at least one triangle. Indeed,
 this typically requires the use of the second moment method, which
 involves computing the variance of the number of triangles in
 $G_{n,p}$. To show that $G_{n, p}$ has a triangle with more
-significant probability is even more complicated \wolfgang{What is
-  "exponential probability"?} \tommy{Well, okay, is it better if I
-  make it more vague? I'm not exactly sure how difficult it would be
-  to give a result with probability $1 - 2^{-\varOmega(c)}$, but every
-  other proof for $1 - 2^{\varOmega(c^3)}$ hasn't been as easy as
-  ours}, and a proof of this result would still typically rely on an
+significant probability is even more complicated,
+%\wolfgang{What is
+%  "exponential probability"?} \tommy{Well, okay, is it better if I
+%  make it more vague? I'm not exactly sure how difficult it would be
+%  to give a result with probability $1 - 2^{-\varOmega(c)}$, but every
+%  other proof for $1 - 2^{\varOmega(c^3)}$ hasn't been as easy as
+%  ours}
+%\wolfgang{That sounds good to me.}
+ and a proof of this result would still typically rely on an
 advanced probabilistic inequality~\cite{alon:probabilistic}. Here we
 show how this can be accomplished with an encoding argument.
 
 \begin{thm}\thmlabel{triangles-up}
-  For $p=c/n$, $G \in G_{n,p}$ contains at least one triangle with
+  For $c > 0$ and $p=c/n$, $G \in G_{n,p}$ contains at least one triangle with
   probability at least $1-2^{-\varOmega(c^3)}$.
 \end{thm}
 
 \begin{proof}
   In this argument, we will produce an encoding of $G$'s adjacency
-  matrix, $A$.
+  matrix, $A$. For simplicity of exposition, we assume that $n$ is
+  even.
 
   Refer to \figref{triangles}.  If $G$ contains no triangles, then we
   look at the number of ones in the $n/2\times n/2$ submatrix $M$
@@ -2318,7 +2329,7 @@ show how this can be accomplished with an encoding argument.
   \end{figure}
 
   \begin{enumerate}\setcounter{enumi}{-1}
-  \item The number of ones in $M$ is less than $cn/8$.  In this case,
+  \item The number of ones in $M$ is at most $cn/8$.  In this case,
     the number of ones in this submatrix is much less than the
     expected number, $cn/4$.  Here one can apply the same argument
     used to prove Chernoff's bound (\thmref{chernoff}) or simply apply
@@ -2335,7 +2346,9 @@ show how this can be accomplished with an encoding argument.
       m = \sum_{i=1}^{n/2}\binom{m_i}{2} \ge (n/2) \binom{2
         n_1(M)/n}{2} \ge (n/2)\binom{c/4}{2} = \varOmega(c^2n) \enspace ,
     \]
-    zeros in rows $n/2+1,\ldots,n$. We thus encode $G$ by giving a
+    zeros in rows $n/2+1,\ldots,n$ (here, we used the fact that the
+    function $x \mapsto \binom{x}{2}$ is convex and increasing for $x \geq 1/4$).
+    We thus encode $G$ by giving a
     Shannon-Fano code with parameter $p$ for the first $n/2$ rows of
     $A$; and a Shannon-Fano code with parameter $p$ for the rest of
     $A$, excluding the bits which can be deduced from the preceding
@@ -2352,7 +2365,7 @@ show how this can be accomplished with an encoding argument.
 \end{proof}
 
 \begin{thm}\thmlabel{triangles-down}
-  When $p = 1/(\alpha n)$, $G \in G_{n, p}$ has no triangle with
+  When $p = 1/(\alpha n)$ with $\alpha > 0$, then $G \in G_{n, p}$ has no triangle with
   probability at least $1 - \alpha^{-3}$.
 \end{thm}
 \begin{proof}
@@ -2372,8 +2385,7 @@ Together, \thmref{triangles-up} and \thmref{triangles-down} establish
 the fact that $1/n$ is a \emph{threshold function} for
 triangle-freeness, \emph{i.e.}~if $p = o(1/n)$, then $G \in G_{n, p}$
 has no triangle with high probability, and if $p = \omega(1/n)$, then
-$G$ has a triangle with high probability. \wolfgang{What is a
-  \emph{threshold function}?} \tommy{Elaborated a little bit}
+$G$ has a triangle with high probability. 
 
 \section{Encoding with Kraft's Condition}
 \seclabel{el}
@@ -2386,14 +2398,15 @@ numbers, supporting the extended arithmetic operations
 $a + \infty = \infty$ for all $a \in [0, \infty]$, and
 $2^{-\infty} = 0$.
 
- \wolfgang{I am not sure I know what is "usual" here. For
-  example, what is $0 \cdot \infty$ or $\infty/\infty$? Is there a
-  reference?}  \tommy{Okay, it was a little hacky to use extended real
-  numbers here since things become unclear when $\ell(x) = \infty$ and
-  $p_x = 0$. But that ambiguity has always been present since we
-  agreed that $|\bot| = \infty$. I've added some specifications that
-  $p_x > 0$ for every $x \in X$, and hopefully that clears up maybe
-  some uncertainty you were feeling here}.  Recall from \secref{nuel}
+% \wolfgang{I am not sure I know what is "usual" here. For
+%%  example, what is $0 \cdot \infty$ or $\infty/\infty$? Is there a
+%  reference?}  \tommy{Okay, it was a little hacky to use extended real
+%  numbers here since things become unclear when $\ell(x) = \infty$ and
+%  $p_x = 0$. But that ambiguity has always been present since we
+%  agreed that $|\bot| = \infty$. I've added some specifications that
+%  $p_x > 0$ for every $x \in X$, and hopefully that clears up maybe
+%  some uncertainty you were feeling here}\wolfgang{Thanks}
+  Recall from \secref{nuel}
 that a function $\ell : X \to [0, \infty]$ \emph{satisfies Kraft's
   condition} if
 \[
@@ -2401,12 +2414,15 @@ that a function $\ell : X \to [0, \infty]$ \emph{satisfies Kraft's
 \]
 
 The main observation is that neither the (Non-)Uniform Encoding Lemma
-nor any of its applications has required the specification of any
-prefix-free code: We know, by construction, that every such code is
+nor any of its applications has actually required the specification of an
+explicit
+prefix-free code: We know, by construction, that every code we have
+presented is
 prefix-free, but we could also deduce from Kraft's inequality that,
 since our described codes satisfy Kraft's condition, a prefix-free
-code with the same codeword lengths exists. Instead, we will see that
-codeword lengths satisfying Kraft's condition suffice, and such
+code with the same codeword lengths exists. Similarly, we will see that
+it is actually enough to assign to every element from our universe
+a codeword \emph{length} such that Kraft's condition is satisfied. These
 codeword lengths need not be integers.
 
 \begin{lem}\lemlabel{el}
@@ -2422,7 +2438,7 @@ codeword lengths need not be integers.
 \end{proof}
 
 The \emph{sum} of two functions $\ell : X \to [0, \infty]$ and
-$\ell' : X' \to [0, \infty]$ is a function
+$\ell' : X' \to [0, \infty]$ is the function
 $\ell + \ell' : X \times X' \to [0, \infty]$ defined by
 $(\ell + \ell') (x, x') = \ell(x) + \ell'(x')$. Note that for any
 partial codes
@@ -2506,9 +2522,9 @@ recover the exact result.
   %  + t - 1} = 1$.
 
   Let the function $f : \{1, \ldots, n - t + 1\} \to [0, \infty]$ have
-  $f(i) = \log n$ for all $i$, and
+  $f(i) = \log n$ for all $i \in \{1, \dots, n - t + 1\}$, and
   $g : \{0, 1\}^{n - t} \to [0, \infty]$ have $g(y) = n - t$ for all
-  $y$. Both of these functions satisfy Kraft's condition by
+  $y \in \{0, 1\}^{n - t}$. Both $f$ and $g$ satisfy Kraft's condition by
   \lemref{fixed-length-tight}. By \lemref{composition-tight}, so does
   the function
   \[
