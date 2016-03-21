@@ -1849,7 +1849,7 @@ exactly we mean by ``high probability''}
 We now consider the question of satisfiability of propositional
 formulas. Let us start with some definitions.
 
-A \emph{variable} $x$ is either $\textsf{true}$ or
+A (Boolean) \emph{variable} $x$ is either $\textsf{true}$ or
 $\textsf{false}$. The negation of $x$ is denoted by $\neg x$. A
 \emph{literal} is either a variable or its negation. A
 \emph{conjunction} of literals is an ``and'' of literals, denoted by
@@ -1876,24 +1876,19 @@ truth assignments except
 and indeed any clause is satisfied by all but one truth assignments
 for its support. The formulas we are concerned with are conjunctions
 of clauses, which are said to be in \emph{conjunctive normal form}
-(CNF). More specifically, when each clause has exactly or at most $k$
+(CNF). More specifically, when each clause has at most $k$
 literals, we call it a $k$-CNF formula.
 
 The $k$-SAT decision problem asks to determine whether or not a given
 $k$-CNF formula is satisfiable. In general, this problem is hard. Of
 course, any satisfying truth assignment to the variables in a CNF
 formula induces a satisfying truth assignment for each of its
-clauses. Moreover, if the supports for each clause are pairwise
-disjoint, then the formula is trivially satisfiable
-%, the converse is true if each clause is
-%pairwise disjoint
-\wolfgang{I do not understand this. What is "the converse"?  It the
-  clauses are pairwise disjoint, then the union of their satisfying
-  assignments gives a satisfying assignment for $\varphi$?  Also, I am
-  not sure it makes sense to say "each clause is pairwise disjoint".}
-\tommy{Okay, I'm more specific here}, and as we will see, even if each
-clause is only nearly pairwise disjoint, \emph{i.e.}  their
-intersection has size less than $2^k/e$.
+clauses. Moreover, if the supports of the clauses are pairwise
+disjoint, then the formula is trivially satisfiable,
+and as we will see, this holds even if the 
+clauses are only nearly pairwise disjoint, \emph{i.e.},  if the
+intersection of the supports of each pair of clauses
+has size less than $2^k/e$.
 
 This result has been well known as a consequence of the Lov\'{a}sz
 Local Lemma~\cite{lovasz:locallemma}, whose original proof is
@@ -1901,9 +1896,6 @@ non-constructive, and so does not produce a satisfying truth
 assignment (in polynomial time) when applied to an instance of
 $k$-SAT. Some efficient constructive solutions to $k$-SAT have been
 known, but only for suboptimal clause intersection sizes.
-\wolfgang{Maybe say that Moser first considered the case of $k$-SAT,
-  and that Moser and Tardos then generalized it to the full LLL (if I
-  remember the history correctly)?} \tommy{Yes, you're right}
 Moser~\cite{moser:ksat} first presented a constructive solution to
 $k$-SAT with near optimal clause intersection sizes, and Moser and
 Tardos~\cite{moser:locallemma} then generalized this result to the
@@ -1950,13 +1942,10 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
   such that each clause intersects at most $r \le 2^{k - 3}$ other
   clauses, then the total number of invokations of $\textsc{Fix}$ in
   the execution of $\textsc{Solve}(\varphi)$ is at least
-  $s + m \log m$ with probability at most $2^{-s}$.\wolfgang{That is a
-    bit unclear. You mean the \emph{total number} of invocations of
-    FIX, right? Not just from Solve?} \tommy{Okay, attempted to
-    clarify}
+  $s + m \log m$ with probability at most $2^{-s}$.
 \end{thm}
 \begin{proof}
-  Suppose that $\textsc{Solve}(\varphi)$ calls $\textsc{Fix}$
+  Suppose that $\textsc{Fix}$ is called 
   $t = \ceil{s + m\log m}$ times. Let
   $\alpha \in \{\textsf{true}, \textsf{false}\}^n$ be the initial
   truth assignment for $\varphi$, and let
@@ -1970,16 +1959,10 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
   The execution of $\textsc{Solve}(\varphi)$ determines a (rooted
   ordered) \emph{recursion tree} $T$ on $t + 1$ nodes as follows: The
   root of $T$ corresponds to the initial call to
-  $\textsc{Solve}(\varphi)$, and every node has as children its
-  sequence of calls to $\textsc{Fix}$.
-  %and its children $D_1, \ldots, D_d$
-  %recursively correspond 
-  \wolfgang{Explain a bit more what "recursively correspond" means?}
-  \tommy{I simplified the description. I'm not sure if it's clear
-    enough}
-  %to the sequence of calls to
-  %$\textsc{Fix}(\varphi, \alpha, D_1), \ldots, \textsc{Fix}(\varphi,
-  %%\alpha, D_d)$.
+  $\textsc{Solve}(\varphi)$. Every other node corresponds to a call
+  to $\textsc{Fix}$. The children of a node correspond 
+   to the sequence of calls to $\textsc{Fix}$ that the procedure
+  performs, ordered from left to right.
   In particular, each (non-root) node in the tree is assigned a clause
   and its uniformly random truth assignment produced during the call
   to $\textsc{Fix}$. Moreover, a pre-order traversal of this tree
@@ -1987,13 +1970,12 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
 
   The string $\gamma$ can be recovered in a bottom-up manner from our
   knowledge of the tree $T$ and the final truth assignment
-  $\alpha'$. Specifically, let $D_1, \dots, D_t$ be the clauses
+  $\alpha'$ after $t$ calls to \textsc{Fix}. 
+  Specifically, let $D_1, \dots, D_t$ be the clauses
   encountered in a pre-order traversal of $T$. In particular, $D_t$ is
   the last fixed clause in the execution. Since $D_t$ was not
   satisfied before its reassignment, this allows us to deduce $k$
-  values \wolfgang{It is not really $\alpha$, right? The assignment
-    can oscillate quite a bit during execution, no? Maybe say, "the
-    previous assignment"?} \tommy{Alright} of the previous assignment
+  values of the previous assignment
   before $D_t$ was fixed. Pruning $D_t$ from the tree and continuing
   in this manner at $D_{t - 1}$, we eventually recover the original
   truth assignment $\alpha$ produced in $\textsc{Solve}(\varphi)$.
