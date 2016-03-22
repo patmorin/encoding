@@ -1097,8 +1097,10 @@ is based on V\"{o}cking's use of witness trees to analyze 2-choice
 hashing~\cite{vocking:witness}.
 
 Let $G = (V, E)$ be the random multigraph with $V = \{1, \ldots, m\}$,
-where $m = cn$ for some constant $c > 4$, and
-$E = \{(h(x), g(x)) : x \in X\}$.
+where $m = cn$ for some constant $c > 8$, and
+$E = \{(h(x), g(x)) : x \in X\}$. Each edge in $E$ is
+labeled with the element $x \in X$ that it corresponds to.
+\wolfgang{I changed the constant to $8$, see below.}
 
 \begin{lem}\lemlabel{two-choice-two-cycles}
   The probability that $G$ has a subgraph with more edges than 
@@ -1120,40 +1122,45 @@ $E = \{(h(x), g(x)) : x \in X\}$.
 \end{proof}
 
 \begin{lem}\lemlabel{two-choice-component-size}
-  $G$ has a component of size at least $(2/\log(c/4))\log n + O(1)$
+  $G$ has a component of size at least $(2/\log(c/8))\log n + O(1)$
   with probability $O(1/n)$.
 \end{lem}
 \begin{proof}
   Suppose $G$ has a connected component with $t$ vertices and at least
   $t-1$ edges. This component has a spanning tree $T$. Pick an
   arbitrary vertex as the root of $T$. To encode $G$, we specify
-  first the $t - 1$ edges and $t$ vertices encountered in a pre-order
-  traversal of $T$; then a bit string encoding the shape of $T$; and
+  a bit string encoding the shape of $T$, then
+  the $t$ vertices and the elements in $X$ corresponding to
+  the $t-1$ edges encountered in a pre-order
+  traversal of $T$; and
   finally the remaining $2(n - t + 1)$ endpoints of edges in $G$.
+  For each edge $uv$ in $T$ we also store a bit
+   indicating whether $u = h(x)$ and $v = g(x)$, or $u
+  = g(x)$ and $v = h(x)$.\wolfgang{I think this is also needed.}
 
   We can encode the shape of $T$ with a bit string of length
   $2(t - 1)$, tracing a pre-order traversal of the tree, where a 0 bit
   indicates that the path to the next node goes up, and a 1 bit indicates
   that the path goes down. In total, our code has length
   \begin{align*}
-    |C(G)| &= t \log m + (t - 1) \log n + 2(t - 1) + 2 (n - t + 1) \log m \\
-           &= 2n\log m + t \log c - \log n + 2t - 2 - 2t \log c + 2\log n + 2 \log c \tag{since $m = cn$}\\
-           &= \log m^{2n} - t \log c + 2t + \log n + O(1) \\
+    |C(G)| &= t \log m + (t - 1) (\log n + 1) + 2(t - 1) + 2 (n - t + 1) \log m \\
+           &= 2n\log m + t \log c - \log n + 3t - 3 - 2t \log c + 2\log n + 2 \log c \tag{since $m = cn$}\\
+           &= \log m^{2n} - t \log c + 3t + \log n + O(1) \\
            &\le \log m^{2n} - s \enspace ,
   \end{align*}
   as long as $t$ is such that
   \[
-    t \geq \frac{s + \log n + O(1)}{\log (c/4)} \enspace .
+    t \geq \frac{s + \log n + O(1)}{\log (c/8)} \enspace .
   \]
   In particular, for $s = \log n$, the Uniform
   Encoding Lemma tells us that $G$ has a component of size at least
-  $(2/\log (c/4))\log n + O(1)$ with probability $O(1/n)$.
+  $(2/\log (c/8))\log n + O(1)$ with probability $O(1/n)$.
 \end{proof}
 
 Suppose that when $x$ is inserted, it is placed in an urn with $t$
 other elements. Then, we say that the \emph{age} of $x$ is $a(x) = t$.
 \begin{thm}
-  Fix $c > 4$ and
+  Fix $c > 8$ and
   suppose we insert $n$ elements into a table of size $cn$
   using $2$-choice hashing.
   With probability $1 - O(1/n)$
@@ -1221,12 +1228,12 @@ other elements. Then, we say that the \emph{age} of $x$ is $a(x) = t$.
   The arguments in this section can be refined by more carefully
   encoding the shape of trees using \emph{Cayley's formula}, which says 
   that
-  there are $t^{t - 2}$ rooted labelled trees on $t$
-  nodes~\cite{cayley:theorem}. In particular, a rooted tree with $t$
+  there are $t^{t - 2}$ unrooted labelled trees on $t$
+  nodes~\cite{cayley:theorem}. In particular, an unrooted tree with $t$
   nodes and $m$ choices for distinct node labels can be encoded using
   $\log \binom{m}{t} + (t - 2) \log t$ bits instead of
   $t \log m + 2(t - 1)$ bits. We would then recover the same results
-  for hash tables of size $m = cn$ with $c > e$ instead of $c > 4$. In
+  for hash tables of size $m = cn$ with $c > 2e$ instead of $c > 8$. In
   fact, it is known that for \emph{any}
   $c > 0$ searching in 2-choice hashing takes time 
   $1/c + O(\log \log n)$~\cite{berenbrink:densehashing}. We leave it as an
