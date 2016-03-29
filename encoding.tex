@@ -1626,7 +1626,7 @@ $r_i$ in the original encoding is $m_i$, such that $m_1 > \dots >
   The preceding result only works for $c > 2$, but it is  known
   that the number of records in a uniformly random permutation is
   concentrated around $\ln n + O(1)$, where $\ln n = \alpha \log n$
-  for $\alpha = 0.6931...$. We leave as an open problem whether or not
+  for $\alpha = 0.6931\dots$. We leave as an open problem whether or not
   this significant gap can be closed through an encoding argument.
 \end{rem}
 
@@ -1720,19 +1720,25 @@ of length $(w - v - 1)/2$ of its subrange.
   \[
     \log n! - t + O(\log \log n) \enspace .
   \]
-  Thus, we get 
-  a savings of
+  In total, our code has length
   \begin{align*}
-  &t - O(\log\log n) - tH(n_1(x)/t) -\log n \\
-  &\geq c\log n - O(\log\log n) -  
-  c\log nH\left(\frac{1}{c\log(4/3)}\right) -\log n \\
-  &= c\left(1 - H\left(\frac{1}{c\log(4/3)}\right)\right)\log n - \log n
-    - O(\log\log n)
+    |C(\sigma)| &= \log n! - t + t H(n_1(x)/t) + \log n + O(\log \log n) \\
+                &\le \log n! - c \log n + c \log n H\left(\frac{1}{c \log (4/3)}\right) + \log n + O(\log \log n) \\
+                &= \log n! - c \left(1 - H\left(\frac{1}{c \log (4/3)}\right)\right) + \log n + O(\log \log n) \enspace ,
   \end{align*}
-  bits, where the inequality uses the fact that
-  $c > 2/\log(4/3)$. Applying the Uniform Encoding Lemma, we see that
-  $\text{BST}(\sigma)$ has height at most $c \log n$ with probability
-  $1 - O(1/n)$ for $c > 2/\log (4/3)$ satisfying
+  %Thus, we get 
+  %a savings of
+  %\begin{align*}
+  %&t - O(\log\log n) - tH(n_1(x)/t) -\log n \\
+  %&\geq c\log n - O(\log\log n) -  
+  %c\log n H\left(\frac{1}{c\log(4/3)}\right) -\log n \\
+  %&= c\left(1 - H\left(\frac{1}{c\log(4/3)}\right)\right)\log n - \log n
+  %  - O(\log\log n)
+  %\end{align*}
+  where the inequality uses the fact that $c > 2/\log(4/3)$. Applying
+  the Uniform Encoding Lemma, we see that $\text{BST}(\sigma)$ has
+  height at most $c \log n$ with probability $1 - O(1/n)$ for
+  $c > 2/\log (4/3)$ satisfying
   \[
     c \left(1 - H\left(\frac{1}{c \log (4/3)}\right)\right) > 2 \enspace ,
     % Pat changed RHS to 2 because of the re-inclusion of y_t
@@ -1759,7 +1765,7 @@ of length $(w - v - 1)/2$ of its subrange.
   We know that the height of the binary search tree built from the
   sequential insertion of elements from a uniformly random permutation
   of size $n$ is concentrated around $\alpha \ln n + O(\log \log n)$,
-  for $\alpha = 4.311...$~\cite{reed:height}. Perhaps if the gap in
+  for $\alpha = 4.311\dots$~\cite{reed:height}. Perhaps if the gap in
   our analysis of records in \remref{records} can be closed through an
   encoding argument, then so too can the gap in our analysis of random
   binary search tree height.
