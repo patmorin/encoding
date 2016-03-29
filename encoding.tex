@@ -1,5 +1,5 @@
 \documentclass{patmorin}
- 
+\listfiles 
 \usepackage{pat}
 \usepackage[utf8]{inputenc}
 \usepackage[noend]{algorithmic}
@@ -39,7 +39,7 @@ W. Mulzer is supported by DFG Grants 3501/1 and 3501/2.}}
   This expository article surveys ``encoding arguments.'' In its
   most most basic form an encoding argument proves an upper bound on
   the probability of an event using the fact a uniformly random choice
-  from a set of size $n$ can not be encoded with fewer than $\log_2 n$
+  from a set of size $n$ cannot be encoded with fewer than $\log_2 n$
   bits on average.
 
   We survey many applications of this basic argument, give a
@@ -50,8 +50,9 @@ W. Mulzer is supported by DFG Grants 3501/1 and 3501/2.}}
   to produce tighter results.
 \end{abstract}
 
-\keywords{Encoding arguments, entropy, Kolmogorov complexity, 
-          incompressibility, random graphs, expanders, \ldots}
+\keywords{Encoding arguments, entropy, Kolmogorov complexity,
+          incompressibility, analysis of algorithms, hash tables, random
+          graphs, expanders, concentration inequalities, percolation theory.}
 
 \end{titlepage}
 \pagenumbering{roman}
@@ -825,11 +826,11 @@ We call a maximal consecutive sequence of occupied table locations a
 \emph{block}. (The table locations $m-1$ and $0$ are considered
 consecutive.)
 
-\wolfgang{I rephrased the theorem for block size \emph{exactly}
-$t$. I think otherwise the encoding argument would not be correct
-as written,
-because you could not guarantee that the hash values of the elements
-in the block can be represented with $\log t$ bits each.}
+%\wolfgang{I rephrased the theorem for block size \emph{exactly}
+%$t$. I think otherwise the encoding argument would not be correct
+%as written,
+%because you could not guarantee that the hash values of the elements
+%in the block can be represented with $\log t$ bits each.}
 \begin{thm}\thmlabel{linear-probing}
   Let $n \in \N$, $c > e$.
   Suppose that a set $X = \{x_1, \dots, x_n\}$ of $n$ items 
@@ -1100,7 +1101,7 @@ Let $G = (V, E)$ be the random multigraph with $V = \{1, \ldots, m\}$,
 where $m = cn$ for some constant $c > 8$, and
 $E = \{(h(x), g(x)) : x \in X\}$. Each edge in $E$ is
 labeled with the element $x \in X$ that it corresponds to.
-\wolfgang{I changed the constant to $8$, see below.}
+%\wolfgang{I changed the constant to $8$, see below.}
 
 \begin{lem}\lemlabel{two-choice-two-cycles}
   The probability that $G$ has a subgraph with more edges than 
@@ -1136,7 +1137,9 @@ labeled with the element $x \in X$ that it corresponds to.
   finally the remaining $2(n - t + 1)$ endpoints of edges in $G$.
   For each edge $uv$ in $T$ we also store a bit
    indicating whether $u = h(x)$ and $v = g(x)$, or $u
-  = g(x)$ and $v = h(x)$.\wolfgang{I think this is also needed.}
+  = g(x)$ and $v = h(x)$.
+  %\wolfgang{I think this is also needed.}
+  %Pat: yes, it is.
 
   We can encode the shape of $T$ with a bit string of length
   $2(t - 1)$, tracing a pre-order traversal of the tree, where a 0 bit
@@ -1649,7 +1652,7 @@ of length $(w - v - 1)/2$ of its subrange.
 
 \begin{thm}\thmlabel{bst-height}
   Let $\sigma$ be a uniformly random permutation of size $n$. 
-  There is a constant $c = 8.12669\dots$ such that 
+  There is a constant $c < 9.943483$ such that 
   $\text{BST}(\sigma)$ has height at most $c\log n$ with probability
   $1 - O(1/n)$.
 \end{thm}
@@ -1660,8 +1663,8 @@ of length $(w - v - 1)/2$ of its subrange.
   starts at the root and in which $y_{i+1}$ is a child of $y_i$,
   for $i = 1, \dots, t-1$.
 
-  Our encoding for $\sigma$ has two parts. 
-  \wolfgang{ I removed $y_t$. It was not clear to me why we needed it?} 
+  Our encoding for $\sigma$ has three parts. 
+  %\wolfgang{ I removed $y_t$. It was not clear to me why we needed it?} 
   The first part consists of
   a bit string
   $x = (x_1, \dots, x_t)$, where $x_i = 1$ if and only if $y_i$ is
@@ -1671,23 +1674,25 @@ of length $(w - v - 1)/2$ of its subrange.
   \[
     1 \leq (3/4)^{n_1(x)} n \iff n_1(x) \leq \log_{4/3} n \enspace .
   \]
+  Next, our encoding contains a fixed-length encoding of $y_t$ using
+  $\log n$ bits.
 
-  The second part of our encoding is recursive: First, encode the
-  value of the root $y_1$ using $\log \ceil{n/2}$ bits. Note that since 
-  we know whether $y_1$ is balanced or not, there are only $n/2$ 
-  possibilities
-  for the root value, by the discussion above. If $y_2$ is 
-  the left child $y_1$, then specify the values in the
-  right subtree of $y_1$, including an explicit encoding of the
-  permutation induced by these values; and recursively encode the
-  permutation of values in subtree of $y_2$. If, instead, $y_2$
-  is the right child of  $y_1$, proceed symmetrically.
+  The third part of our encoding is recursive: First, encode the value of
+  the root $y_1$ using $\log \ceil{n/2}$ bits. Note that since we know
+  whether $y_1$ is balanced or not, there are only $n/2$ possibilities
+  for the root value, by the discussion above.  If $y_2$ is the left child
+  $y_1$, then specify the values in the right subtree of $y_1$, including
+  an explicit encoding of the permutation induced by these values; and
+  recursively encode the permutation of values in subtree of $y_2$. If,
+  instead, $y_2$ is the right child of  $y_1$, proceed symmetrically.
+  (Note that a decoder can determine which of these two cases occured by
+  comparing $y_t$ with $y_1$ since $y_2 <y_1$ if and only if $y_t< y_1$.)
   Once we reach $y_t$, we encode the permutations of the two subtrees
   of $y_t$ explicitly.
  
-  The first part of our encoding uses at most
+  The first two parts of our encoding uses at most
   \[
-    t H(n_1(x)/t)
+    t H(n_1(x)/t) + \log n
   \]
   bits. The same analysis as in the proof of \thmref{records} shows that
   the second part of our encoding has length at most
@@ -1697,23 +1702,24 @@ of length $(w - v - 1)/2$ of its subrange.
   Thus, we get 
   a savings of
   \begin{align*}
-  &t - O(\log\log n) - tH(n_1(x)/t)\\
+  &t - O(\log\log n) - tH(n_1(x)/t) -\log n \\
   &\geq c\log n - O(\log\log n) -  
-  c\log nH\left(\frac{1}{c\log(4/3)}\right)\\
-  &= c\left(1 - H\left(\frac{1}{c\log(4/3)}\right)\right)\log n
+  c\log nH\left(\frac{1}{c\log(4/3)}\right) -\log n \\
+  &= c\left(1 - H\left(\frac{1}{c\log(4/3)}\right)\right)\log n - \log n
     - O(\log\log n)
   \end{align*}
-  bits, where the second inequality uses the fact that
+  bits, where the inequality uses the fact that
   $c > 2/\log(4/3)$. Applying the Uniform Encoding Lemma, we see that
   $\text{BST}(\sigma)$ has height at most $c \log n$ with probability
   $1 - O(1/n)$ for $c > 2/\log (4/3)$ satisfying
   \[
-    c \left(1 - H\left(\frac{1}{c \log (4/3)}\right)\right) > 1 \enspace ,
+    c \left(1 - H\left(\frac{1}{c \log (4/3)}\right)\right) > 2 \enspace ,
+    % Pat changed RHS to 2 because of the re-inclusion of y_t
   \]
-  and a computer-aided calculation shows that $c = 8.12669\dots$ is the
-  minimal solution to this inequality.
-  \wolfgang{What is the ``minimal'' solution? This is a strict inequality.
-    How do we know that the solution set has a minimum?}
+  and a computer-aided calculation shows that 
+  %$c = 8.12669\dots$ 
+  $c = 9.943483\dots$ 
+  satisfies this inequality.
 \end{proof}
 
 \begin{rem}
@@ -1809,8 +1815,8 @@ $3n_i/4$.
   \]
 \end{proof}
 
-\wolfgang{I rephrased the lemma, because I was not sure what
-exactly we mean by ``high probability''}
+%\wolfgang{I rephrased the lemma, because I was not sure what
+%exactly we mean by ``high probability''}
 \begin{thm}
   Let $\sigma$ be a uniformly random permutation. Then, for 
   every fixed probability $p \in (0,1)$, there exists
@@ -1909,7 +1915,7 @@ analysis which we reproduce in this section comes from Fortnow's
 rephrasing of Moser's proof for $k$-SAT using the incompressibility
 method~\cite{fortnow:ksat}.
 
-Moser's algorithm is remarkably naive, and it can be described in only a
+Moser's algorithm is remarkably na\"\i ve, and can be described in only a
 few sentences: Pick a uniformly random truth assignment for the
 variables of $\varphi$. For each unsatisfied clause, attempt to fix it
 by producing a new uniformly random truth assignment for its support,
@@ -2025,15 +2031,16 @@ modelled as choosing some element $x$ uniformly at random from a
 finite set $X$. To encompass even more applications, it is helpful to
 have an Encoding Lemma that deals with \emph{non-uniform}
 distributions over $X$. First, we recall the following useful classic
-results: \wolfgang{Notation clash: $X$ used to be a set, now it is a
-  random variable.} \tommy{When I wrote about this before, I used
-  $\Omega$ instead of $X$ for the sample spaces, so that I could use
-  $X$ for random variables. Maybe we should go that route? If not, we
-  can use $Y$ for random variables I guess. Or $\mathbf{X}$? But then
-  maybe I'd have to go back and bold some other random variables (like
-  hash functions)? I'd appreciate a suggestion.}
-\wolfgang{It seems to me that using $Y$ for the random variable would
-  be the least disruptive route.}
+results: 
+%\wolfgang{Notation clash: $X$ used to be a set, now it is a
+%  random variable.} \tommy{When I wrote about this before, I used
+%  $\Omega$ instead of $X$ for the sample spaces, so that I could use
+%  $X$ for random variables. Maybe we should go that route? If not, we
+%  can use $Y$ for random variables I guess. Or $\mathbf{X}$? But then
+%  maybe I'd have to go back and bold some other random variables (like
+%  hash functions)? I'd appreciate a suggestion.}
+%\wolfgang{It seems to me that using $Y$ for the random variable would
+%  be the least disruptive route.}
 \begin{thm}[Markov's Inequality]
   For any non-negative random variable $Y$ with finite
   expectation, and any $a > 0$,
@@ -2575,7 +2582,7 @@ previously established results. Specifically, we showed:
 \end{itemize}
 \end{comment}
 
-\section*{Acknowledgement}
+\section*{Acknowledgements}
 
 This research was initiated in response to an invitation for the first
 author to give a talk at the Ninth Annual Probability, Combinatorics
@@ -2586,8 +2593,9 @@ workshop participants for providing a stimulating working environment.
 In particular, Xing~Shi~Cai pointed out the application to runs in
 binary strings (\thmref{runs-i}) and G\'abor~Lugosi stated and proved
 the Non-Uniform Encoding Lemma (\lemref{nuel}) in response to the first
-author's half-formed ideas about a non-uniform version of \lemref{uel}.
-We would also like to thank G\"unter Rote for valuable comments.
+author's half-formed ideas about a non-uniform version of \lemref{uel},
+and then later pointed us to the proof in Barron's thesis.  We would
+also like to thank G\"unter Rote for valuable comments.
 
 \bibliography{encoding}{}
 \bibliographystyle{plain}
