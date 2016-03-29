@@ -1702,7 +1702,8 @@ of length $(w - v - 1)/2$ of its subrange.
   the root $y_1$ using $\log \ceil{n/2}$ bits. Note that since we know
   whether $y_1$ is balanced or not, there are only $n/2$ possibilities
   for the root value, by the discussion above.  If $y_2$ is the left child
-  $y_1$, then specify the values in the right subtree of $y_1$, including
+  of $y_1$, then specify the values in the right subtree of $y_1$, 
+  including
   an explicit encoding of the permutation induced by these values; and
   recursively encode the permutation of values in subtree of $y_2$. If,
   instead, $y_2$ is the right child of  $y_1$, proceed symmetrically.
@@ -1711,7 +1712,7 @@ of length $(w - v - 1)/2$ of its subrange.
   Once we reach $y_t$, we encode the permutations of the two subtrees
   of $y_t$ explicitly.
  
-  The first two parts of our encoding uses at most
+  The first two parts of our encoding use at most
   \[
     t H(n_1(x)/t) + \log n
   \]
