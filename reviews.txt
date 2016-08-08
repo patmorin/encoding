@@ -1,0 +1,154 @@
+Referee: 1
+
+Recommendation: Needs Major Revision
+
+Comments:
+Try to add some clear examples. Provide more background on the 
+theory, please.
+
+I think the topic could be very interesting, if presented properly.
+
+AUTHORS:
+
+
+Is the information in the paper sound, factual, and accurate?: No
+
+If not, please explain why: I am saying no, not because I know 
+it to be false, but rather because the paper has deficiencies 
+in making the material clear to the reader.
+
+As a tutorial, I would expect it to be self-contained. 
+I would also expect it to provide sufficient background 
+and context for the reader to follow the write-up. It 
+would help to provide either applications or a clearer 
+context in terms of complexity theory.
+
+For example, they mention their topic as a way of providing 
+insights for Kolmogorow complexity (KC). But in their 
+description they provide no background on KC. Nor do they 
+prove their assertions about KC. I would have enjoyed 
+seeing how their encoding makes a practical application of the KC ideas.
+
+Also, in terms of a survey, I do not see how this 
+relates to other people's work. Has anyone done related 
+work, or used this for practical applications?
+
+AUTHORS:
+
+Is the treatment of the subject complete?: No
+
+If not, what important details/ideas/analyses are missing?: The 
+argument for the paper is that most CS students have inadequate 
+background in probability. This may, or may not, be true. 
+But, I doubt that any students I have had contact with would 
+understand this paper better than a probabilistic analysis.
+
+As a tutorial, it should be easier to follow. Comparing 
+probabilistic analysis to this would be very useful. I 
+was interested in the entropy discussion, but I found it too hard to follow.
+
+=====================================
+
+Referee: 2
+
+Recommendation: Accept
+
+Comments:
+Many probabilistic analysis problems can be converted to an algorithmic
+problems.  Thus encoding arguments are important in such cases. They are 
+easy to understand and yields stronger results. They have found wide 
+variety of applications. This survey presents basics on encoding 
+arguments by first discussing uniform encoding lemma and then 
+showing how it can be applied to different problems. Later 
+a generalization of encoding lemma is discussed with
+more applications. The paper concludes with further research directions.
+
+The paper is well written and I am happy to see that it is accessible 
+to even undergraduate students. The paper summarizes in a beautiful 
+way key ideas of the area and its applications. Many computer 
+scientists would like to read it.
+
+It deserves the publication.
+
+AUTHORS: Thank you very much for your supportive and
+encouraging review.
+
+=======================================
+
+Referee: 3
+
+Recommendation: Needs Minor Revision
+
+Comments:
+Very good Tutorial Paper.   A suggestion is giving the whole picture more
+clear in the abstract, and summarize how the paper be organized, so that
+readers might not lost in the long list of applications and proof.
+
+AUTHORS:
+
+
+Is the treatment of the subject complete?: Yes
+
+If not, what important details/ideas/analyses are missing?: I think the
+treatment of subject is complete in this survey paper, while obviously the
+authors did not (and which is not necessary) list all the applications and
+gave proof.
+
+If briefly list other potential applicable applications, even without proof,
+just mentioned them before summary section, which might help readers have a
+more clearly idea of the whole picture.
+
+
+Referee: 4
+
+Recommendation: Needs Minor Revision
+
+Comments:
+The paper surveys "encoding arguments", and use a basic "Uniform Encoding
+Lemma" to infer many essential theorems such as Chernoff Bound, some hash
+algorithms, Bipartite Expanders, Permutations and Binary Search Trees, k-SAT
+and Lovasz Local Lemma, Graphs, etc.  The term "encoding arguments" seems 
+not
+usual in computer science, in fact, the paper surveys applications of the
+"Uniform Encoding Lemma".
+
+1. The citation seems not consistent with the reference list, the citation is represented by the number while the reference is not.
+2. All the definitions in Section 2.1 use many sentences which are hard to follow and revisit, and I personally prefer a list such as "{0,1}^k: the set of all binary strings of length k ", "|x|: the length of x", etc.
+3. page 3 line 22, partial code and partial function are not illustrated.
+4. page 3 line 26, string z such that xz=y, please define "xz".
+5. page 3 line 25-31, it seems that the symbol x and y denote both domain and range of C, which is confusing.
+6. The construction of some expressions of |C(*)| are not clearly explained, such as page 11 line 41 |C(b)|, page 15 line 41 |C(G)|, page 28 line 46 |C(G)|, etc.
+
+Additional Questions:
+Review's recommendation for paper type: Tutorial/ survey paper
+
+Should this paper be considered for a best paper award?: No
+
+Does this paper present innovative ideas or material?: Yes
+
+In what ways does this paper advance the field?: The paper exploit the encoding arguments techniques to prove many essential theory in the area of probability and computing.
+
+Is the information in the paper sound, factual, and accurate?: Yes
+
+If not, please explain why:
+
+Rate how well the ideas are presented (very difficult to understand=1), very easy to understand=5): 4
+
+Rate the overall quality of the writing (very poor=1), (excellent=5): 4
+
+Does this paper cite and use appropriate references?: Yes
+
+If not, what important references are missing?:
+
+Should anything be deleted from or condensed in the paper?: No
+
+If so, please explain:
+
+Is the treatment of the subject complete?: Yes
+
+If not, what important details/ideas/analyses are missing?:
+
+Please help ACM create a more efficient time-to-publication process: Using your best judgment, what amount of copy editing do you think this paper needs?: Light
+
+Most ACM journal papers are researcher-oriented. Is this paper of potential interest to developers and engineers?: No
+
