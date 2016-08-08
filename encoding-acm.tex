@@ -1,11 +1,11 @@
 \documentclass[prodmode,acmcsur]{acmsmall}
 %\listfiles 
-\usepackage{pat}
+\usepackage{pat_acm}
 \usepackage[utf8]{inputenc}
 \usepackage[noend]{algorithmic}
 
 
-\usepackage{subcaption}
+%\usepackage{subcaption}
 \usepackage{enumitem}
 \usepackage{url}
 \usepackage{comment}
@@ -59,12 +59,13 @@
 \title{Encoding Arguments}
 
 \author{
-\MakeUpperCase{Pat Morin}
+Pat Morin
 \affil{Carleton University}
-\MakeUpperCase{Wolfgang Mulzer}
+Wolfgang Mulzer
 \affil{Freie Universität Berlin}
-\MakeUpperCase{Tommy Reddad}
+Tommy Reddad
 \affil{McGill University}
+}
 
 
 \begin{abstract}
@@ -342,7 +343,7 @@ applications and can lead to surprisingly powerful results.
   these short codewords is at most
   \[
   \frac{2^k}{|X|} \leq \frac{2^{\log|X|-s}}{|X|} = 2^{-s} \enspace
-  . \qedhere
+  . %\qedhere
   \]
 \end{proof}
 
@@ -396,7 +397,7 @@ a run of significantly more than $\log n$ one bits.  (See
   exists any index $i\in\{1,\ldots,n-t-1\}$ such that
   $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$ is at most
   \[
-    \Pr\{|C(x)|\le n-s\} \le 2^{-s} \enspace . \qedhere 
+    \Pr\{|C(x)|\le n-s\} \le 2^{-s} \enspace . %\qedhere 
   \]
 \end{proof}
 
@@ -605,7 +606,7 @@ Chernoff \cite{chernoff:bound}.
   random from a set of size $2^n$. By the Uniform Encoding Lemma, we
   obtain that
   \[
-    \Pr\{n_1(x) \leq \alpha n\} \le \Pr\{|C_\alpha(x)| \le n - s\} \le 2^{-s} = e^{-\eps^2n/2} \enspace . \qedhere
+    \Pr\{n_1(x) \leq \alpha n\} \le \Pr\{|C_\alpha(x)| \le n - s\} \le 2^{-s} = e^{-\eps^2n/2} \enspace . %\qedhere
   \]
 \end{proof}
 In \secref{chernoff}, after developing a Non-Uniform Encoding Lemma,
@@ -984,7 +985,7 @@ consecutive.)
   Thus, the expected search time for $x$ is
   \begin{align*}
    E\{T\} &= \sum_{t = 1}^\infty t\Pr\{T = t\} = \sum_{t=1}^{t_0} t\Pr\{T = t\} + \sum_{t = 1}^\infty (t+t_0)\Pr\{T = t + t_0\} \\
-            &\le t_0^2 + \sum_{t = 1}^\infty (t+t_0)2^{-t \log (c/e)/2} = t_0^2 + \sum_{t = 1}^\infty (t+t_0)(c/e)^{-t/2} = O(1) \enspace . \qedhere
+            &\le t_0^2 + \sum_{t = 1}^\infty (t+t_0)2^{-t \log (c/e)/2} = t_0^2 + \sum_{t = 1}^\infty (t+t_0)(c/e)^{-t/2} = O(1) \enspace . %\qedhere
   \end{align*}
 \end{proof}
 
@@ -1108,6 +1109,7 @@ correspond to keys, and vertices correspond to array locations.
   of length $t_1$ and $t_2$ starting from $v$, where $t_1 + t_2 = t -
   1$.
 
+\iffalse
   \begin{figure}
     \centering
     \begin{subfigure}[b]{0.3\textwidth}
@@ -1122,6 +1124,7 @@ correspond to keys, and vertices correspond to array locations.
     \caption{The potential minimal subgraphs of the cuckoo graph.}
     \figlabel{cuckoo-cycles}
   \end{figure}
+\fi
 
   We encode $G$ by giving the vertex $v$; and presenting Elias
   $\delta$-codes for the values of $t_1$ and $t_2$ and for the
@@ -1884,7 +1887,7 @@ $3n_i/4$.
   made by $\textsc{Find}$ is at most 
   \[
     \sum_{i=0}^t n_i \le t_0 n + \sum_{i=t_0}^t n_i \le O(n) + n
-    \sum_{i = t_0}^t (3/4)^{\alpha i} = O(n) \enspace . \qedhere
+    \sum_{i = t_0}^t (3/4)^{\alpha i} = O(n) \enspace . %\qedhere
   \]
 \end{proof}
 
@@ -2321,14 +2324,15 @@ incident to the same edge of the original subgraph.
   with high probability.
 \end{proof}
 
+\iffalse
 \begin{figure}
   \centering
-  \begin{subfigure}[t]{0.4\textwidth}
+%  \begin{subfigure}[t]{0.4\textwidth}
     \includegraphics{torusrare}
     \caption{When $p = 0.33 < 1/3$, long cycles are rare. Dotted lines show
       missing edges in the dual.}
     \figlabel{peierlsrare}
-  \end{subfigure}
+%  \end{subfigure}
   \quad\quad
   \begin{subfigure}[t]{0.4\textwidth}
     \includegraphics{torusdense}
@@ -2338,6 +2342,7 @@ incident to the same edge of the original subgraph.
   \caption{Random subgraphs of the $20 \times 20$ torus grid graph.}
   \figlabel{peierls}
 \end{figure}
+\fi
 
 \subsection{Triangles in $G_{n,p}$}
 
@@ -2423,7 +2428,7 @@ show how this can be accomplished with an encoding argument.
     which results in a savings of
     \[
       s = \log(1/p_G) - |C(G)| = m\log(1/(1-p)) \ge
-      \varOmega(c^2n)\log(1/(1-p)) = \varOmega(c^3) \enspace . \qedhere
+      \varOmega(c^2n)\log(1/(1-p)) = \varOmega(c^3) \enspace . %\qedhere
     \]
   \end{enumerate}
 \end{proof}
@@ -2441,7 +2446,7 @@ show how this can be accomplished with an encoding argument.
     |C(G)| &= 3 \log n + (n_1(A) - 3) \log (1/p) + n_0(A) \log (1/(1 - p)) \\
            &= \log (1/p_G) + 3 \log n - 3 \log (1/p) \\
            &= \log (1/p_G) - 3 \log \alpha \\
-           &= \log (1/p_G) - \log \alpha^3 \enspace . \qedhere
+           &= \log (1/p_G) - \log \alpha^3 \enspace . %\qedhere
   \end{align*}
 \end{proof}
 
@@ -2524,7 +2529,7 @@ the length of codewords in concatenated codes.
   \sum_{(x, x') \in X \times X'} 2^{-(\ell + \ell')(x, x')} = \sum_{x
     \in X} \sum_{x' \in X'} 2^{-\ell(x) - \ell'(x')} = \sum_{x \in X}
   2^{-\ell(x)} \sum_{x' \in X'} 2^{-\ell'(x')} \leq 1 \enspace
-  . \qedhere
+  . %\qedhere
   \]
 \end{proof}
 This is analogous to the fact that the concatenation of prefix-free
@@ -2538,7 +2543,7 @@ codes is prefix-free.
 \begin{proof}
   \[
   \sum_{x \in X} 2^{-\ell(x)} = \sum_{x \in X} 2^{-\log (1/p_x)} =
-  \sum_{x \in X} p_x = 1 \enspace . \qedhere
+  \sum_{x \in X} p_x = 1 \enspace . %\qedhere
   \]
 \end{proof}
 This tells us that we can ignore the ceiling in every instance of a
