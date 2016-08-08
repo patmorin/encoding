@@ -80,23 +80,27 @@ Referee: 3
 Recommendation: Needs Minor Revision
 
 Comments:
-Very good Tutorial Paper.   A suggestion is giving the whole picture more
-clear in the abstract, and summarize how the paper be organized, so that
-readers might not lost in the long list of applications and proof.
+Very good Tutorial Paper.   A suggestion is 
+giving the whole picture more clear in the 
+abstract, and summarize how the paper be 
+organized, so that readers might not lost 
+in the long list of applications and proof.
 
 AUTHORS:
 
 
 Is the treatment of the subject complete?: Yes
 
-If not, what important details/ideas/analyses are missing?: I think the
-treatment of subject is complete in this survey paper, while obviously the
-authors did not (and which is not necessary) list all the applications and
+If not, what important details/ideas/analyses are missing?: I 
+think the treatment of subject is complete in this 
+survey paper, while obviously the authors did not 
+(and which is not necessary) list all the applications and
 gave proof.
 
-If briefly list other potential applicable applications, even without proof,
-just mentioned them before summary section, which might help readers have a
-more clearly idea of the whole picture.
+If briefly list other potential applicable applications, 
+even without proof, just mentioned them before summary 
+section, which might help readers have a more clearly 
+idea of the whole picture.
 
 
 Referee: 4
@@ -104,51 +108,33 @@ Referee: 4
 Recommendation: Needs Minor Revision
 
 Comments:
-The paper surveys "encoding arguments", and use a basic "Uniform Encoding
-Lemma" to infer many essential theorems such as Chernoff Bound, some hash
-algorithms, Bipartite Expanders, Permutations and Binary Search Trees, k-SAT
-and Lovasz Local Lemma, Graphs, etc.  The term "encoding arguments" seems 
-not
-usual in computer science, in fact, the paper surveys applications of the
-"Uniform Encoding Lemma".
+The paper surveys "encoding arguments", and use 
+a basic "Uniform Encoding Lemma" to infer many 
+essential theorems such as Chernoff Bound, some 
+hash algorithms, Bipartite Expanders, Permutations 
+and Binary Search Trees, k-SAT and Lovasz Local 
+Lemma, Graphs, etc.  The term "encoding arguments" 
+seems not usual in computer science, in fact, 
+the paper surveys applications of the "Uniform 
+Encoding Lemma".
 
-1. The citation seems not consistent with the reference list, the citation is represented by the number while the reference is not.
-2. All the definitions in Section 2.1 use many sentences which are hard to follow and revisit, and I personally prefer a list such as "{0,1}^k: the set of all binary strings of length k ", "|x|: the length of x", etc.
-3. page 3 line 22, partial code and partial function are not illustrated.
-4. page 3 line 26, string z such that xz=y, please define "xz".
-5. page 3 line 25-31, it seems that the symbol x and y denote both domain and range of C, which is confusing.
-6. The construction of some expressions of |C(*)| are not clearly explained, such as page 11 line 41 |C(b)|, page 15 line 41 |C(G)|, page 28 line 46 |C(G)|, etc.
+1. The citation seems not consistent with the 
+reference list, the citation is represented by 
+the number while the reference is not.
 
-Additional Questions:
-Review's recommendation for paper type: Tutorial/ survey paper
-
-Should this paper be considered for a best paper award?: No
-
-Does this paper present innovative ideas or material?: Yes
-
-In what ways does this paper advance the field?: The paper exploit the encoding arguments techniques to prove many essential theory in the area of probability and computing.
-
-Is the information in the paper sound, factual, and accurate?: Yes
-
-If not, please explain why:
-
-Rate how well the ideas are presented (very difficult to understand=1), very easy to understand=5): 4
-
-Rate the overall quality of the writing (very poor=1), (excellent=5): 4
-
-Does this paper cite and use appropriate references?: Yes
-
-If not, what important references are missing?:
-
-Should anything be deleted from or condensed in the paper?: No
-
-If so, please explain:
-
-Is the treatment of the subject complete?: Yes
-
-If not, what important details/ideas/analyses are missing?:
-
-Please help ACM create a more efficient time-to-publication process: Using your best judgment, what amount of copy editing do you think this paper needs?: Light
-
-Most ACM journal papers are researcher-oriented. Is this paper of potential interest to developers and engineers?: No
+2. All the definitions in Section 2.1 use many 
+sentences which are hard to follow and revisit, and 
+I personally prefer a list such as "{0,1}^k: the 
+set of all binary strings of length k ", "|x|: the 
+length of x", etc.
+3. page 3 line 22, partial code and partial 
+function are not illustrated.
+4. page 3 line 26, string z such that xz=y, 
+please define "xz".
+5. page 3 line 25-31, it seems that the symbol 
+x and y denote both domain and range of C, which 
+is confusing.
+6. The construction of some expressions of |C(*)| 
+are not clearly explained, such as page 11 line 41 |C(b)|, 
+page 15 line 41 |C(G)|, page 28 line 46 |C(G)|, etc.
 
