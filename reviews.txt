@@ -8,7 +8,26 @@ theory, please.
 
 I think the topic could be very interesting, if presented properly.
 
-AUTHORS:
+AUTHORS: We tried to restructure the presentation.
+Sections 1 and 2 are intended to serve as a
+very simple and broad tutorial on the method. We give all
+the basic definitions and try to illustrate each
+definition with an example. We also try to give
+a step by step description of the first proof.
+We hope that this will convince the reader of 
+every background that encoding arguments are a
+worthwhile approach of to probabilistic proofs.
+
+In the remaining sections, we give a broader survey
+of areas where the encoding argument can be applied
+successfully. This is supposed to serve as an overview to
+readers broadly familiar with the main concepts of
+discrete mathematics and theoretical computer science,
+and to convince them that encoding arguments are
+a useful tool for teaching and research. At this
+point, due to space constraints, we regrettably
+need to be brief about the background and focus
+on a more expert audience.
 
 
 Is the information in the paper sound, factual, and accurate?: No
@@ -33,7 +52,15 @@ Also, in terms of a survey, I do not see how this
 relates to other people's work. Has anyone done related 
 work, or used this for practical applications?
 
-AUTHORS:
+AUTHORS: We tried to restructure the presentation to
+address these concerns. The first two sections
+aim to provide ample and well-illustrated background
+on the method. Unfortunately, in the later
+sections, we need to be brief. In particular,
+including a detailed discussion onf Kolmogorov
+complexity would by far exceed the 35-page limit, 
+space that we would rather dedicate to demonstrating
+the wealth of examples where the technique is applicable.
 
 Is the treatment of the subject complete?: No
 
@@ -46,6 +73,12 @@ understand this paper better than a probabilistic analysis.
 As a tutorial, it should be easier to follow. Comparing 
 probabilistic analysis to this would be very useful. I 
 was interested in the entropy discussion, but I found it too hard to follow.
+
+AUTHORS: There is a comparison in the tutorial section 2.3.
+  For the later sections, we believe that many of the probabilistic
+  arguments are textbook material. A more detailed comparison
+  would be very nice, but we are afraid it would exceed the scope
+  of the survey.
 
 =====================================
 
@@ -104,7 +137,6 @@ even without proof, just mentioned them before summary
 section, which might help readers have a more clearly 
 idea of the whole picture.
 
-
 AUTHORS: TODO
 =======================================
 
@@ -137,14 +169,28 @@ sentences which are hard to follow and revisit, and
 I personally prefer a list such as "{0,1}^k: the 
 set of all binary strings of length k ", "|x|: the 
 length of x", etc.
+
+AUTHORS: We tried to change the presentation 
+accordingly.
+
 3. page 3 line 22, partial code and partial 
 function are not illustrated.
+
+AUTHORS: We tried to add some examples.
 4. page 3 line 26, string z such that xz=y, 
 please define "xz".
+
+AUTHORS: Done.
+
 5. page 3 line 25-31, it seems that the symbol 
 x and y denote both domain and range of C, which 
 is confusing.
+
+AUTHORS: We restructured the presentation in Section 2.
+Does it make more sense now?
+
 6. The construction of some expressions of |C(*)| 
 are not clearly explained, such as page 11 line 41 |C(b)|, 
 page 15 line 41 |C(G)|, page 28 line 46 |C(G)|, etc.
 
+AUTHORS: TODO

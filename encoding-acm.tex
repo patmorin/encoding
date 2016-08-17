@@ -267,27 +267,33 @@ method.
 Encoding Lemma}
 
 Before we can talk about codes, we first recall
-some basic definitions for talking about bit strings.
+some basic definitions about bit strings.
 \begin{itemize}
 \item \textbf{binary string}/\textbf{bit string}:
 a finite (possibly empty) sequence of elements from $\{0, 1\}$.
-The set of all bit strings is denoted by $\{0, 1\}^*$.\\
-Examples: $0$: $1$: $101$: $00101$; $1010$: $1101$: $\eps$ (the empty string).
+The set of all bit strings is denoted by $\{0, 1\}^*$.
+
+Examples: $0$: $1$: $101$: $00101$; $1010$: $1101$: $\eps$ (the empty 
+string).
 \item \textbf{length of a bit string $x$}: the number of bits
   in $x$, denoted by $|x|$.\\
 Examples: $|0| = 1$: $|1| = 1$: $|101| = 3$; $|00101| = 5$. 
 \item \textbf{$n_0(x), n_1(x)$}: the number of $0$- and $1$-bits
-  in a bit string $x$.\\
+  in a bit string $x$.
+
  Examples:
   $n_0(010) = 2$: $n_1(010) = 1$; $n_0(1111) = 0$; $n_1(1111) = 4$.
 \item \textbf{$n$-bitstring}: a bit string of length $n$, for $n \in \N$.
-The set of all $n$-bit strings is denoted by $\Sigma^n$.\\
+The set of all $n$-bit strings is denoted by $\Sigma^n$.
+
 Examples: $001$ is a $3$-bit string; $00101$ is a $5$-bit string;
   $\Sigma^2 = \{00, 01, 10, 11\}$.
 \item \textbf{prefix}: a bit string
 $x \in \Sigma^*$ is a \emph{prefix} of another binary string 
 $y \in \Sigma^*$ if $y$ is of the form $y = xz$, for
-some $z \in \Sigma^*$.\\ 
+some $z \in \Sigma^*$. Here, $xz$ denotes the bit string obtained
+by concatenating $x$ with $z$.
+
 Example:
 $0$, $01$, $010$, and $0100$ are prefixes of $0100$,
 but $1$ and $00$ are not.
@@ -300,11 +306,12 @@ the following, let $X$ be a finite or countable set.
 injective function $C \from X \to \{0, 1\}^*$ that
 assigns a unique finite bit string to every element of $X$.\\
 Example: Let $X = \{a,b,c\}$.
-The function $C_1: a \mapsto 01, b \mapsto 1110, c \mapsto 10$ is
+The function $C: a \mapsto 01, b \mapsto 1110, c \mapsto 10$ is
 a code for $X$, but the function 
-$C_2: a \mapsto 01, b \mapsto 1110, c \mapsto 01$ is not.
+$C': a \mapsto 01, b \mapsto 1110, c \mapsto 01$ is not.
 \item \textbf{codword of a code $C\from X \to \{0, 1\}^*$}:
-the elements of the range of $C$.\\
+the elements of the range of $C$.
+
 Example: The codewords of
 $C: a \mapsto 01, b \mapsto 1110, c \mapsto 10$ are
 $01$, $1110$, and $10$.
@@ -313,7 +320,7 @@ code that is only a partial function, i.e., not every element
 in $X$ is assigned a codeword.
 We will use the convention that
 $|C(x)|=\infty$ if $x$ is not in the domain of $C$.
-\\
+
 Example:
 Let $X = \{a,b,c\}$.
 Then $C: a \mapsto 01, b \mapsto 1110$ is
@@ -321,11 +328,25 @@ a partial code for $X$ in which there is no codeword for $c$.
 We have $|C(a)| = 2$, $|C(b)| = 4$, and $|C(c)| = \infty$.
 \item \textbf{prefix free (partial) code}: a 
 (partial) code $C$ in which no codeword is the prefix
-of another codeword.\\
+of another codeword.
+
 Examples: The code $C_1: a \mapsto 10, b\mapsto 111, c \mapsto 01$
 is prefix-free. The code $C_2: a \mapsto 10, b\mapsto 111, c \mapsto 1011$
 is not prefix-free, because the codeword for $a$ is a prefix
 of the codeword for $c$.
+\item \textbf{fixed-length code for a finite set $X$}: 
+a prefix-free code for $X$ where each codeword has
+length $\lceil\log |X|\rceil$.
+It is obtained by enumerating
+the elements of $X$ in some order $x_0,x_1,\ldots,x_{|X|-1}$ and
+assigning to each $x_i$ the binary 
+representation of $i$, padded with
+leading zeros to obtain $\lceil\log |X|\rceil$ bits.
+
+Example: Let $X = \{a,b,c,d,e\}$. Then, a possible
+fixed-length code for $X$ is
+$C: a \mapsto 000, b \mapsto 001, c \mapsto 010, d \mapsto 011,
+e \mapsto 100$.
 \end{itemize}
 
 It is helpful to visualize prefix-free
@@ -338,10 +359,11 @@ child, and a 1 each time it goes to a right child. (See
 
 \begin{figure}
   \centering{\includegraphics{bintree}}
-  \caption{A prefix-free code for the set
-    $X=\{\mathtt{a},\mathtt{b},\mathtt{c},\mathtt{d},\mathtt{e},\mathtt{f}\}$
+  \caption{A prefix-free code for 
+    $X=\{\mathtt{a},\mathtt{b},\mathtt{c},\mathtt{d},\mathtt{e},
+    \mathtt{f}\}$
     and the corresponding leaf-labelled binary tree (which can also be
-    viewed as a partial prefix-free code for the set
+    viewed as a partial prefix-free code for 
     $\{\mathtt{a},\mathtt{b},\mathtt{c},\ldots,\mathtt{z}\}$).}
   \figlabel{bintree}
 \end{figure}
@@ -351,46 +373,63 @@ $k \in \N$, the code $C$ has
 not more than $2^k$ codewords of length at most $k$.
 To see this, we modify $C$ 
 into a code $\widehat C$, in which every codeword of length
-$\ell <k$ is extended to a word of length exactly k by appending $k-\ell$ zeros.
+$\ell <k$ is extended to a word of length exactly $k$ by 
+appending $k-\ell$ zeros.
 Since $C$ is prefix-free, $\widehat C$
-is a valid code, i.e., all codewords of $\widehat C$ are pairwise distinct. 
+is a valid code, i.e., all codewords of $\widehat C$ 
+are pairwise distinct. 
 Furthermore, the number of codewords in $C$ with length
 at most $k$ equals the number of codewords in $\widehat C$ of 
 length exactly $k$.
 Since all codewords of length $k$ in $\widehat C$ are pairwise
 distinct, there are at most $2^k$ of them.
+To illustrate the proof, consider the code
+$C: a \mapsto 0, b \mapsto 100, c \mapsto 1010, d \mapsto 1011,
+e \mapsto 110, f \mapsto 1111$ from \figref{bintree}.
+Our claim says that $C$ has at most $2^3 = 8$ codewords of length
+at most $3$. The modified code
+$\widehat{C}$ is as follows.
+$\widehat{C}: a \mapsto 000, b \mapsto 100, c \mapsto 1010, d \mapsto 1011,
+e \mapsto 110, f \mapsto 1111$. We see that $\widehat{C}$ is indeed
+a code, and its
+codewords of length exactly $3$ are in correspondence with the codewords
+of length at most $3$ in $C$, as claimed.
 
-Observe that every finite set $X$ has a prefix-free code in which
-every codeword has length $\lceil\log |X|\rceil$. We simply enumerate
-the elements of $X$ in some order $x_0,x_1,\ldots,x_{|X|-1}$ and
-assign to each $x_i$ the binary representation of $i$ (padded with
-leading zeros), which has length $\lceil\log |X|\rceil$, since
-$i\in\{0,\ldots,|X|-1\}$.  We call this encoding the \emph{fixed-length
-code} for $X$, and we will use it implicitly in many arguments.
+Finally, we need to review some probability theory.
 
-Given a (finite or countable) set $X$, a \emph{probability distribution} 
-$p: X \rightarrow [0,1]$ on $X$ is a function with
-$\sum_{x \in X} p(x) = 1$. We sometimes write $p_x$
-instead of $p(x)$. 
-The \emph{uniform distribution} is given by $p_x = 1/|X|$ for
-all $x \in X$.
-Fix a number $n \in \N$ and a
-parameter $\alpha \in [0,1]$.
-A probability distribution on $X = \{0, 1\}^n$
-that is of particular interest to us is the \emph{Bernoulli
-distribution} with parameter $\alpha$, denoted 
-$\mathrm{Bernoulli}(\alpha)$. In this distribution, a
-random bit string $x \in \{0, 1\}^n$ is sampled by setting each bit
-to $1$ with probability $\alpha$ and to $0$ with probability $1-\alpha$,
+\begin{itemize}
+\item \textbf{probability distribution $p$ 
+on $X$}: a function $p: X \rightarrow [0,1]$ with
+  $\sum_{x \in X} p(x) = 1$. We sometimes write
+  $p_x$ instead of $p(x)$. We again emphasize
+  that $X$ is a finite or countable set.
+
+Example: for $X = \{a,b,c\}$, the function
+  $p: a \mapsto 1/3, b \mapsto 1/2, c \mapsto 1/6$ is 
+  a probability distribution, but 
+  $p': a \mapsto 1/3, b \mapsto 1/2, c \mapsto 1/5$ is not.
+  For $X = \{1, 2, \dots \}$, the function
+  $p(x) = 1/2^{x}$ is a probability distribution.
+\item \textbf{uniform distribution on finite set $X$}:
+  the probability distribution $p: X \rightarrow [0,1]$
+  given by $p_x = 1/|X|$, for all $x \in X$.
+\item \textbf{Bernoulli distribution on $n$-bit strings
+with parameter $\alpha \in [0,1]$}: the probability
+distribution $p$ on $X = \{0, 1\}^n$ with
+$p_x = (1-\alpha)^{n_0(x)}\alpha^{n_1(x)}$.
+In other words, a bit string $x$ is sampled
+by setting each bit to $1$ with probability $\alpha$ and to 
+$0$ with probability $1-\alpha$,
 independently of the other bits.
-
+We write $\mathrm{Bernoulli}(\alpha)$ for $p$.
+\end{itemize}
 The following lemma provides the foundation on which this
 survey is built. The lemma is folklore, but as we will see in
 the following sections, it has an incredibly wide range of
 applications and can lead to surprisingly powerful results.
 \begin{lem}[Uniform Encoding Lemma]\lemlabel{uel}
-  Let $X$ be a finite set, and 
-  let $C\from X\nrightarrow \{0,1\}^*$ be a partial prefix-free
+  Let $X$ be a finite set and 
+  $C\from X\nrightarrow \{0,1\}^*$ a partial prefix-free
   code. If an element $x\in X$ is chosen uniformly at random, then
   \[
     \Pr\{|C(x)|\le \log|X|-s\}\le 2^{-s} \enspace .
@@ -398,11 +437,14 @@ applications and can lead to surprisingly powerful results.
 \end{lem}
 
 \begin{proof}
-  Let $k=\lfloor \log|X|-s \rfloor$ and recall that $C$ has at most $2^{k}$ codewords
-  of length at most $k$.  Since $C$ is one-to-one each such codeword
-  has at most one preimage in $X$.  Since $x$ is chosen uniformly at
+  We call a codeword of
+  $C$ \emph{short} if it has length at most 
+  $k = \lfloor \log|X|-s \rfloor$. Above, we observed that
+  $C$ has at most $2^{k}$ short codewords.  Since $C$ is injective,
+  each codeword has at exactly one preimage in $X$.  
+  Since $x$ is chosen uniformly at
   random from $X$, the probability that it is the preimage of one of
-  these short codewords is at most
+  a short codewords is at most
   \[
   \frac{2^k}{|X|} \leq \frac{2^{\log|X|-s}}{|X|} = 2^{-s} \enspace
   . \qed
@@ -411,9 +453,16 @@ applications and can lead to surprisingly powerful results.
 
 \subsection{Runs in Binary Strings}
 
-As a warm-up exercise to illustrate the use of the Uniform Encoding
-Lemma we will show that a random $n$-bit string is unlikely to contain
-a run of significantly more than $\log n$ one bits.  (See
+To finish our tutorial, we give a simple use of the 
+Uniform Encoding Lemma. Let $x$ be a bit string. 
+A \emph{run} in $x$ is a consecutive sequence of
+one bits. For example,
+$0110111101011111$ contains runs of length
+$2$, $4$, $1$, and $5$,  and every substring
+of a run is also a run. We now show that
+a $n$-bit string that is
+chosen uniformly at random is unlikely to contain
+a run of length significantly more than $\log n$.  (See
 \figref{runs-i}.)
 
 \begin{figure}
@@ -425,68 +474,75 @@ a run of significantly more than $\log n$ one bits.  (See
 \begin{thm}\thmlabel{runs-i}
   Let $x=(x_1,\ldots,x_n)\in\{0,1\}^n$ be chosen uniformly at random
   and let $t = \Ceil{\ceil{\log n} + s}$. Then, the probability that
-  there exists an $i\in\{1,\ldots,n-t+1\}$ such that
-  $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$ is at most $2^{-s}$.
+  $x$ contains a run of length $t$
+  is at most $2^{-s}$.
 \end{thm}
 
 \begin{proof}
-  We will prove this theorem by constructing a partial prefix-free
-  code for strings having a run of $t$ or more ones.  For such a
-  string $x=(x_1,\ldots,x_n)$ let $i$ be the minimum index such that
+  We construct a partial prefix-free
+  code for strings with a run of length $t$. For such a string 
+  $x=(x_1,\ldots,x_n)$, let $i$ be the minimum index with
   $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$. The codeword $C(x)$ for $x$ is the
   binary string that consists of the ($\ceil{\log n}$-bit binary
   encoding of the) index $i$ followed by the $n-t$ bits
-  $x_1,\ldots,x_{i-1},x_{i+t},\ldots,x_n$. (See \figref{runs-i}.)
+  $x_1,\dots,x_{i-1},x_{i+t},\dots,x_n$. (See \figref{runs-i}.)
+  For example, for $n = 8$ and $t = 4$, we encode
+  $x = 10111110$ as $010\,10\,10$, since
+  the first run of length $4$ in $x$ is at position $2$,
+  which is $010$ as a $3 = \lceil \log 8 \rceil$-bit number.
 
   Observe that $C(x)$ has length 
   \[
-    \ceil{\log n} + n - t \le n-s \enspace .
+    |C(x)| = \ceil{\log n} + n - t \le n-s \enspace .
   \]
-   For any
-  such $x$, we can reconstruct $(x_1,\ldots,x_n)$ from $C(x)$ by
-  reading it from left to right. Indeed, the leftmost $\ceil{\log n}$
-  bits from $C(x)$ tell us, in binary, the value of an index $i$ for
+  To see that $C$ is injective, 
+  we argue that we can obtain $(x_1,\ldots,x_n)$ uniquely 
+  from $C(x)$: 
+  The first $\ceil{\log n}$
+  bits from $C(x)$ tell us, in binary, a position $i$ for
   which $x_i = x_{i + 1} = \dots = x_{i + t - 1} = 1$; the following
-  $n - t$ bits in sequence give us the values of the remaining unknown
+  $n - t$ bits in $C(x)$ contain the remaining 
   bits
   $x_1, x_2, \dots, x_{i - 1}, x_{i + t}, x_{i + t + 1}, \dots,
-  x_n$. Thus, $C$ is a partial code whose domain is the set of binary
-  strings of length $n$ having a run of $t$ or more ones.  Also,
-  $C$ is prefix-free, since all codewords are unique and have the same length.
+  x_n$. Thus, $C$ is a partial code whose domain are the $n$-bit strings
+  with a run of length $t$.  Also,
+  $C$ is prefix-free, as all codewords have the same 
+  length.
+  Recall from our convention that $|C(x)| = \infty$ if
+  $x$ does not have a run of length $t$.
 
-  Now, $x$ was chosen uniformly at random from a set of size $2^{n}$.
-  Therefore, by the Uniform Encoding Lemma, the probability that there
-  exists any index $i\in\{1,\ldots,n-t-1\}$ such that
-  $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$ is at most
+
+  Now, there are $2^n$ $n$-bit strings.
+  Therefore, by the Uniform Encoding Lemma, the probability that 
+  a uniformly random $n$-bit string has a run of length $t$ 
+  is at most
   \[
     \Pr\{|C(x)|\le n-s\} \le 2^{-s} \enspace . \qed 
   \]
 \end{proof}
 
-Simple as it is, the proof of \thmref{runs-i} contains the main ideas
+The proof of \thmref{runs-i} contains the main ideas
 used in most encoding arguments: 
 \begin{enumerate}
 \item The arguments usually show that a particular \emph{bad event} is
   unlikely. In \thmref{runs-i} the bad event is the occurrence of a
   substring of $t$ consecutive ones.
 
-\item The code is a partial prefix-free code whose domain is the bad
+\item We use a partial prefix-free code whose domain is the bad
   event, whose elements we call the \emph{bad outcomes}. In this case, the code
-  $C$ is only capable of encoding strings containing a run of $t$
-  consecutive ones, and a particular string containing such a run is a
+  $C$ only encodes containing a run of length $t$,
+  and a particular such string containing is a
   bad outcome.
 
 \item The code usually begins with a concise description of the bad
-  outcome, and is then followed by a straightforward encoding of the
+  outcome, followed by a straightforward encoding of the
   information that is not implied by the bad outcome. In
   \thmref{runs-i}, the bad outcome is completely described by the index
-  $i$ at which the run of $t$ ones begins, and this implies that
-  the bits $x_i,\ldots,x_{i+t-1}$ are all equal to 1, so these bits do
-  not need to be specified in the second part of the codeword.
+  $i$ at which the run of length $t$ begins, and this implies that
+  the bits $x_i,\ldots,x_{i+t-1}$ are all equal to 1, so these bits 
+  can be omitted in the second part of the codeword.
 \end{enumerate}
 
-\section{More Background and Preliminaries}
-\seclabel{background}
 \subsection{A Note on Ceilings}\seclabel{ceilings}
 
 Note that \thmref{runs-i} also has an easy proof using the union
@@ -497,19 +553,19 @@ $x_i=x_{i+1}=\cdots=x_{i+t}=1$, then
   & \le \sum_{i=0}^{n-t-1} \Pr \{\mathcal{E}_i\} && \text{(using the union bound)}\\
   & = \sum_{i=0}^{n-t-1} 2^{-t}  &&\text{(using the independence of the $x_i$'s)}\\
   & \le n2^{-t} && \text{(the sum has $n-t\le n$ identical terms)}\\
-  & \le n2^{-\lceil\log n\rceil-s}&& \text{(from the definition of $t$)}\\
+  & \le n2^{-\lceil\log n\rceil-s}&& \text{(using the definition of $t$)}\\
   & \le 2^{-s} \enspace .
 \end{align*}
 This traditional proof also works with the sometimes smaller value
-$t=\ceil{\log n+s}$ (note the lack of a ceiling over the logarithmic
-term), in which case the final inequality becomes an equality.
+$t=\ceil{\log n+s}$ (note the lack of a ceiling over $\log n$), 
+in which case the final inequality becomes an equality.
 
-In the encoding proof of \thmref{runs-i}, the ceiling in the
-expression for $t$ is an artifact of encoding the integer $i$ which is
-taken from a set of size $n$. When sketching an encoding argument, we
-think of this as requiring $\log n$ bits. Nonetheless, when 
- the time comes to carefully write down a
-proof we include a ceiling over this term since bits are a discrete
+In the encoding proof of \thmref{runs-i}, the ceiling on the
+$\log n$ is an artifact of encoding the integer $i$ which comes
+from a set of size $n$. When sketching an encoding argument, we
+think of this as requiring $\log n$ bits. However, when 
+the time comes to write down a
+careful proof we need a ceiling over this term as bits are a discrete
 quantity.
 
 In \secref{el}, however, we will 
@@ -530,6 +586,9 @@ For now, it allows us to state the following cleaner version of
   $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$ is at most $2^{-s}$.
 \end{customthm}
 
+
+\section{More Background and Preliminaries}
+\seclabel{background}
 \subsection{Encoding Sparse Bit Strings}\seclabel{sparse-bit-strings}
 
 At this point we should also point out an extremely useful trick 
@@ -582,7 +641,7 @@ and it will be quite useful.  The binary entropy function and two upper
 bounds on it that we derive below are illustrated in \figref{entropy}.
 
 \begin{figure}
-  \centering{\includegraphics{entropy}}
+  \centering{\includegraphics[scale=0.9]{entropy}}
   \caption{Binary entropy, $H$, and two useful approximations.}
   \figlabel{entropy}
 \end{figure}
@@ -1142,8 +1201,8 @@ paths in the cuckoo graph, we bound the worst case insertion time.
   \begin{align*}
     |C(G)| &= t \log n + 1 + (t + 1) \log m + (2n - 2t) \log m\\
            &= 2n \log m + t \log n - t \log m + \log m + O(1) \\
-           &= \log m^{2n} - t + \log n + O(1) \tag{since $m = 2n$} \\
-           &\leq \log m^{2n} - s
+           &= \log m^{2n} - t + \log n + O(1) \tag{since $m = 2n$} 
+           \leq \log m^{2n} - s
   \end{align*}
   for $t \geq s + \log n + O(1)$. We finish by applying the Uniform
   Encoding Lemma.
@@ -1160,7 +1219,7 @@ the cuckoo graph contains more edges than vertices, since edges
 correspond to keys, and vertices correspond to array locations.
 \begin{lem}\lemlabel{cuckoo-failure}
   The cuckoo graph has a subgraph with more edges than vertices with
-  probability $O(1/n)$. In other words, cuckoo hashing insertion
+  probability $O(1/n)$. That is, cuckoo insertion
   succeeds with probability $1 - O(1/n)$.
 \end{lem}
 \begin{proof}
@@ -1176,12 +1235,12 @@ correspond to keys, and vertices correspond to array locations.
   \begin{figure}
     \centering
     \begin{subfigure}[b]{0.3\textwidth}
-      \includegraphics{cuckoo1}
+      \includegraphics[scale=0.8]{cuckoo1}
       \caption{A cycle with a chord.}
     \end{subfigure}
     \quad\quad
     \begin{subfigure}[b]{0.6\textwidth}
-      \includegraphics{cuckoo2}
+      \includegraphics[scale=0.8]{cuckoo2}
       \caption{Two cycles connected by a path.}
     \end{subfigure}
     \caption{The potential minimal subgraphs of the cuckoo graph.}
@@ -1247,8 +1306,8 @@ labeled with the element $x \in X$ that it corresponds to.
   = g(x)$ and $v = h(x)$. Our code thus has length
   \begin{align*}
     |C(G)| &= \log m + (t - 1)(\log n + \log m) + 2 \log n + (2n - 2(t + 1))\log m + t + O(\log t) \\
-           &= 2n \log m - \log n - t \log c + t + O(\log t) \\
-           &\le \log m^{2n} - \log n + O(1) \enspace ,
+           &= 2n \log m - \log n - t \log c + t + O(\log t) 
+           \le \log m^{2n} - \log n + O(1) \enspace ,
   \end{align*}
   since $\log c > 1$.
 \end{proof}
@@ -1279,8 +1338,8 @@ labeled with the element $x \in X$ that it corresponds to.
   \begin{align*}
     |C(G)| &= t \log m + (t - 1) (\log n + 1) + 2(t - 1) + 2 (n - t + 1) \log m \\
            &= 2n\log m + t \log c - \log n + 3t - 3 - 2t \log c + 2\log n + 2 \log c \tag{since $m = cn$}\\
-           &= \log m^{2n} - t \log c + 3t + \log n + O(1) \\
-           &\le \log m^{2n} - s \enspace ,
+           &= \log m^{2n} - t \log c + 3t + \log n + O(1) 
+           \le \log m^{2n} - s \enspace ,
   \end{align*}
   as long as $t$ is such that
   \[
@@ -1461,12 +1520,12 @@ binomial coefficients and probabilities: see, for example,
   \]
   the function $s(k)$ is concave for all $k \geq 4$. Thus, $s(k)$ is
   minimized either when $k = 1, 2, 3, 4$, or when $k = \alpha n$. We have
-  \begin{align*}
-    s(1) &= (1/2)\log n + c_1 \enspace , & 
-    s(2) &= \log n + c_2 \enspace , \\
-    s(3) &= (3/2) \log n + c_3 \enspace , &
-    s(4) &= 2 \log n + c_4 \enspace ,
-  \end{align*}
+  \[
+    s(1) = (1/2)\log n + c_1,  \quad
+    s(2) = \log n + c_2, \quad
+    s(3) = (3/2) \log n + c_3, \quad 
+    s(4) = 2 \log n + c_4, 
+  \]
   for constants $c_1, c_2, c_3, c_4$. For $k=\alpha n$ we have
   \[
     s(\alpha n) = (\alpha n/2)\log \left(\frac{1}{2^{2\beta}
@@ -1717,8 +1776,8 @@ $r_i$ in the original encoding is $m_i$, such that $m_1 > \dots >
                                        + 1)
     \\
                                      &\leq \sum_{i = 1}^t \log (m_i/2) + \sum_{i = 1}^t O(1/m_i) \tag{since $\log (x + 1) = \log x + O(1/x)$} \\
-                                     &\leq \sum_{i = 1}^t \log (m_i/2) + O(H_t) \\
-                                     &= \sum_{i = 1}^t \log
+                                     &\leq \sum_{i = 1}^t \log (m_i/2) + O(H_t) 
+                                     = \sum_{i = 1}^t \log
                                        m_i - t + O(\log \log n) \enspace ,
   \end{align*}
   since $c$ is a constant. Thus, the total length of the code is
@@ -2146,8 +2205,8 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
   \begin{align*}
     |C(\gamma)| &\le n + 2t + m\log m+ t \log r \\
     &\le n + 2t + m\log m + t(k - 3) \tag{since $r \le 2^{k - 3}$} \\
-    &= n + tk - t + m\log m \\
-    &\le n + tk - s \enspace .
+    &= n + tk - t + m\log m 
+    \le n + tk - s \enspace .
   \end{align*}
   The result is obtained by applying the Uniform Encoding Lemma.
 \end{proof}
@@ -2215,7 +2274,7 @@ serves for non-uniform input distributions:
 
 \begin{proof}
   We use Chernoff's trick, Markov's inequality, and Kraft's
-  inequality, as follows:
+  inequality:
   \begin{align*}
     \Pr\{ |C(x)| \le\log(1/p_x)-s \}
     & = \Pr\{|C(x)| -\log(1/p_x) \le -s \} \\
@@ -2505,8 +2564,8 @@ show how this can be accomplished with an encoding argument.
   \begin{align*}
     |C(G)| &= 3 \log n + (n_1(A) - 3) \log (1/p) + n_0(A) \log (1/(1 - p)) \\
            &= \log (1/p_G) + 3 \log n - 3 \log (1/p) \\
-           &= \log (1/p_G) - 3 \log \alpha \\
-           &= \log (1/p_G) - \log \alpha^3 \enspace . \qed
+           &= \log (1/p_G) - 3 \log \alpha 
+           = \log (1/p_G) - \log \alpha^3 \enspace . \qed
   \end{align*}
 \end{proof}
 
