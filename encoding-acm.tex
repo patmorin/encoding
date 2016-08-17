@@ -9,6 +9,7 @@
 \usepackage{enumitem}
 \usepackage{url}
 \usepackage{comment}
+\usepackage{subcaption}
 
 \usepackage[ruled]{algorithm2e}
 \renewcommand{\algorithmcfname}{ALGORITHM}
@@ -1107,7 +1108,6 @@ correspond to keys, and vertices correspond to array locations.
   of length $t_1$ and $t_2$ starting from $v$, where $t_1 + t_2 = t -
   1$.
 
-\iffalse
   \begin{figure}
     \centering
     \begin{subfigure}[b]{0.3\textwidth}
@@ -1122,7 +1122,6 @@ correspond to keys, and vertices correspond to array locations.
     \caption{The potential minimal subgraphs of the cuckoo graph.}
     \figlabel{cuckoo-cycles}
   \end{figure}
-\fi
 
   We encode $G$ by giving the vertex $v$; and presenting Elias
   $\delta$-codes for the values of $t_1$ and $t_2$ and for the
@@ -2322,7 +2321,6 @@ incident to the same edge of the original subgraph.
   with high probability.
 \end{proof}
 
-\iffalse
 \begin{figure}
   \centering
 %  \begin{subfigure}[t]{0.4\textwidth}
@@ -2340,7 +2338,6 @@ incident to the same edge of the original subgraph.
   \caption{Random subgraphs of the $20 \times 20$ torus grid graph.}
   \figlabel{peierls}
 \end{figure}
-\fi
 
 \subsection{Triangles in $G_{n,p}$}
 
