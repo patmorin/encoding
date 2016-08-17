@@ -86,7 +86,9 @@ abstract, and summarize how the paper be
 organized, so that readers might not lost 
 in the long list of applications and proof.
 
-AUTHORS:
+AUTHORS: We have revised the abstract to be
+more encompassing, and we have also extended
+the survey in section 1 to be more detailed.
 
 
 Is the treatment of the subject complete?: Yes
@@ -103,6 +105,9 @@ section, which might help readers have a more clearly
 idea of the whole picture.
 
 
+AUTHORS: TODO
+=======================================
+
 Referee: 4
 
 Recommendation: Needs Minor Revision
@@ -118,9 +123,14 @@ seems not usual in computer science, in fact,
 the paper surveys applications of the "Uniform 
 Encoding Lemma".
 
+AUTHORS: We tried to be more specific with our terminology
+in the abstract. 
+
 1. The citation seems not consistent with the 
 reference list, the citation is represented by 
 the number while the reference is not.
+
+AUTHORS: Fixed.
 
 2. All the definitions in Section 2.1 use many 
 sentences which are hard to follow and revisit, and 
