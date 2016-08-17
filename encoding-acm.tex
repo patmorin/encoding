@@ -257,7 +257,7 @@ alternative view of encoding arguments, justifying the use of
 non-integer codeword lengths.  \Secref{summary} concludes the
 survey.
 
-\section{A Quick Tutorial}
+\section{An Elementary Tutorial}
 \seclabel{uel}
 
 This section presents the necessary background on prefix-free codes
@@ -364,7 +364,7 @@ applications and can lead to surprisingly powerful results.
   these short codewords is at most
   \[
   \frac{2^k}{|X|} \leq \frac{2^{\log|X|-s}}{|X|} = 2^{-s} \enspace
-  . %\qedhere
+  . \qed
   \]
 \end{proof}
 
@@ -418,7 +418,7 @@ a run of significantly more than $\log n$ one bits.  (See
   exists any index $i\in\{1,\ldots,n-t-1\}$ such that
   $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$ is at most
   \[
-    \Pr\{|C(x)|\le n-s\} \le 2^{-s} \enspace . %\qedhere 
+    \Pr\{|C(x)|\le n-s\} \le 2^{-s} \enspace . \qed 
   \]
 \end{proof}
 
@@ -629,7 +629,7 @@ a well-known and extremely useful result typically attributed to
   random from a set of size $2^n$. By the Uniform Encoding Lemma, we
   obtain that
   \[
-    \Pr\{n_1(x) \leq \alpha n\} \le \Pr\{|C_\alpha(x)| \le n - s\} \le 2^{-s} = e^{-\eps^2n/2} \enspace . %\qedhere
+    \Pr\{n_1(x) \leq \alpha n\} \le \Pr\{|C_\alpha(x)| \le n - s\} \le 2^{-s} = e^{-\eps^2n/2} \enspace . \qed
   \]
 \end{proof}
 In \secref{chernoff}, after developing a Non-Uniform Encoding Lemma,
@@ -1008,7 +1008,7 @@ consecutive.)
   Thus, the expected search time for $x$ is
   \begin{align*}
    E\{T\} &= \sum_{t = 1}^\infty t\Pr\{T = t\} = \sum_{t=1}^{t_0} t\Pr\{T = t\} + \sum_{t = 1}^\infty (t+t_0)\Pr\{T = t + t_0\} \\
-            &\le t_0^2 + \sum_{t = 1}^\infty (t+t_0)2^{-t \log (c/e)/2} = t_0^2 + \sum_{t = 1}^\infty (t+t_0)(c/e)^{-t/2} = O(1) \enspace . %\qedhere
+            &\le t_0^2 + \sum_{t = 1}^\infty (t+t_0)2^{-t \log (c/e)/2} = t_0^2 + \sum_{t = 1}^\infty (t+t_0)(c/e)^{-t/2} = O(1) \enspace . \qed
   \end{align*}
 \end{proof}
 
@@ -1908,7 +1908,7 @@ $3n_i/4$.
   made by $\textsc{Find}$ is at most 
   \[
     \sum_{i=0}^t n_i \le t_0 n + \sum_{i=t_0}^t n_i \le O(n) + n
-    \sum_{i = t_0}^t (3/4)^{\alpha i} = O(n) \enspace . %\qedhere
+    \sum_{i = t_0}^t (3/4)^{\alpha i} = O(n) \enspace . \qed
   \]
 \end{proof}
 
@@ -2447,7 +2447,7 @@ show how this can be accomplished with an encoding argument.
     which results in a savings of
     \[
       s = \log(1/p_G) - |C(G)| = m\log(1/(1-p)) \ge
-      \varOmega(c^2n)\log(1/(1-p)) = \varOmega(c^3) \enspace . %\qedhere
+      \varOmega(c^2n)\log(1/(1-p)) = \varOmega(c^3) \enspace . \qed
     \]
   \end{enumerate}
 \end{proof}
@@ -2465,7 +2465,7 @@ show how this can be accomplished with an encoding argument.
     |C(G)| &= 3 \log n + (n_1(A) - 3) \log (1/p) + n_0(A) \log (1/(1 - p)) \\
            &= \log (1/p_G) + 3 \log n - 3 \log (1/p) \\
            &= \log (1/p_G) - 3 \log \alpha \\
-           &= \log (1/p_G) - \log \alpha^3 \enspace . %\qedhere
+           &= \log (1/p_G) - \log \alpha^3 \enspace . \qed
   \end{align*}
 \end{proof}
 
@@ -2548,7 +2548,7 @@ the length of codewords in concatenated codes.
   \sum_{(x, x') \in X \times X'} 2^{-(\ell + \ell')(x, x')} = \sum_{x
     \in X} \sum_{x' \in X'} 2^{-\ell(x) - \ell'(x')} = \sum_{x \in X}
   2^{-\ell(x)} \sum_{x' \in X'} 2^{-\ell'(x')} \leq 1 \enspace
-  . %\qedhere
+  . \qed
   \]
 \end{proof}
 This is analogous to the fact that the concatenation of prefix-free
@@ -2562,7 +2562,7 @@ codes is prefix-free.
 \begin{proof}
   \[
   \sum_{x \in X} 2^{-\ell(x)} = \sum_{x \in X} 2^{-\log (1/p_x)} =
-  \sum_{x \in X} p_x = 1 \enspace . %\qedhere
+  \sum_{x \in X} p_x = 1 \enspace . \qed
   \]
 \end{proof}
 This tells us that we can ignore the ceiling in every instance of a
