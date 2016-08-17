@@ -260,39 +260,77 @@ survey.
 \section{An Elementary Tutorial}
 \seclabel{uel}
 
-This section presents the necessary background on prefix-free codes
-and binomial coefficients.
+This section gives a simple tutorial on the basic
+method.
 
 \subsection{Basic Definitions, Prefix-free Codes and the Uniform 
 Encoding Lemma}
 
-A finite length \emph{binary string}, or \emph{bit string}, is a
-finite (possibly empty) sequence of elements from $\{0, 1\}$. For
-$k \in \N$, we denote by $\{0, 1\}^k$ the set of all binary strings of
-length $k$, and by $\{0,1\}^*$ the set of all finite strings.
-For a binary string, $x$, we use $|x|$ to denote the length of $x$.  A
-binary string of length $n$ will be called an $n$-bit string. 
-Furthermore, we denote by $n_1(x)$ the number of $1$-bits in
-$x$, and by $n_0(x)$ the number of zero bits.
-Given a (finite or countable) set $X$, a
-\emph{code} $C\from X\to \{0,1\}^*$ is a one-to-one function from 
-$X$ to the set of finite length binary strings.  The elements of
-the range of $C$ are called $C$'s
-\emph{codewords}. Often, there are some
-elements of the set $X$ that are not of interest to us.  In these
-cases, we consider partial codes. A \emph{partial code}
-$C\from X\nrightarrow \{0,1\}^*$ is a one-to-one partial function.
-When discussing partial codes we will use the convention that
-$|C(x)|=\infty$ if $x$ is not in the domain of $C$.
+Before we can talk about codes, we first recall
+some basic definitions for talking about bit strings.
+\begin{itemize}
+\item \textbf{binary string}/\textbf{bit string}:
+a finite (possibly empty) sequence of elements from $\{0, 1\}$.
+The set of all bit strings is denoted by $\{0, 1\}^*$.\\
+Examples: $0$: $1$: $101$: $00101$; $1010$: $1101$: $\eps$ (the empty string).
+\item \textbf{length of a bit string $x$}: the number of bits
+  in $x$, denoted by $|x|$.\\
+Examples: $|0| = 1$: $|1| = 1$: $|101| = 3$; $|00101| = 5$. 
+\item \textbf{$n_0(x), n_1(x)$}: the number of $0$- and $1$-bits
+  in a bit string $x$.\\
+ Examples:
+  $n_0(010) = 2$: $n_1(010) = 1$; $n_0(1111) = 0$; $n_1(1111) = 4$.
+\item \textbf{$n$-bitstring}: a bit string of length $n$, for $n \in \N$.
+The set of all $n$-bit strings is denoted by $\Sigma^n$.\\
+Examples: $001$ is a $3$-bit string; $00101$ is a $5$-bit string;
+  $\Sigma^2 = \{00, 01, 10, 11\}$.
+\item \textbf{prefix}: a bit string
+$x \in \Sigma^*$ is a \emph{prefix} of another binary string 
+$y \in \Sigma^*$ if $y$ is of the form $y = xz$, for
+some $z \in \Sigma^*$.\\ 
+Example:
+$0$, $01$, $010$, and $0100$ are prefixes of $0100$,
+but $1$ and $00$ are not.
+\end{itemize}
 
-A binary string
-$x$ is called a \emph{prefix} of another binary string $y$ if there
-is some binary string $z$ such that $xz = y$. A (partial) code $C$
-is \emph{prefix-free} if, for every pair $x\neq y$ in the domain of
-$C$, the codeword $C(x)$ is not a prefix of the codeword $C(y)$.  It can be
-helpful to visualize prefix-free
+Next, we explain our coding theoretic vocabulary. In
+the following, let $X$ be a finite or countable set.
+\begin{itemize}
+\item \textbf{code for $X$}/\textbf{encoding of $X$}: an 
+injective function $C \from X \to \{0, 1\}^*$ that
+assigns a unique finite bit string to every element of $X$.\\
+Example: Let $X = \{a,b,c\}$.
+The function $C_1: a \mapsto 01, b \mapsto 1110, c \mapsto 10$ is
+a code for $X$, but the function 
+$C_2: a \mapsto 01, b \mapsto 1110, c \mapsto 01$ is not.
+\item \textbf{codword of a code $C\from X \to \{0, 1\}^*$}:
+the elements of the range of $C$.\\
+Example: The codewords of
+$C: a \mapsto 01, b \mapsto 1110, c \mapsto 10$ are
+$01$, $1110$, and $10$.
+\item \textbf{partial code $C\from X\nrightarrow \{0,1\}^*$ for $X$}: a 
+code that is only a partial function, i.e., not every element
+in $X$ is assigned a codeword.
+We will use the convention that
+$|C(x)|=\infty$ if $x$ is not in the domain of $C$.
+\\
+Example:
+Let $X = \{a,b,c\}$.
+Then $C: a \mapsto 01, b \mapsto 1110$ is
+a partial code for $X$ in which there is no codeword for $c$.
+We have $|C(a)| = 2$, $|C(b)| = 4$, and $|C(c)| = \infty$.
+\item \textbf{prefix free (partial) code}: a 
+(partial) code $C$ in which no codeword is the prefix
+of another codeword.\\
+Examples: The code $C_1: a \mapsto 10, b\mapsto 111, c \mapsto 01$
+is prefix-free. The code $C_2: a \mapsto 10, b\mapsto 111, c \mapsto 1011$
+is not prefix-free, because the codeword for $a$ is a prefix
+of the codeword for $c$.
+\end{itemize}
+
+It is helpful to visualize prefix-free
 codes as (rooted ordered) binary trees whose leaves are labelled with
-the elements of $X$.  The codeword for a particular
+the elements of $X$.  The codeword for a given
 $x\in X$ is obtained by tracing the root-to-leaf path leading to $x$
 and outputting a 0 each time this path goes from a parent to its left
 child, and a 1 each time it goes to a right child. (See
@@ -308,16 +346,19 @@ child, and a 1 each time it goes to a right child. (See
   \figlabel{bintree}
 \end{figure}
 
-We claim that if $C$ is prefix-free, then the
-number of $C$'s codewords that have length at most $k$ is not more
-than $2^k$. To see this, observe that $C$ can be
-modified into a code $\widehat C$, in which every codeword of length
-$\ell <k$ is extended---by appending $k-\ell$ zeros---so that it has
-length exactly $k$. The prefix-freeness of $C$ ensures that $\widehat C$
-is also prefix-free. The number of $\widehat C$'s codewords of
-length $k$ is equal to the number of $C$'s codewords of length at
-most $k$; since codewords are just binary strings, there are not more
-than $2^k$ of these.
+We claim that if a code $C$ is prefix-free, then for any
+$k \in \N$, the code $C$ has 
+not more than $2^k$ codewords of length at most $k$.
+To see this, we modify $C$ 
+into a code $\widehat C$, in which every codeword of length
+$\ell <k$ is extended to a word of length exactly k by appending $k-\ell$ zeros.
+Since $C$ is prefix-free, $\widehat C$
+is a valid code, i.e., all codewords of $\widehat C$ are pairwise distinct. 
+Furthermore, the number of codewords in $C$ with length
+at most $k$ equals the number of codewords in $\widehat C$ of 
+length exactly $k$.
+Since all codewords of length $k$ in $\widehat C$ are pairwise
+distinct, there are at most $2^k$ of them.
 
 Observe that every finite set $X$ has a prefix-free code in which
 every codeword has length $\lceil\log |X|\rceil$. We simply enumerate
