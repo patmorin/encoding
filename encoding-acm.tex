@@ -72,15 +72,30 @@ Tommy Reddad
 \begin{abstract}
 %  \setlength{\baselineskip}{15.84pt}
 
-  This expository article surveys ``encoding arguments.'' In its
-  most most basic form an encoding argument proves an upper bound on
-  the probability of an event using the fact a uniformly random choice
+  Many proofs in discrete mathematics and theoretical computer
+  science are based on the probabilistic method. To prove the
+  existence of an object with good properties, we pick a
+  random object and show that it is bad with low
+  probability. This method is very effective,
+  but the underlying probabilistic machinery can be daunting.
+  ``Encoding arguments'' provide an alternative way
+  to present these proofs. All
+  probabilistic reasoning is encapsulated in a
+  ''uniform encoding lemma''.
+  This lemma provides an upper bound on
+  the probability of an event using the fact that a uniformly random choice
   from a set of size $n$ cannot be encoded with fewer than $\log_2 n$
-  bits on average.
+  bits on average. With the lemma, the argument reduces to
+  devising an encoding where bad objects 
+  have short codewords. This often leads to simple and accessible arguments.
 
-  We survey many applications of this basic argument, give a
-  generalization of this argument for the case of non-uniform
-  distributions, and give a rigorous justification for the use of
+  In this expository article, we describe the basic method
+  and provide a simple tutorial on how to use it.
+  After that, we survey many applications 
+  to classic problems from discrete mathematics and computer science.
+  We also give a
+  generalization for the case of non-uniform
+  distributions, as well as a rigorous justification for the use of
   non-integer codeword lengths in encoding arguments.  These latter
   two results allow encoding arguments to be applied more widely and
   to produce tighter results.
