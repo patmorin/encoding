@@ -56,7 +56,7 @@
 
 
 \begin{document}
-\markboth{P. Morin, W. Mulzer, T. Redddad}{Encoding Arguments}
+\markboth{P. Morin, W. Mulzer, T. Reddad}{Encoding Arguments}
 \title{Encoding Arguments}
 
 \author{
@@ -194,7 +194,7 @@ specifically:
   The actual proof of the Uniform Encoding Lemma is trivial. It only
   uses the probabilistic fact that if we have a finite set $X$
   with $r$ special elements and we pick an element from $X$ uniformly at
-  random, the probability of a special element
+  random, the probability of selecting a special element
   is $r/|X|$.
 
 \item Encoding arguments usually yield strong results;
@@ -283,8 +283,9 @@ Examples: $|0| = 1$: $|1| = 1$: $|101| = 3$; $|00101| = 5$.
 
  Examples:
   $n_0(010) = 2$: $n_1(010) = 1$; $n_0(1111) = 0$; $n_1(1111) = 4$.
-\item \textbf{$n$-bitstring}: a bit string of length $n$, for $n \in \N$.
-The set of all $n$-bit strings is denoted by $\Sigma^n$.
+\item \textbf{$n$-bit string}: a bit string of length $n$, for
+  $n \in \N$.  The set of all $n$-bit strings is denoted by
+  $\Sigma^n$.
 
 Examples: $001$ is a $3$-bit string; $00101$ is a $5$-bit string;
   $\Sigma^2 = \{00, 01, 10, 11\}$.
@@ -309,14 +310,14 @@ Example: Let $X = \{a,b,c\}$.
 The function $C: a \mapsto 01, b \mapsto 1110, c \mapsto 10$ is
 a code for $X$, but the function 
 $C': a \mapsto 01, b \mapsto 1110, c \mapsto 01$ is not.
-\item \textbf{codword of a code $C\from X \to \{0, 1\}^*$}:
+\item \textbf{codewords of a code $C\from X \to \{0, 1\}^*$}:
 the elements of the range of $C$.
 
 Example: The codewords of
 $C: a \mapsto 01, b \mapsto 1110, c \mapsto 10$ are
 $01$, $1110$, and $10$.
 \item \textbf{partial code $C\from X\nrightarrow \{0,1\}^*$ for $X$}: a 
-code that is only a partial function, i.e., not every element
+code that is only a partial function, \emph{i.e.}, not every element
 in $X$ is assigned a codeword.
 We will use the convention that
 $|C(x)|=\infty$ if $x$ is not in the domain of $C$.
@@ -326,7 +327,7 @@ Let $X = \{a,b,c\}$.
 Then $C: a \mapsto 01, b \mapsto 1110$ is
 a partial code for $X$ in which there is no codeword for $c$.
 We have $|C(a)| = 2$, $|C(b)| = 4$, and $|C(c)| = \infty$.
-\item \textbf{prefix free (partial) code}: a 
+\item \textbf{prefix-free (partial) code}: a 
 (partial) code $C$ in which no codeword is the prefix
 of another codeword.
 
@@ -580,10 +581,9 @@ For now, it allows us to state the following cleaner version of
 \thmref{runs-i}:
 
 \begin{customthm}{\ref*{thm:runs-i}b}\thmlabel{runs-ii}
-  Let $x=(x_1,\ldots,x_n)\in\{0,1\}^n$ be chosen uniformly at random
-  and let $t = \ceil{\log n + s}$. Then, the probability that there
-  exists an $i\in\{1,\ldots,n-t+1\}$ such that
-  $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$ is at most $2^{-s}$.
+  Let $x\in\{0,1\}^n$ be chosen uniformly at random and let
+  $t = \ceil{\log n + s}$. Then, the probability that $x$ contains a
+  run of length $t$ is at most $2^{-s}$.
 \end{customthm}
 
 
@@ -965,7 +965,7 @@ a sufficiently large choice of $n$. Then,
 \]
 for sufficiently large $n$, as claimed.
 
-\begin{proof}[Proof of \thmref{urns}]
+\begin{proof}[of \thmref{urns}]
   For each $i\in\{1,\ldots,n\}$, let $b_i$ denote the index of the urn
   chosen for the $i$-th ball. The sequence $b = (b_1,\ldots,b_n)$ is
   sampled uniformly at random from a set of size $n^n$, and this
@@ -979,7 +979,7 @@ for sufficiently large $n$, as claimed.
   information.  Thus, we get
   \begin{align*}
     |C(b)| &= \log n + \log\binom{n}{t} + (n-t)\log n \\
-           &= \log n + t\log n - t\log t + t\log e + (n-t)\log n
+           &\le \log n + t\log n - t\log t + t\log e + (n-t)\log n
              \tag{using \eqref{log-n-choose-k}} \\
            & = n \log n + \log n - t\log t + t\log e \\
            & \le n \log n - s \tag{by the choice of $t$} \\
@@ -1107,7 +1107,7 @@ consecutive.)
     \]
   Thus, the expected search time for $x$ is
   \begin{align*}
-   E\{T\} &= \sum_{t = 1}^\infty t\Pr\{T = t\} = \sum_{t=1}^{t_0} t\Pr\{T = t\} + \sum_{t = 1}^\infty (t+t_0)\Pr\{T = t + t_0\} \\
+   \E\{T\} &= \sum_{t = 1}^\infty t\Pr\{T = t\} = \sum_{t=1}^{t_0} t\Pr\{T = t\} + \sum_{t = 1}^\infty (t+t_0)\Pr\{T = t + t_0\} \\
             &\le t_0^2 + \sum_{t = 1}^\infty (t+t_0)2^{-t \log (c/e)/2} = t_0^2 + \sum_{t = 1}^\infty (t+t_0)(c/e)^{-t/2} = O(1) \enspace . \qed
   \end{align*}
 \end{proof}
@@ -1201,8 +1201,8 @@ paths in the cuckoo graph, we bound the worst case insertion time.
   \begin{align*}
     |C(G)| &= t \log n + 1 + (t + 1) \log m + (2n - 2t) \log m\\
            &= 2n \log m + t \log n - t \log m + \log m + O(1) \\
-           &= \log m^{2n} - t + \log n + O(1) \tag{since $m = 2n$} 
-           \leq \log m^{2n} - s
+           &= \log m^{2n} - t + \log n + O(1) \tag{since $m = 2n$} \\
+           &\leq \log m^{2n} - s
   \end{align*}
   for $t \geq s + \log n + O(1)$. We finish by applying the Uniform
   Encoding Lemma.
@@ -1558,7 +1558,7 @@ is $n!$.
 \subsubsection{Analysis of Insertion Sort}
 \seclabel{insertion-sort}
 
-Recall the insertion-sort algorithm for sorting a list
+Recall the insertion sort algorithm for sorting a list
 $\sigma = (\sigma_1,\ldots,\sigma_n)$ of $n$ elements:
 
 \noindent{$\textsc{InsertionSort}(\sigma)$}
@@ -1881,7 +1881,7 @@ of length $(w - v - 1)/2$ of its subrange.
   Once we reach $y_t$, we encode the permutations of the two subtrees
   of $y_t$ explicitly.
  
-  The first two parts of our encoding uses at most
+  The first two parts of our encoding use at most
   \[
     t H(n_1(x)/t) + \log n
   \]
@@ -1984,13 +1984,12 @@ Using this, we give the algorithm $\textsc{Find}$:
 
 Suppose that the algorithm $\textsc{Find}$ sequentially identifies $t$
 pivots $x_1, \dots, x_t$ before finding the solution. Let
-$\sigma^{(i)}$ denote the value of $\sigma$ in the $i{\text{th}}$
-recursive call and let $n_i=|\sigma^{(i)}|$, so that
+$\sigma^{(i)}$ denote the value of $\sigma$ in the $i$-th recursive
+call and let $n_i=|\sigma^{(i)}|$, so that
 $\sigma^{(0)}=(\sigma_1,\ldots,\sigma_n)$ and $n_0=n$.  We will say
-that the $i{\text{th}}$ pivot is \emph{good} if its rank, in
-$\sigma^{(i)}$, is in the interval $[n_i/4, 3n_i/4]$. Note that a good
-pivot causes the algorithm to recurse in a problem of size at most
-$3n_i/4$.
+that the $i$-th pivot is \emph{good} if its rank, in $\sigma^{(i)}$,
+is in the interval $[n_i/4, 3n_i/4]$. Note that a good pivot causes
+the algorithm to recurse in a problem of size at most $3n_i/4$.
 
 \begin{lem}
   Fix some constants $t_0 \geq 1$ and $0 < \alpha < 1/2$. Suppose
@@ -1999,13 +1998,10 @@ $3n_i/4$.
   makes $O(n)$ comparisons.
 \end{lem}
 \begin{proof}
-  If $x_j$ is a good pivot, then the conditions of the lemma give
-  that $n_j \le (3/4) n_{j - 1}$. Therefore,
-  \[
-  n_i \leq (3/4)^{\alpha i} n
-  \]
+  If $x_j$ is a good pivot, then the conditions of the lemma give that
+  $n_j \le (3/4) n_{j - 1}$. Therefore, $n_i \leq (3/4)^{\alpha i} n$
   for each $t_0 \leq i \leq t$, and the total number of comparisons
-  made by $\textsc{Find}$ is at most 
+  made by $\textsc{Find}$ is at most
   \[
     \sum_{i=0}^t n_i \le t_0 n + \sum_{i=t_0}^t n_i \le O(n) + n
     \sum_{i = t_0}^t (3/4)^{\alpha i} = O(n) \enspace . \qed
@@ -2037,10 +2033,9 @@ $3n_i/4$.
   Note that the pivots $x_1, \dots, x_i$ trace a path from the root in
   $\text{BST}(\sigma)$. Therefore, the second part of our encoding is
   the recursive encoding presented in \secref{height}, in which each
-  pivot can be encoded using one less bit, since
-  knowng whether $x_j$ is a good pivot or not narrows down
-  the range of possible values for $x_j$ by $1/2$. In total, our code 
-  then has length
+  pivot can be encoded using one less bit, since knowing whether $x_j$
+  is a good pivot or not narrows down the range of possible values for
+  $x_j$ by a factor of $1/2$. In total, our code then has length
   \[
     |C(\sigma)| \le \log n! - i + i H(\alpha) + \log i + O(\log \log
     i) = \log n! - \varOmega(i) \enspace ,
@@ -2081,7 +2076,7 @@ truth assignments except
   (x_1, x_2, x_3) = (\textsf{false}, \textsf{true}, \textsf{false})
   \enspace ,
 \]
-and indeed any clause is satisfied by all but one truth assignments
+and indeed any clause is satisfied by all but one truth assignment
 for its support. The formulas we are concerned with are conjunctions
 of clauses, which are said to be in \emph{conjunctive normal form}
 (CNF). More specifically, when each clause has at most $k$
@@ -2264,9 +2259,9 @@ originally proven by \citeN[Theorem~3.1]{barron:dissertation},
 serves for non-uniform input distributions:
 \begin{lem}[Non-Uniform Encoding Lemma]\lemlabel{nuel}  
   Let $C\from X\nrightarrow\{0,1\}^*$ be a partial prefix-free code,
-  and let $p_x$, $x \in X$, be a probability distribution on $X$.
-  Suppose we draw $x \in X$ randomly according to $p_x$.
-  Then, for any $s \geq 0$.
+  and let $p$ be a probability distribution on $X$.  Suppose we draw
+  $x \in X$ randomly with probability $p_x$.  Then, for any
+  $s \geq 0$,
   \[
     \Pr\{ |C(x)| \le \log(1/p_x)-s\} \le 2^{-s} \enspace .
   \]
@@ -2281,11 +2276,11 @@ serves for non-uniform input distributions:
     & = \Pr\{\log(1/p_x)-|C(x)| \ge s \} \\
     & = \Pr\left\{2^{\log(1/p_x)-|C(x)|} \ge 2^s \right\}  \tag{Chernoff's trick} \\
     & \le \frac{\E\left\{2^{\log(1/p_x)-|C(x)|}\right\}}{2^s} \tag{Markov's inequality} \\
-    & = \frac{1}{2^s} \left(\sum_{x\in X : C(x) \neq \bot} p_x\cdot 2^{\log(1/p_x)-|C(x)|}\right) \\
-    & = \frac{1}{2^s} \left(\sum_{x\in X : C(x) \neq \bot }2^{-|C(x)|}\right) \enspace .
+    & = \frac{1}{2^s} \left(\sum_{x\in X} p_x\cdot 2^{\log(1/p_x)-|C(x)|}\right) \\
+    & = \frac{1}{2^s} \left(\sum_{x\in X}2^{-|C(x)|}\right) \enspace .
   \end{align*}
   By Kraft's inequality,
-  $\sum_{x \in X : C(x) \neq \bot} 2^{-|C(x)|} \leq 1$, and the result
+  $\sum_{x \in X} 2^{-|C(x)|} \leq 1$, and the result
   is obtained.
 \end{proof}
 
@@ -2390,8 +2385,8 @@ if
   is at most $2^{-s}$.
 \end{thm}
 \begin{proof}
-  Let $A$ be the bitstring of length $2n$ encoding the edge set of
-  $G$. then the probability $p_G$ that teh graph $G$ is sampled is
+  Let $A$ be the bit string of length $2n$ encoding the edge set of
+  $G$. then the probability $p_G$ that the graph $G$ is sampled is
   \[
      p_G  = p^{n_1(A)}(1-p)^{n_0(A)} \enspace .
   \]
@@ -2419,11 +2414,11 @@ The torus grid graph can be drawn in the obvious way without crossings
 on the surface of a torus. This graph drawing gives rise to a dual
 graph, in which each vertex corresponds to a face in the primal
 drawing, and two vertices are adjacent if and only their primal faces
-are incident to the same edge. This dual graph is isomporphic to the
+are incident to the same edge. This dual graph is isomorphic to the
 original torus grid graph.
 
 The obvious drawing of the torus grid graph also induces drawings for
-any of its subgraphs. Such a subgraph also has a dual, where each
+any of its subgraphs. Any such subgraph also has a dual, where each
 vertex corresponds to a face in the dual torus grid graph, and two
 vertices are adjacent if and only if their corresponding faces are
 incident to the same edge of the original subgraph.
@@ -2447,14 +2442,14 @@ incident to the same edge of the original subgraph.
 
 \begin{figure}
   \centering
-%  \begin{subfigure}[t]{0.4\textwidth}
+  \begin{subfigure}[t]{0.45\textwidth}
     \includegraphics{torusrare}
     \caption{When $p = 0.33 < 1/3$, long cycles are rare. Dotted lines show
       missing edges in the dual.}
     \figlabel{peierlsrare}
-%  \end{subfigure}
+  \end{subfigure}
   \quad\quad
-  \begin{subfigure}[t]{0.4\textwidth}
+  \begin{subfigure}[t]{0.45\textwidth}
     \includegraphics{torusdense}
     \caption{When $p = 0.67 > 2/3$, there is likely only one large
       component.}
