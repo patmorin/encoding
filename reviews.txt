@@ -193,4 +193,6 @@ Does it make more sense now?
 are not clearly explained, such as page 11 line 41 |C(b)|, 
 page 15 line 41 |C(G)|, page 28 line 46 |C(G)|, etc.
 
-AUTHORS: TODO
+AUTHORS: We tried to provide more details for the
+  instances mentioned in the comment and at other 
+  places where it seemed approporiate to us.

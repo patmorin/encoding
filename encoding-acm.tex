@@ -973,10 +973,10 @@ for sufficiently large $n$, as claimed.
 
   Suppose that urn $j$ contains $t$ or more balls. Then,
   we encode the sequence $b$
-  with the value $j$, followed by a code that describes $t$ of
-  the balls in urn $j$, followed by the remaining $n-t$ values in
+  with the value $j$ ($\log n$ bits), followed by a code that describes $t$ of
+  the balls in urn $j$ ($\log\binom{n}{t}$ bits), followed by the remaining $n-t$ values in
   $b$ that cannot be deduced from the preceding
-  information.  Thus, we get
+  information ($(n-t)\log n$ bits).  Thus, we get
   \begin{align*}
     |C(b)| &= \log n + \log\binom{n}{t} + (n-t)\log n \\
            &\le \log n + t\log n - t\log t + t\log e + (n-t)\log n
@@ -1247,14 +1247,15 @@ correspond to keys, and vertices correspond to array locations.
     \figlabel{cuckoo-cycles}
   \end{figure}
 
-  We encode $G$ by giving the vertex $v$; and presenting Elias
+  We encode $G$ by giving the vertex $v$ ($\log m$ bits); and presenting Elias
   $\delta$-codes for the values of $t_1$ and $t_2$ and for the
-  positions of the endpoints of $e_1$ and $e_2$; then the indices
+  positions of the endpoints of $e_1$ and $e_2$ ($O(\log t)$ bits); then the indices
   of the edges of
-  the above paths in order; then the vertices of the paths in order;
-  and the indices of the edges $e_1$ and $e_2$; and finally the 
-  remaining $2n - 2(t +
-  1)$ endpoints of edges in the graph. Such a code has length
+  the above paths in order ($(t-1)\log n$ bits); then the vertices of the paths in 
+  order ($(t-1)\log m$ bits);
+  and the indices of the edges $e_1$ and $e_2$ ($2 \log n$ bits); and finally the 
+  remaining $2n - 2(t + 1)$ endpoints of edges in the graph
+  ($(2n - 2(t + 1))\log n$ bits). Such a code has length
   \begin{align*}
     |C(G)| &= \log m + O(\log t) + (t - 1)(\log n + \log m) + 2\log n + (2n - 2(t + 1))\log m \\
            &= 2n \log m + (t + 1) \log n - (t + 2) \log m + O(\log t) \\
@@ -1300,12 +1301,15 @@ labeled with the element $x \in X$ that it corresponds to.
 \end{lem}
 \begin{proof}
   The proof is similar to that of \lemref{cuckoo-failure}. More
-  specifically, we can encode $G$ by giving the same encoding as in
-  \lemref{cuckoo-failure}, with an additional bit for each edge $uv$
-  in the encoding, indicating whether $u = h(x)$ and $v = g(x)$, or $u
-  = g(x)$ and $v = h(x)$. Our code thus has length
+  specifically, we encode $G$ by giving the same encoding as in
+  \lemref{cuckoo-failure}. However, since now $G$ is not bipartite,
+  we cannot immediately deduce for an edge $uv$ in the encoding
+  which endpoint corresponds to which hash function.
+  Thus, for each edge $uv$, we store an additional bit indicating whether $u = h(x)$ and $v = g(x)$, or $u
+  = g(x)$ and $v = h(x)$. This needs $t$ additional bits compared to \lemref{cuckoo-failure}. 
+Our code thus has length
   \begin{align*}
-    |C(G)| &= \log m + (t - 1)(\log n + \log m) + 2 \log n + (2n - 2(t + 1))\log m + t + O(\log t) \\
+    |C(G)| &= \log m + O(\log t) + (t - 1)(\log n + \log m) + 2 \log n + (2n - 2(t + 1))\log m + t  \\
            &= 2n \log m - \log n - t \log c + t + O(\log t) 
            \le \log m^{2n} - \log n + O(1) \enspace ,
   \end{align*}
@@ -1319,24 +1323,26 @@ labeled with the element $x \in X$ that it corresponds to.
 \begin{proof}
   Suppose $G$ has a connected component with $t$ vertices and at least
   $t-1$ edges. This component has a spanning tree $T$. Pick an
-  arbitrary vertex as the root of $T$. To encode $G$, we specify
-  a bit string encoding the shape of $T$, then
-  the $t$ vertices and the elements in $X$ corresponding to
-  the $t-1$ edges encountered in a pre-order
-  traversal of $T$; and
-  finally the remaining $2(n - t + 1)$ endpoints of edges in $G$.
-  For each edge $uv$ in $T$ we also store a bit
-   indicating whether $u = h(x)$ and $v = g(x)$, or $u
-  = g(x)$ and $v = h(x)$.
-  %\wolfgang{I think this is also needed.}
-  %Pat: yes, it is.
-
-  We can encode the shape of $T$ with a bit string of length
-  $2(t - 1)$, tracing a pre-order traversal of the tree, where a 0 bit
-  indicates that the path to the next node goes up, and a 1 bit indicates
-  that the path goes down. In total, our code has length
+  arbitrary vertex as the root of $T$. To encode $G$, we first specify
+  a bit string encoding the shape of $T$.
+  This can be done in $2(t - 1)$ bits, tracing a pre-order traversal of $T$, 
+  where a 0 bit indicates that the path to the next node goes up, and a 1 bit indicates
+  that the path goes down.
+  Then, we encode the $t$ vertices of $T$, in the order as they are first encountered by
+  the pre-order traveral ($t \log m$ bits). Furthermore, 
+  for each edge $e = uv$ of $T$, 
+  we store $\log n$ bits encoding the element $x \in X$ 
+  corresponding to $e$ and a bit a bit
+  indicating whether $u = h(x)$ and $v = g(x)$, or $u
+  = g(x)$ and $v = h(x)$. Again, the edges are stored
+  in the order and direction as they are encountered by the 
+  pre-order traversal. As $T$ has $t-1$ edges, 
+  this takes $(t-1)(\log n + 1)$ bits.
+  Finally we directly encode the remaining $2(n - t + 1)$ endpoints of edges in $G$,
+  in $2(n-t+1)\log m$ bits.
+ In total, our code has length
   \begin{align*}
-    |C(G)| &= t \log m + (t - 1) (\log n + 1) + 2(t - 1) + 2 (n - t + 1) \log m \\
+    |C(G)| &= 2(t - 1) + t \log m + (t - 1) (\log n + 1) + 2 (n - t + 1) \log m \\
            &= 2n\log m + t \log c - \log n + 3t - 3 - 2t \log c + 2\log n + 2 \log c \tag{since $m = cn$}\\
            &= \log m^{2n} - t \log c + 3t + \log n + O(1) 
            \le \log m^{2n} - s \enspace ,
@@ -2391,15 +2397,17 @@ if
      p_G  = p^{n_1(A)}(1-p)^{n_0(A)} \enspace .
   \]
   Suppose that $G$ contains a cycle $C'$ of length
-  $t \geq (s + \log n + O(1))/\log (1/(3p))$. Encode $A$ by giving a
-  single vertex $u$ in $C'$; the sequence of directions that the cycle
-  moves along from $u$; and a Shannon-Fano code with parameter $p$ for
-  the remaining edges of $G$.
-
+  $t \geq (s + \log n + O(1))/\log (1/(3p))$. We encode $A$ as follows:
+  first, we give a single vertex $u$ in $C'$ ($\log n$ bits). Then,
+  we provide the sequence of directions that the cycle
+  moves along from $u$. 
   There are four possibilities for the direction of the
   first step taken by $C'$ from $u$, but only three for each
   subsequent choice. Thus, this sequence can be specified by
-  $2 + (t - 1) \log 3$ bits. The total length of our code is then
+  $2 + (t - 1) \log 3$ bits.
+  We conclude with a Shannon-Fano code with parameter $p$ for
+  the remaining edges of $G$ ($(n_1(A) - t) \log (1/p) + n_0(A) \log (1/(1 - p)$)
+  bits. The total length of our code is then
   \begin{align*}
     |C(G)| &= \log n + 2 + (t - 1) \log 3 + (n_1(A) - t) \log (1/p) +
              n_0(A) \log (1/(1 - p)) \\
@@ -2787,7 +2795,7 @@ binary strings (\thmref{runs-i}) and G\'abor~Lugosi stated and proved
 the Non-Uniform Encoding Lemma (\lemref{nuel}) in response to the first
 author's half-formed ideas about a non-uniform version of \lemref{uel},
 and then later pointed us to the proof in Barron's thesis.  We would
-also like to thank G\"unter Rote for valuable comments.
+also like to thank G\"unter Rote and the anonymous referees for valuable comments.
 
 \bibliographystyle{ACM-Reference-Format-Journals}
 \bibliography{encoding}
