@@ -908,10 +908,9 @@ $t = \ceil{3\log n + \sqrt{2s}}$, we get
     &\ge s
   \end{align*}
   for $n \ge 3$. Therefore, our code has length
-  \begin{align*}
-    |C(G)| & = \binom{n}{2} - f(t) \\
-    & \le \binom{n}{2} - s \enspace .
-  \end{align*}
+  \[
+    |C(G)| = \binom{n}{2} - f(t) \le \binom{n}{2} - s \enspace .
+  \]
   Applying the Uniform Encoding Lemma completes the proof.
 \end{proof}
 
@@ -1332,7 +1331,7 @@ Our code thus has length
   the pre-order traveral ($t \log m$ bits). Furthermore, 
   for each edge $e = uv$ of $T$, 
   we store $\log n$ bits encoding the element $x \in X$ 
-  corresponding to $e$ and a bit a bit
+  corresponding to $e$ and a bit
   indicating whether $u = h(x)$ and $v = g(x)$, or $u
   = g(x)$ and $v = h(x)$. Again, the edges are stored
   in the order and direction as they are encountered by the 
@@ -2744,19 +2743,27 @@ We have described a simple method for producing encoding
 arguments. Using our encoding lemmas, we gave original proofs for
 several previously established results.
 
-Typically, one would invoke the incompressibility method after
-developing some of the theory of Kolmogorov complexity. Our technique
-requires only a basic understanding of prefix-free codes and one
-simple lemma. We are also the first to suggest a simple and tight
-manner of encoding using only Kraft's condition with real-valued
-codeword lengths. In this light, we posit that there is no reason to
-develop an encoding argument through the incompressibility method: our
-Uniform Encoding Lemma is simpler, the Non-Uniform Encoding Lemma is
-more general, and our technique from \secref{el} is less
-wasteful. Indeed, though it would be easy to state and prove our
-Non-Uniform Encoding Lemma in the setting of Kolmogorov complexity, it
-seems as if the general encoding lemma from \secref{el} only can exist
-in our simplified framework.
+Encoding arguments often give natural and short proofs for results in
+the analysis of algorithms, particularly for algorithms which directly
+handle bit strings. Many of our results concern the worst-case running
+time of algorithms, but encoding arguments can also be used to study
+other measures of algorithmic complexity, such as the average-case
+running time of algorithms, or the communication complexity of boolean
+functions~\cite{buhrman:newapps}.
+
+Typically, to produce an encoding argument, one would invoke the
+incompressibility method after developing some of the theory of
+Kolmogorov complexity. Our technique requires only a basic
+understanding of prefix-free codes and one simple lemma. We are also
+the first to suggest a simple and tight manner of encoding using only
+Kraft's condition with real-valued codeword lengths. In this light, we
+posit that there is no reason to develop an encoding argument through
+the incompressibility method: our Uniform Encoding Lemma is simpler,
+the Non-Uniform Encoding Lemma is more general, and our technique from
+\secref{el} is less wasteful. Indeed, though it would be easy to state
+and prove our Non-Uniform Encoding Lemma in the setting of Kolmogorov
+complexity, it seems as if the general encoding lemma from \secref{el}
+only can exist in our simplified framework.
 
 \begin{comment}
 Using our encoding lemmas, we gave original proofs for several
