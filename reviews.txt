@@ -137,7 +137,8 @@ even without proof, just mentioned them before summary
 section, which might help readers have a more clearly 
 idea of the whole picture.
 
-AUTHORS: TODO
+AUTHORS: We added a short reference to average-case
+analysis and communication complexity to the summary section.
 =======================================
 
 Referee: 4
