@@ -273,16 +273,16 @@ some basic definitions about bit strings.
 a finite (possibly empty) sequence of elements from $\{0, 1\}$.
 The set of all bit strings is denoted by $\{0, 1\}^*$.
 
-Examples: $0$: $1$: $101$: $00101$; $1010$: $1101$: $\eps$ (the empty 
+Examples: $0$; $1$; $101$; $00101$; $1010$; $1101$; $\eps$ (the empty 
 string).
 \item \textbf{length of a bit string $x$}: the number of bits
   in $x$, denoted by $|x|$.\\
-Examples: $|0| = 1$: $|1| = 1$: $|101| = 3$; $|00101| = 5$. 
+Examples: $|0| = 1$; $|1| = 1$; $|101| = 3$; $|00101| = 5$. 
 \item \textbf{$n_0(x), n_1(x)$}: the number of $0$- and $1$-bits
   in a bit string $x$.
 
  Examples:
-  $n_0(010) = 2$: $n_1(010) = 1$; $n_0(1111) = 0$; $n_1(1111) = 4$.
+  $n_0(010) = 2$; $n_1(010) = 1$; $n_0(1111) = 0$; $n_1(1111) = 4$.
 \item \textbf{$n$-bit string}: a bit string of length $n$, for
   $n \in \N$.  The set of all $n$-bit strings is denoted by
   $\Sigma^n$.
@@ -444,8 +444,8 @@ applications and can lead to surprisingly powerful results.
   $C$ has at most $2^{k}$ short codewords.  Since $C$ is injective,
   each codeword has at exactly one preimage in $X$.  
   Since $x$ is chosen uniformly at
-  random from $X$, the probability that it is the preimage of one of
-  a short codewords is at most
+  random from $X$, the probability that it is the preimage of a 
+  short codewords is at most
   \[
   \frac{2^k}{|X|} \leq \frac{2^{\log|X|-s}}{|X|} = 2^{-s} \enspace
   . \qed
@@ -531,7 +531,7 @@ used in most encoding arguments:
 
 \item We use a partial prefix-free code whose domain is the bad
   event, whose elements we call the \emph{bad outcomes}. In this case, the code
-  $C$ only encodes containing a run of length $t$,
+  $C$ only encodes strings containing a run of length $t$,
   and a particular such string containing is a
   bad outcome.
 
