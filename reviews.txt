@@ -184,6 +184,7 @@ please define "xz".
 AUTHORS: Done.
 
 5. page 3 line 25-31, it seems that the symbol 
+
 x and y denote both domain and range of C, which 
 is confusing.
 
