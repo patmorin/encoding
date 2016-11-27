@@ -2140,7 +2140,7 @@ algorithms $\textsc{Solve}$ and $\textsc{Fix}$ below.
 %  chosen uniformly at random.
 %
   Given a $k$-CNF formula $\varphi$ with $m$ clauses and $n$ variables
-  such that each clause intersects at most $r \le 2^{k - 3}$ other
+  such that each clause intersects at most $r < 2^{k - 3}$ other
   clauses, then the total number of invokations of $\textsc{Fix}$ in
   the execution of $\textsc{Solve}(\varphi)$ is at least
   $s + m \log m$ with probability at most $2^{-s}$.
