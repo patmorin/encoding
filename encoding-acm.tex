@@ -198,7 +198,7 @@ elementary events in $\mathcal{E}$. This provides an alternative
 to performing a traditional probabilistic analysis or, since we are
 only concerned with finite spaces, to directly estimating the size of
 $\mathcal{E}$. Just as the probabilistic method
-is effectively only a sophisticated rephrasing of a counting argument
+is essentially only a sophisticated rephrasing of a counting argument
 with many theoretical and intuitive advantages,
 encoding arguments likewise
 offer their own set of benefits,
@@ -209,7 +209,7 @@ specifically:
 \item Except for
   applying a simple \emph{Uniform Encoding Lemma}, 
   encoding arguments are ``probability-free.''
-  There is no chance of
+  There is no danger of
   common mistakes such as multiplying probabilities of non-independent
   events or (equivalently) multiplying expectations.
 
@@ -254,7 +254,7 @@ specifically:
 \end{enumerate}
 
 We believe that encoding arguments are an easily
-accessible, yet versatile tool for answering many questions.  Most of
+accessible, yet versatile tool for solving many problems.  Most of
 these arguments can be applied after learning almost no probability
 theory beyond the Encoding Lemma mentioned above.
 
@@ -557,7 +557,7 @@ used in most encoding arguments:
   and a particular such string containing is a
   bad outcome.
 
-\item The code usually begins with a concise description of the bad
+\item The code begins with a concise description of the bad
   outcome, followed by a straightforward encoding of the
   information that is not implied by the bad outcome. In
   \thmref{runs-i}, the bad outcome is completely described by the index
@@ -577,11 +577,11 @@ $x_i=x_{i+1}=\cdots=x_{i+t}=1$, then
   & = \sum_{i=0}^{n-t-1} 2^{-t}  &&\text{(using the independence of the $x_i$'s)}\\
   & \le n2^{-t} && \text{(the sum has $n-t\le n$ identical terms)}\\
   & \le n2^{-\lceil\log n\rceil-s}&& \text{(using the definition of $t$)}\\
-  & \le 2^{-s} \enspace .
+  & \le 2^{-s} \enspace. && \text{(*)}
 \end{align*}
 This traditional proof also works with the sometimes smaller value
 $t=\ceil{\log n+s}$ (note the lack of a ceiling over $\log n$), 
-in which case the final inequality becomes an equality.
+in which case the final inequality (*) holds with an equality.
 
 In the encoding proof of \thmref{runs-i}, the ceiling on the
 $\log n$ is an artifact of encoding the integer $i$ which comes
@@ -619,7 +619,8 @@ there exists a code $C_\alpha\from \{0,1\}^n\rightarrow \{0,1\}^*$
 such that, for any bit string $x\in\{0,1\}^n$ having $n_1(x)$ ones and
 $n_0(x)$ zeros,
 \begin{equation}
-  |C_\alpha(x)| = \lceil n_1(x)\log(1/\alpha) + n_0(x)\log(1/(1-\alpha)) \rceil \enspace .
+  |C_\alpha(x)| = \left\lceil n_1(x)\log \frac{1}{\alpha} + 
+    n_0(x)\log\frac{1}{1-\alpha} \right\rceil \enspace.
   \eqlabel{sparse-bitstring-i}
 \end{equation}
 This code is the \emph{Shannon-Fano code}
@@ -648,9 +649,10 @@ an optimal code
 by taking $\alpha=k/n$. The resulting fixed length
 code has length
 \begin{equation}
-  k\log (n/k) + (n-k)\log(n/(n-k))  \eqlabel{sparse-bitstring-ii} \enspace .
+  k\log (n/k) + (n-k)\log(n/(n-k))  \eqlabel{sparse-bitstring-ii} \enspace.
 \end{equation}
-\Eqref{sparse-bitstring-ii} brings us to our next topic: binary entropy.
+Formula~(\ref{eq:sparse-bitstring-ii}) brings us to our next 
+topic: binary entropy.
 
 \subsection{Binary Entropy}
 
@@ -678,11 +680,17 @@ The binary entropy function can be difficult to work with, so it is
 helpful to have some manageable approximations.  One of these is
 derived as follows:
 \begin{align}
-  H(\alpha) & = \alpha\log(1/\alpha) + (1-\alpha)\log(1/(1-\alpha)) \notag \\
-            & = \alpha\log(1/\alpha) + (1-\alpha)\log(1+\alpha/(1-\alpha)) \notag \\
-            & \le \alpha\log(1/\alpha) + \alpha\log e \eqlabel{entropy-i} 
+  H(\alpha) & = \alpha\log(1/\alpha) + (1-\alpha)\log(1/(1-\alpha)) 
+      \notag \\
+      & = \alpha\log(1/\alpha) + (1-\alpha)\log(1+\alpha/(1-\alpha)) 
+      \notag \\
+            & \le \alpha\log(1/\alpha) + (1-\alpha)\cdot 
+            \alpha/(1-\alpha) \log e \notag \\
+            & \le \alpha\log(1/\alpha) + \alpha\log e 
+            \eqlabel{entropy-i} 
 \end{align}
-since $1+x\le e^x$ for all $x\in\mathbb{R}$. \Eqref{entropy-i} is a
+since $1+x\le e^x$ for all $x\in\mathbb{R}$. 
+Inequality~(\ref{eq:entropy-i}) is a
 useful approximation when $\alpha$ is close to zero, in which case 
 $H(\alpha)$ is also close to zero.
 
@@ -702,18 +710,19 @@ for $i \geq 2$. Hence, $H^{(i)}(1/2) = 0$, for $i \geq 1$ odd, and
 \]
 for $i \geq 2$ even. The Taylor series expansion at $1/2$ now gives
 \begin{align}
-  H(\alpha) &= 
+  H(1/2 + \beta) &= 
   H(1/2) + \sum_{i = 1}^{\infty} \frac{H^{(i)}(1/2)}{i!}
-     \left(\alpha-(1/2)\right)^i \notag\\
- &= 
-1 - \frac{1}{\ln 2}\sum_{i = 1}^{\infty} \frac{(2i-2)! 2^{2i}}{(2i)!2^{2i}}
-     \left(2\alpha-1\right)^{2i}\notag\\
-&= 1-\frac{1}{2\ln 2}\sum_{i=1}^{\infty}\frac{(2\alpha-1)^{2i}}{i(2i-1)} .
+     \beta^i \notag
+ = 
+1 - \frac{1}{\ln 2}\sum_{i = 1}^{\infty} \frac{(2i-2)! 2^{2i}}
+{(2i)!}
+     \beta^{2i}
+= 1-\frac{1}{2\ln 2}\sum_{i=1}^{\infty}\frac{(2\beta)^{2i}}{i(2i-1)} .
               \notag \\ 
-\intertext{ In particular, for $\alpha=(1-\eps)/2$,}
-H(\alpha) & = 1-\frac{1}{2\ln 2}\sum_{i=1}^{\infty}\frac{\eps^{2i}}{i(2i-1)} 
-              \notag \\ 
-            & < 1-\frac{\eps^2}{2\ln 2} \enspace .\eqlabel{entropy-ii}
+\intertext{ In particular, for $\beta=\eps/2$,}
+H\left(\frac{1+\eps}{2}\right) & = 1-\frac{1}{2\ln 2}
+\sum_{i=1}^{\infty}\frac{\eps^{2i}}{i(2i-1)} 
+            < 1-\frac{\eps^2}{2\ln 2} \enspace .\eqlabel{entropy-ii}
 \end{align}
 
 \subsection{Basic Chernoff Bound}
@@ -726,7 +735,8 @@ a well-known and extremely useful result typically attributed to
   Let $x\in\{0,1\}^n$ be chosen uniformly at random. Then, for any
   $\eps \geq 0$,
   \[
-    \Pr\{n_1(x) \le n(1-\eps)/2\} \le e^{-\eps^2n/2} \enspace .
+    \Pr\left\{n_1(x) \leq (1-\eps)\frac{n}{2}\right\} 
+    \le e^{-\eps^2n/2} \enspace .
   \]
 \end{thm}
 
@@ -738,12 +748,15 @@ a well-known and extremely useful result typically attributed to
     |C_\alpha(x)| = n_1(x)\log(1/\alpha) + n_0(x)\log (1/(1-\alpha))
     \enspace .
   \]
-  Since $\alpha < 1/2$, we have $\log(1/\alpha) > \log(1/(1-\alpha))$, so
-  $|C_\alpha(x)|$ is maximal when $n_1(x)$ is maximal. 
+  Since $\alpha < 1/2$, we have $\log(1/\alpha) > \log(1/(1-\alpha))$, 
+  so for fixed $n$, the codeword length $|C_\alpha(x)|$ is 
+  increasing in $n_1(x)$ and
+  becomes maximal when $n_1(x)$ is maximal. 
     Thus, if $n_1(x) \le \alpha n$,
   then
   \begin{align*}
-    |C_\alpha(x)| & \le \alpha n\log(1/\alpha) + (1-\alpha)n\log(1/(1-\alpha))\\
+    |C_\alpha(x)| & \le \alpha n\log(1/\alpha) + 
+    (1-\alpha)n\log(1/(1-\alpha))\\
                   & = n H(\alpha) \le n\left(1-\frac{\eps^2}{2\ln 2}\right) = n - s \enspace ,
   \end{align*}
   where the second inequality is an application of \eqref{entropy-ii},
@@ -764,17 +777,17 @@ strings.
 Before moving on to some more advanced encoding arguments, it will be
 helpful to remind the reader of a few inequalities that can be derived
 from Stirling's Approximation of the factorial~\cite{robbins:stirling}.  
-Recall that Stirling's
-Approximation states that
+Recall that Stirling's Approximation states that
 \begin{equation}
   n! = \left(\frac{n}{e}\right)^n\sqrt{2\pi n}\left(1+\varTheta\left(\frac{1}{n}\right)\right) \enspace .
   \eqlabel{stirling}
 \end{equation}
 
 In many cases, we are interested in representing a set of size $n!$
-using a fixed-length code.  By \eqref{stirling}, and using once again that
-$1+x \leq e^x$ for all $x \in \R$, the length of the codewords in such a code
-is
+using a fixed-length code.  By \eqref{stirling}, and using once again
+that $1+x \leq e^x$ for all $x \in \R$ as well as
+$1+x \geq e^{x/2}$ for $x \in [0, 1/2]$, the length 
+of the codewords in such a code is
 \begin{align}
   \log n!
   & = n\log n - n\log e + (1/2)\log n + \log \sqrt{2 \pi} + \log(1+\varTheta(1/n)) \notag \\
@@ -795,7 +808,7 @@ $nH(k/n)$.  In particular, this implies that
 \end{equation}
 where the last inequality is an application of \eqref{entropy-i}. The
 astute reader will notice that we just used an encoding argument to
-prove an upper-bound on $\binom{n}{k}$ \emph{without knowing the 
+prove an upper-bound on $\binom{n}{k}$ \emph{without using the 
 formula $\binom{n}{k}=\frac{n!}{k! (n - k)!}$}. Alternatively, we 
 could obtain a slightly worse bound by applying 
 \eqref{stirling} to this formula.
@@ -826,7 +839,7 @@ the codes in this section, which were originally given by
 \citeN{elias:coding}.
 
 The \emph{unary encoding} of an integer $i \in \N$, denoted by $U(i)$,
-begins with $i$ 1 bits which are punctuated with a 0 bit. This code is
+begins with $i$ 1 bits which are followed by a 0 bit. This code is
 not particularly useful in itself, but it can be improved as follows:
 The \emph{Elias $\gamma$-code} for $i$, denoted by $E_\gamma(i)$,
 begins with the unary encoding of the number of bits in $i$, and then
@@ -847,6 +860,9 @@ lengths:
   |E_\delta(i)| &= \log i + 2 \log \log i + O(1) \enspace , \\
   |E_\omega(i)| &= \log i + \log \log i + \dots + \underbrace{\log \cdots \log}_{\text{$\log^* i$ times}}i + O(\log^* i) \enspace .
 \end{align*}
+Here, $\log^* i$ denotes the number of times we need to apply
+the function $x \mapsto \log x$ to the integer $i$ until we obtain
+a number that is smaller than $2$.
 It may be worth noting that the lengths of unary codes correspond to
 the lengths of Shannon-Fano codes for a geometric distribution with
 density $p_i = 1/2^{i + 1}$, that is, 
@@ -859,8 +875,9 @@ $p_i = c/i^2$ for a normalization constant $c$, that is,
 \[
   \log (1/p_i) = 2 \log i - \log c = |E_\gamma(i)| + O(1) \enspace .
 \]
-The lengths of Elias $\gamma$-codes and $\omega$-codes do not seem to
-arise as the lengths of Shannon-Fano codes for named distributions.
+The lengths of Elias $\delta$-codes and $\omega$-codes do not seem to
+arise as the lengths of Shannon-Fano codes for any 
+named distributions.
 
 \section{Applications of the Uniform Encoding Lemma}
 \seclabel{applications-i}
@@ -889,7 +906,7 @@ argument.
 \end{thm}
 
 \begin{proof}
-  This is an encoding argument that compresses the $\binom{n}{2}$ bits
+  This encoding argument compresses the $\binom{n}{2}$ bits
   of $G$'s adjacency matrix, as they appear in row-major order.
   
   Suppose the graph $G$ contains a clique or an independent set $S$ of size
@@ -941,8 +958,8 @@ $t = \ceil{3\log n + \sqrt{2s}}$, we get
   since the elements of $S$ can be encoded using only
   $\log\binom{n}{t}$ bits, rather than $t\log n$.  With a more careful
   calculation, using \eqref{log-n-choose-k}, the proof then works with
-  $t = 2\log n +O(\log\log n) + \sqrt{s}$. This comes closer to Erdős'
-  original result, which was at the threshold $2\log n - 2\log\log n +
+  $t = 2\log n +O(\log\log n) + \sqrt{s}$. This comes closer to 
+  Erd\H{o}s's original result, which was at the threshold $2\log n - 2\log\log n +
   O(1)$~\cite{erdos:some}.
 \end{rem}
 
@@ -955,8 +972,8 @@ independently at random into $n$ urns is a useful abstraction of many
 questions encountered in algorithm design, data structures, and 
 load-balancing~\cite{mitzenmacher.upfal:probability,motwani.raghavan:randomized}.  Here we
 show how an encoding argument can be used to prove the classic result
-that, when we do this, no urn contains more than $O(\log n/\log\log
-n)$ balls.
+that, when we do this, every urn contains $O(\log n/\log\log
+n)$ balls, with high probability.
 
 \begin{thm}\thmlabel{urns}
   Let $n, s \in \N$, and let $t$ be such that $t\log(t/e) \ge \log n + s$.
@@ -973,20 +990,24 @@ and all sufficiently large $n$, taking
 \] 
 satisfies the requirements of \thmref{urns},  since then
 \begin{align*}
-  t \log t &\ge \frac{(1 + \eps) \log n}{\log \log n} \log \left( \frac{(1 + \eps) \log n}{\log \log n}\right) \\
-  &= (1 + \eps) \log n \frac{\log \log n}{\log \log n} - (1 + \eps) \log n \frac{\log \left(\frac{\log \log n}{1 + \eps}\right)}{\log \log n} \\
-  &\geq \log n + \eps \log n - (\eps/2) \log n \\
-  &= \log n + (\eps/2) \log n
+  t \log t &\ge \frac{(1 + \eps) \log n}{\log \log n} 
+  \log \left( \frac{(1 + \eps) \log n}{\log \log n}\right) \\
+  &= \frac{(1 + \eps) \log n}{\log \log n} 
+  \left( \log\log n - \log\left(\frac{\log\log n}{1 + \eps}\right)
+  \right) \\
+  &= (1 + \eps) \log n 
+  \left( 1 - \frac{\log\left(\frac{\log\log n}{1 + \eps}\right)}{\log\log n}
+     \right) \\
+  &= (1+\eps)\log n - o(\log n) \enspace.
 \end{align*}
-for 
-a sufficiently large choice of $n$. Then,
+Then,
 \[
-  t \log (t/e) = t \log t - t \log e \ge \log n + (\eps/2) \log n 
+  t \log (t/e) = t \log t - t \log e = (1+\eps)\log n 
   - o(\log n) \ge \log n + s \enspace ,
 \]
 for sufficiently large $n$, as claimed.
 
-\begin{proof}[of \thmref{urns}]
+\begin{proof}[Proof of \thmref{urns}]
   For each $i\in\{1,\ldots,n\}$, let $b_i$ denote the index of the urn
   chosen for the $i$-th ball. The sequence $b = (b_1,\ldots,b_n)$ is
   sampled uniformly at random from a set of size $n^n$, and this
@@ -1027,7 +1048,7 @@ we find an empty spot
 for $x_i$.  
 To find a given element $x \in X$ in the hash table, we compute
 $j = h(x)$, and we start a linear search from position $j$ 
-until we encounter either $x$ or the first empty position.
+until we encounter either $x$ or an empty position.
 Assuming that the hash table has been created by inserting
 the elements from $X$ successively according to the
 algorithm above, 
@@ -1048,13 +1069,13 @@ consecutive.)
   Suppose that a set $X = \{x_1, \dots, x_n\}$ of $n$ items 
   has been inserted into a hash table of size $m = cn$, using linear 
   probing.
-  Let $t \in \N$ such that
+  Let $t \in \N$, $t \geq 2$, such that
   \[
-    t \log (c/e) - \log t \ge s + O(1) \enspace ,
+    (t-1) \log (c/e) - \log t - 3 \ge s \enspace ,
   \]
   and fix some $x\in X$. 
   Then the probability that the block containing
-  $x$ has size $t$
+  $x$ has size exactly $t$
   is at most $2^{-s}$.
 \end{thm}
 
@@ -1070,7 +1091,7 @@ consecutive.)
   Suppose that $x$ lies in a block with $t$ elements.
   We encode $h$ by the first index $b$ of the block containing $x$;
   followed by the $t-1$ elements $y_1,\dots,y_{t-1}$ of this block
-  (excluding $x$); followed by information to decode the hash
+  (excluding $x$); followed by the hash
   values of $x$ and of $y_1,\dots,y_{t-1}$; followed by
   the $n-t$ hash values for the remaining elements in $X$.
 
@@ -1084,15 +1105,22 @@ consecutive.)
              (t-1)\log(t-1) + (t-1)\log e + t\log t + (n-t)\log m \tag{by \eqref{log-n-choose-k}}\\
 	  &=
          (n-t+1)\log m + (t-1)\log (m/c) + (t-1)\log e + \log (t-1)+ t\log(t/(t-1)) \tag{$m = cn$}\\
-           & = n\log m - (t-1)\log c + (t-1)\log e + \log t + O(1) \\
-           & = \log m^n - (t-1)\log(c/e) + \log t + O(1) \\
+           & \leq n\log m - (t-1)\log c + (t-1)\log e + \log t + 3 \\
+           & = \log m^n - (t-1)\log(c/e) + \log t + 3 \\
            & \le \log m^n - s \enspace ,
   \end{align*}
   since we assumed that $t$ satisfies
   \[
-    t \log (c/e) - \log t \ge s + O(1) \enspace .
+    (t-1) \log (c/e) - \log t - 3 \ge s 
   \]
-  The proof is complete by applying the Uniform Encoding Lemma.
+  and since for $t \geq 2$, we have
+  \[
+   t\log\frac{t}{t-1} = \frac{t}{\ln 2} \ln 
+   \left(1 + \frac{1}{t-1}\right) 
+   \leq \frac{t}{\ln 2} \cdot \frac{1}{t-1}
+   \leq 3.
+  \]
+  The proof is completed by applying the Uniform Encoding Lemma.
 \end{proof}
 
 \begin{rem}
@@ -1121,15 +1149,16 @@ consecutive.)
   Then, by \thmref{linear-probing}, the probability
   that $T = t + t_0$ is at most $2^{-t\log(c/e)/2}$,
   since then
-  \[(t  + t_0)\log(c/e) - \log(t+t_0)
+  \[(t  + t_0 - 1)\log(c/e) - \log(t+t_0) - 3
   \geq
-(t  + t_0)\log(c/e)/2
-    \geq t\log(c/e)/2 + O(1) \enspace. 
+(t  + t_0)\log(c/e)/2 - 3
+    \geq t\log(c/e)/2  \enspace. 
     \]
   Thus, the expected search time for $x$ is
   \begin{align*}
    \E\{T\} &= \sum_{t = 1}^\infty t\Pr\{T = t\} = \sum_{t=1}^{t_0} t\Pr\{T = t\} + \sum_{t = 1}^\infty (t+t_0)\Pr\{T = t + t_0\} \\
-            &\le t_0^2 + \sum_{t = 1}^\infty (t+t_0)2^{-t \log (c/e)/2} = t_0^2 + \sum_{t = 1}^\infty (t+t_0)(c/e)^{-t/2} = O(1) \enspace . 
+            &\le t_0 + \sum_{t = 1}^\infty (t+t_0)2^{-t \log (c/e)/2} 
+            = t_0 + \sum_{t = 1}^\infty (t+t_0)(c/e)^{-t/2} = O(1) \enspace . 
   \end{align*}
 \end{proof}
 
@@ -2344,7 +2373,7 @@ strings.
   \[ 
     D(p\, \|\, q)= p\log (p/q) + (1-p)\log ((1 - p)/(1 - q))
   \]
-  is the \emph{Kullback-Liebler divergence} or \emph{relative entropy}
+  is the \emph{Kullback-Leibler divergence} or \emph{relative entropy}
   between $\mathrm{Bernoulli}(p)$ and $\mathrm{Bernoulli}(q)$ random
   variables.
 \end{thm}
