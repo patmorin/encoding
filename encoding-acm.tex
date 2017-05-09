@@ -943,8 +943,8 @@ $t = \ceil{3\log n + \sqrt{2s}}$, we get
   \begin{align*}
     f(t) &\ge f(3\log n + \sqrt{2s}) \\
     &= (1/2)(9 \log^2 n + 6 \sqrt{2s} \log n + 2s - 3 \log n - \sqrt{2s} - 6 \log^2 n - 2 \sqrt{2s} \log n) - 1 \\
-    &= (1/2)(3 \log^2 n + 4 \sqrt{2s} \log n - 3 \log n - \sqrt{2s}) + s - 1 \\
-    &\ge s
+    &= (1/2)(3 \log^2 n + 4 \sqrt{2s} \log n - 3 \log n - \sqrt{2s}) + 
+    s - 1  \ge s
   \end{align*}
   for $n \ge 3$. Therefore, our code has length
   \[
@@ -1106,8 +1106,8 @@ consecutive.)
 	  &=
          (n-t+1)\log m + (t-1)\log (m/c) + (t-1)\log e + \log (t-1)+ t\log(t/(t-1)) \tag{$m = cn$}\\
            & \leq n\log m - (t-1)\log c + (t-1)\log e + \log t + 3 \\
-           & = \log m^n - (t-1)\log(c/e) + \log t + 3 \\
-           & \le \log m^n - s \enspace ,
+           & = \log m^n - (t-1)\log(c/e) + \log t + 3 
+            \le \log m^n - s \enspace ,
   \end{align*}
   since we assumed that $t$ satisfies
   \[
@@ -1593,8 +1593,8 @@ binomial coefficients and probabilities: see, for example,
   Lemma gives the desired result. Indeed, the encoding works
   for all values of $k$, and it always saves at least 
   $s(1) = (1/2)\log n + O(1)$ bits.
-  Thus, the probability that the construction fails is
-  at most $O(n^{-1/2})$.
+  Thus, the construction fails with probability
+  $O(n^{-1/2})$.
 \end{proof}
 
 \subsection{Permutations and Binary Search Trees}
@@ -2300,7 +2300,7 @@ We will say that a real-valued function $\ell : X \to \R$
 \[
   \sum_{x \in X} 2^{-\ell(x)} \leq 1 \enspace .
 \]
-\begin{lem}[Kraft's Inequality]
+\begin{lem}[Kraft's Inequality and prefix-free codes]
   If $C : X \nrightarrow \{0,1\}^*$ is a partial prefix-free code,
   then the function  $\ell : x \mapsto |C(x)|$ satisfies Kraft's condition. Conversely, for any
   function $\ell : X \to \N$ satisfying Kraft's condition, there
@@ -2322,7 +2322,8 @@ serves for non-uniform input distributions:
 \end{lem}
 
 \begin{proof}
-  We use Chernoff's trick, Markov's inequality, and Kraft's
+  We use Chernoff's trick of exponentiating both sides a condition
+  before applying the Markov inequality, and Kraft's
   inequality:
   \begin{align*}
     \Pr\{ |C(x)| \le\log(1/p_x)-s \}
@@ -2349,7 +2350,7 @@ code has length
 \[
   n_1(x) \log (1/\alpha) + n_0(x) \log(1/(1 - \alpha)) \enspace ,
 \]
-since we are not concerned with ceilings.
+since for now we are not concerned with ceilings.
 
 \section{Applications of the Non-Uniform Encoding Lemma}
 \seclabel{applications-ii}
@@ -2359,7 +2360,7 @@ since we are not concerned with ceilings.
 
 We will now prove the so-called \emph{additive version} of the
 Chernoff bound on the tail of a binomial random
-variable~\cite{chernoff:bound}. \thmref{chernoff-basic} established
+variable~\cite{chernoff:bound}. \thmref{chernoff-basic} dealt with
 the special case of this result for $\mathrm{Bernoulli}(1/2)$ bit
 strings.
 
@@ -2390,7 +2391,8 @@ strings.
     - p + \eps)) \enspace .
   \]
   Now, $x$ appears with probability
-  $p_x = p^{n_1(x)} (1 - p)^{n_0(x)}$, so
+  $p_x = p^{n_1(x)} (1 - p)^{n_0(x)}$. This allows us
+  to express $|C_{p - \eps}(x)|$ in terms of $\log(1/p_x)$ as follows
   \begin{align*}
     |C_{p - \eps}(x)| &= \log(1/p_x) + 
          n_1(x) \log (p/(p - \eps)) + (n - n_1(x)) \log ((1 - p)/(1 - p + \eps)) \\
@@ -2424,7 +2426,7 @@ Suppose that $\sqrt{n}$ is an integer. The \emph{$\sqrt{n} \times \sqrt{n}$
 $\{1, \ldots, \sqrt{n}\}^2$, where $(i, j)$ is adjacent to $(k, l)$
 if
 \begin{itemize}[topsep=0pt]
-\item $|i - k| \equiv 1 \pmod{\sqrt{n}}$ and $|j - l| = 0$, or
+\item $|i - k| \equiv 1 \pmod{\sqrt{n}}$ and $j = l$, or
 \item $|i - k| = 0$ and $|j - l| \equiv 1 \pmod{\sqrt{n}}$.
 \end{itemize}
 
@@ -2434,7 +2436,7 @@ if
   chosen with probability $p < 1/3$. Then, the probability that $G$
   contains a cycle of length at least
   \[
-    \frac{s + \log n + O(1)}{\log (1/(3p))}
+    \frac{s + \log n}{\log (1/(3p))}
   \]
   is at most $2^{-s}$.
 \end{thm}
@@ -2452,17 +2454,19 @@ if
   There are four possibilities for the direction of the
   first step taken by $C'$ from $u$, but only three for each
   subsequent choice. Thus, this sequence can be specified by
-  $2 + (t - 1) \log 3$ bits.
+  $2 + (t - 2) \log 3$ bits.
   We conclude with a Shannon-Fano code with parameter $p$ for
-  the remaining edges of $G$ ($(n_1(A) - t) \log (1/p) + n_0(A) \log (1/(1 - p)$)
+  the remaining edges of $G$ ($(n_1(A) - t) 
+  \log (1/p) + n_0(A) \log (1/(1 - p)$)
   bits. The total length of our code is then
   \begin{align*}
-    |C(G)| &= \log n + 2 + (t - 1) \log 3 + (n_1(A) - t) \log (1/p) +
+    |C(G)| &= \log n + 2 + (t - 2) \log 3 + (n_1(A) - t) \log (1/p) +
              n_0(A) \log (1/(1 - p)) \\
-           &= \log (1/p_G) + \log n - t \log (1/(3p)) + O(1) \\
+           &\leq \log (1/p_G) + \log n - t \log (1/(3p)) + O(1) \\
            &\leq \log (1/p_G) - s
   \end{align*}
-  by our choice of $t$. We finish by applying the Non-Uniform Encoding
+  by our choice of $t$, since $2 +  (t-2) \log 3 \leq t\log 3$.
+  We finish by applying the Non-Uniform Encoding
   Lemma.
 \end{proof}
 
@@ -2473,7 +2477,7 @@ drawing, and two vertices are adjacent if and only their primal faces
 are incident to the same edge. This dual graph is isomorphic to the
 original torus grid graph.
 
-The obvious drawing of the torus grid graph also induces drawings for
+This drawing of the torus grid graph also induces drawings for
 any of its subgraphs. Any such subgraph also has a dual, where each
 vertex corresponds to a face in the dual torus grid graph, and two
 vertices are adjacent if and only if their corresponding faces are
@@ -2507,7 +2511,7 @@ incident to the same edge of the original subgraph.
   \quad\quad
   \begin{subfigure}[t]{0.45\textwidth}
     \includegraphics{torusdense}
-    \caption{When $p = 0.67 > 2/3$, there is likely only one large
+    \caption{When $p = 0.67 > 2/3$, there is likely to be only one large
       component.}
   \end{subfigure}
   \caption{Random subgraphs of the $20 \times 20$ torus grid graph.}
@@ -2559,7 +2563,8 @@ show how this can be accomplished with an encoding argument.
   look at the number of ones in the $n/2\times n/2$ submatrix $M$
   determined by rows $1,\ldots,n/2$ and columns $n/2+1,\ldots,n$. Note
   that $n_1(M)$, the number of ones in $M$, is a
-  $\mathrm{Binomial}(n^2/4, c/n)$ random variable.  There are three
+  $\mathrm{Binomial}(n^2/4, c/n)$ random variable with expectation
+  $cn/4$.  There are three
   events to consider:
   
   \begin{figure}
@@ -2571,7 +2576,7 @@ show how this can be accomplished with an encoding argument.
   \end{figure}
 
   \begin{enumerate}
-  \item \textbf{Event $E_1$}: The number of ones in $M$ is at most 
+  \item \textbf{Event $E_1$}: The number $n_1(M)$ of ones in $M$ is at most 
      $cn/8$.  In this case,
     the number of ones in this submatrix is much less than the
     expected number, $cn/4$.  
@@ -2629,20 +2634,20 @@ show how this can be accomplished with an encoding argument.
 \end{proof}
 
 \begin{thm}\thmlabel{triangles-down}
-  When $p = 1/(\alpha n)$ with $\alpha > 0$, then $G \in G_{n, p}$ 
+  If $p = c/n$ with $c > 0$, then $G \in G_{n, p}$ 
   has no triangle with
-  probability at least $1 - \alpha^{-3}$.
+  probability at least $1 - c^3$.
 \end{thm}
 \begin{proof}
   Suppose that $G$ contains a triangle. We encode the adjacency matrix
   $A$ of $G$. First, we specify the triangle's vertices; and finish
   with a Shannon-Fano code with parameter $p$ for the remaining
-  vertices of the graph. This code has length
+  edges of the graph. This code has length
   \begin{align*}
-    |C(G)| &= 3 \log n + (n_1(A) - 3) \log (1/p) + n_0(A) \log (1/(1 - p)) \\
-           &= \log (1/p_G) + 3 \log n - 3 \log (1/p) \\
-           &= \log (1/p_G) - 3 \log \alpha 
-           = \log (1/p_G) - \log \alpha^3 \enspace . 
+    |C(G)| &= 3 \log n + (n_1(A) - 3) \log (1/p) + n_0(A) \log (1/(1 - p))\\ 
+           &= \log (1/p_G) + 3 \log n - 3 \log (1/p) 
+           = \log (1/p_G) + 3 \log c
+           = \log (1/p_G) + \log c^3 \enspace . 
   \end{align*}
 \end{proof}
 
@@ -2690,7 +2695,7 @@ it is actually enough to assign to every element from our universe
 a codeword \emph{length} such that Kraft's condition is satisfied. These
 codeword lengths need not be integers.
 
-\begin{lem}\lemlabel{el}
+\begin{lem}[The encdoing lemma for the Kraft inequlity]\lemlabel{el}
   Let $\ell : X \to [0, \infty]$ satisfy Kraft's condition and let
   $x\in X$ be drawn randomly where $p_x > 0$ denotes the probability
   of drawing $x$.  Then
@@ -2772,9 +2777,10 @@ of binary encoding. Using our new tools, we can now refine this and
 recover the exact result.
 \begin{customthm}{\ref*{thm:runs-i}b}
   Let $x=(x_1,\ldots,x_n)\in\{0,1\}^n$ be chosen uniformly at random
-  and let $t = \ceil{\log n + s}$. Then, the probability that there
-  exists an $i\in\{1,\ldots,n-t+1\}$ such that
-  $x_i=x_{i+1}=\cdots=x_{i+t-1}=1$ is at most $2^{-s}$.
+  and let $t = \ceil{\log n + s}$. Then, the probability that 
+   $x$ contains
+  a run of $t$ ones
+  is at most $2^{-s}$.
 \end{customthm}
 \begin{proof}
   Let $\ell : \{0, 1\}^n \to [0, \infty]$ be such that if $x$ contains
@@ -2797,18 +2803,16 @@ recover the exact result.
     [0, \infty] \enspace ,
   \]
   where $h(i, y) = \log n + n - t$ for all $i$ and $y$. Crucially,
-  each element of the set $\{1, \ldots, n - t + 1\} \times \{0, 1\}^{n
-    - t}$ corresponds to an $n$-bit binary string containing a run of
-  $t$ ones: the element $(i, y) \in \{1, \ldots, n - t + 1\} \times
-  \{0, 1\}^{n - t}$, where $y = (y_1, \ldots, y_{n - t})$, corresponds
-  to the binary string
+  each element $(i, (y_1, \dots, y_{n-1})) \in 
+  \{1, \ldots, n - t + 1\} \times \{0, 1\}^{n
+    - t}$ yields to an $n$-bit binary string containing a run of
+  $t$ ones, namely 
   \[
   (y_1, \dots, y_{i - 1}, \underbrace{1, 1, \dots, 1}_{\text{$t$ times}},
-  y_i, \dots, y_{n - t}) \enspace .
+  y_i, \dots, y_{n - t}) \enspace ,
   \]
-  Therefore, $\ell$ satisfies Kraft's condition. By our choice of
-  $t$, we have that $\ell(x) \leq n - s$ if and only if $x$ contains a
-  run of $t$ ones. We finish by applying \lemref{el}.
+  and this mapping is surjective. Thus, $\ell$ is as desired.
+  We finish by applying \lemref{el}.
 \end{proof}
 
 \section{Summary and Conclusions}
