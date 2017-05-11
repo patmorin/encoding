@@ -577,11 +577,11 @@ $x_i=x_{i+1}=\cdots=x_{i+t}=1$, then
   & = \sum_{i=0}^{n-t-1} 2^{-t}  &&\text{(using the independence of the $x_i$'s)}\\
   & \le n2^{-t} && \text{(the sum has $n-t\le n$ identical terms)}\\
   & \le n2^{-\lceil\log n\rceil-s}&& \text{(using the definition of $t$)}\\
-  & \le 2^{-s} \enspace. && \text{(*)}
+  & \le 2^{-s} \enspace. && \text{($*$)}
 \end{align*}
 This traditional proof also works with the sometimes smaller value
 $t=\ceil{\log n+s}$ (note the lack of a ceiling over $\log n$), 
-in which case the final inequality (*) holds with an equality.
+in which case the final inequality ($*$) holds with an equality.
 
 In the encoding proof of \thmref{runs-i}, the ceiling on the
 $\log n$ is an artifact of encoding the integer $i$ which comes
@@ -2322,9 +2322,8 @@ serves for non-uniform input distributions:
 \end{lem}
 
 \begin{proof}
-  We use Chernoff's trick of exponentiating both sides a condition
-  before applying the Markov inequality, and Kraft's
-  inequality:
+  We use Chernoff's trick of exponentiating both sides before applying
+  the Markov inequality, and Kraft's inequality:
   \begin{align*}
     \Pr\{ |C(x)| \le\log(1/p_x)-s \}
     & = \Pr\{|C(x)| -\log(1/p_x) \le -s \} \\
@@ -2695,7 +2694,7 @@ it is actually enough to assign to every element from our universe
 a codeword \emph{length} such that Kraft's condition is satisfied. These
 codeword lengths need not be integers.
 
-\begin{lem}[The encdoing lemma for the Kraft inequlity]\lemlabel{el}
+\begin{lem}[The encoding lemma for the Kraft inequality]\lemlabel{el}
   Let $\ell : X \to [0, \infty]$ satisfy Kraft's condition and let
   $x\in X$ be drawn randomly where $p_x > 0$ denotes the probability
   of drawing $x$.  Then
