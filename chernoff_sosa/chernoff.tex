@@ -1,0 +1,272 @@
+\documentclass[a4paper,english,numberwithinsect]{oasics-v2016}
+%This is a template for producing OASIcs articles. 
+%See oasics-v2016-manual.pdf for further information.
+%for A4 paper format use option "a4paper", for US-letter use 
+%%option "letterpaper"
+%for british hyphenation rules use option "UKenglish", for american 
+%%hyphenation rules use option "USenglish"
+% for section-numbered lemmas etc., use "numberwithinsect"
+ 
+\usepackage{cite}
+\usepackage{microtype}
+%if unwanted, comment out or use option "draft"
+
+% Line numbers are helpful for refereeing
+\usepackage[mathlines]{lineno}
+\newcommand*\patchAmsMathEnvironmentForLineno[1]{%
+  \expandafter\let\csname old#1\expandafter\endcsname\csname #1\endcsname
+  \expandafter\let\csname oldend#1\expandafter\endcsname\csname end#1\endcsname
+  \renewenvironment{#1}%
+     {\linenomath\csname old#1\endcsname}%
+     {\csname oldend#1\endcsname\endlinenomath}}%
+\newcommand*\patchBothAmsMathEnvironmentsForLineno[1]{%
+  \patchAmsMathEnvironmentForLineno{#1}%
+  \patchAmsMathEnvironmentForLineno{#1*}}%
+\AtBeginDocument{%
+\patchBothAmsMathEnvironmentsForLineno{equation}%
+\patchBothAmsMathEnvironmentsForLineno{align}%
+\patchBothAmsMathEnvironmentsForLineno{flalign}%
+\patchBothAmsMathEnvironmentsForLineno{alignat}%
+\patchBothAmsMathEnvironmentsForLineno{gather}%
+\patchBothAmsMathEnvironmentsForLineno{multline}%
+}
+\linenumbers
+
+
+
+%\graphicspath{{./graphics/}}%helpful if your graphic files are in another directory
+
+\bibliographystyle{plainurl}% the recommended bibstyle
+
+% Author macros::begin %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{A Simple Proof of Chernoff's Bound\footnote{Supported in part 
+by DFG Grants MU 3501/1 and MU 3501/2.}}
+\titlerunning{A Simple Proof of Chernoff's Bound} 
+%optional, in case that the title is too long; the running 
+%title should fit into the top page column
+
+%% Please provide for each author the \author and \affil macro, even 
+%when authors have the same affiliation, i.e. for each author there 
+%needs to be the  \author and \affil macros
+\author[1]{Pat Morin}
+\affil[1]{School of Computer Science, Carleton University, Canada\\
+  \texttt{morin@scs.carleton.ca}}
+\author[2]{Wolfgang Mulzer}
+\affil[2]{Institut f\"ur Informatik, Freie Universit\"at Berlin, Germany\\
+  \texttt{mulzer@inf.fu-berlin.de}}
+\authorrunning{P. Morin, W. Mulzer} 
+%mandatory. First: Use abbreviated 
+%first/middle names. Second (only in severe cases): Use first author 
+%plus 'et. al.'
+
+\Copyright{Pat Morin and Wolfgang Mulzer}
+%mandatory, please use full first names. 
+%OASIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+
+\subjclass{F.2.2 Nonnumerical Algorithms and Problems; 
+G.3 Probability and Statistics}
+% mandatory: Please choose ACM 1998 classifications 
+%from http://www.acm.org/about/class/ccs98-html . 
+%E.g., cite as "F.1.1 Models of Computation". 
+\keywords{Chernoff's bound, Encoding Argument}
+% mandatory: Please provide 1-5 keywords
+% Author macros::end %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\DKL}{D_\textup{KL}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\eqdef}{:=}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+
+%Editor-only macros:: begin (do not touch as author)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\EventEditors{John Q. Open and Joan R. Acces}
+\EventNoEds{2}
+\EventLongTitle{42nd Conference on Very Important Topics (CVIT 2016)}
+\EventShortTitle{CVIT 2016}
+\EventAcronym{CVIT}
+\EventYear{2016}
+\EventDate{December 24--27, 2016}
+\EventLocation{Little Whinging, United Kingdom}
+\EventLogo{}
+\SeriesVolume{42}
+\ArticleNo{23}
+% Editor-only macros::end %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We present a simple proof of Chernoff's bound inspired by coding theory.
+The proof is elementary and does not require any
+calculus.
+ \end{abstract}
+
+\section{Introduction}
+Chernoff's bound gives an estimate on the probability
+that a sum of independent Binomial random variables
+deviates from its expectation~\cite{Hoeffding63}.
+It has many variants and extensions that are known under various 
+names such as
+\emph{Bernstein's inequality} or \emph{Hoeffding's 
+bound}~\cite{Bernstein64,Hoeffding63}.
+Chernoff's bound is one of the most basic and versatile
+tools in the life of a theoretical computer 
+scientist,
+with a seemingly endless amount of of applications.
+Almost every contemporary textbook on algorithms or 
+complexity theory contains a statement and a proof of the 
+bound~\cite{AroraBa09,Goldreich08,KleinbergTa06,CormenLeRiSt09}, 
+and there are several texts that discuss its various applications 
+in great detail (see, e.g., the textbooks by 
+Alon and Spencer~\cite{AlonSp16}, 
+Dubhashi and Panchonesi~\cite{DubhashiPa09},
+Mitzenmacher and Upfal~\cite{MitzenmacherUp17},
+Motwani and Raghavan~\cite{MotwaniRa95}, 
+or the articles by 
+Chung and Lu~\cite{ChungLu06},
+Hagerup and R\"ub~\cite{HagerupRu90}, or
+McDiarmid~\cite{McDiarmid98}). 
+
+We give a simple proof of Chernoff's bound that is inspired
+by coding theory. The proof
+relies on a weighted version of Markov's inequality and does
+not need any calculus.
+It is derived from ideas discussed with Luc Devroye and
+G\'abor Lugosi at the
+Ninth Annual Probability, Combinatorics
+and Geometry Workshop, held April 4--11, 2014, at McGill University's
+Bellairs Institute.
+A broader discussion of coding theoretic arguments in theoretical
+computer science can be found in the survey~\cite{MorinMuRe17}.
+
+\section{The Chernoff Bound}
+
+We begin with a statement of the basic Chernoff bound.
+For this, we need a notion from information theory~\cite{CoverTo06}.
+Let $p, q \in [0,1]$.
+The \emph{Kullback-Leibler divergence} or \emph{relative entropy} of 
+the probability distributions $(p, 1-p)$ and $(q, 1-q)$ on 
+two elements is defined as
+\[
+  \DKL(p \| q) \eqdef p \ln \frac{p}{q} + (1-p) \ln \frac{1-p}{1-q}.
+\]
+The Kullback-Leibler divergence measures the distance between the
+distributions $(p, 1-p)$ and $(q, 1-q)$: it represents the 
+expected loss of efficiency 
+if we encode a bit string where a $0$-bit has probability $p$
+and a $1$-bit has probability $1-p$ with a code 
+that is optimal for the case that a $0$-bit has probability $q$ and
+a $1$-bit has probability $1-q$.
+Now, the basic Chernoff bound is as follows:
+\begin{theorem}\label{thm:chernoff}
+Let $n \in \N$, $p \in [0,1]$, and let $X_1, \dots, X_n$ be $n$ independent 
+random variables with $X_i \in \{0,1\}$
+and $\Pr[X_i = 1] = p$, for $i = 1, \dots n$. 
+Set $X \eqdef \sum_{i=1}^n X_i$.
+  Then, for any $t \in [0, 1-p]$, we have
+  \[
+    \Pr[X \geq (p+t)n ] \leq e^{-\DKL(p+t \| p)n}.
+  \]
+\end{theorem}
+Many other, perhaps more familiar, bounds can be derived from 
+Theorem~\ref{thm:chernoff}; see the survey~\cite{Mulzer17}
+for more details.
+
+\section{The New Proof}
+
+Let $\{0,1\}^n$ be the set of all bit strings of length $n$,
+and let $w: \{0, 1\}^n \rightarrow [0,1]$ be a
+\emph{weight function}. We call $w$
+\emph{valid} if $\sum_{x \in \{0,1\}^n} w(x) \leq 1$.
+The following lemma, a weighted version of Markov's inequality, 
+says that for any probability distribution
+$p_x$ on $\{0,1\}^n$, a valid weight function 
+is unlikely to be substantially larger than $p_x$.
+\begin{lemma}\label{lem:encoding}
+Let $\mathcal{D}$ be a probability 
+distribution on $\{0,1\}^n$ that assigns to each $x \in \{0,1\}^n$
+a probability $p_x$, and let $w$ be a valid 
+weight function. 
+For any $s \geq 1$, we have 
+\[
+  \Pr_{x \sim \mathcal{D}}\left[w(x) \geq sp_x\right] 
+     \leq 1/s.
+\]
+\end{lemma}
+
+\begin{proof}
+Let $Z_{s} = \{ x \in \{0,1\}^n \mid w(x) \geq sp_x\}$.
+We have
+\[
+  \Pr_{x \sim \mathcal{D}}\left[w(x) \geq s p_x\right] 
+  = \sum_{\substack{x \in Z_s \\ p_x > 0}}  p_x
+  \leq \sum_{\substack{x \in Z_s \\ p_x > 0}} p_x \frac{w(x)}{sp_x}
+  \leq  (1/s) \sum_{x \in Z_s} w(x) 
+    \leq 1/s,
+\]
+since $w(x) / sp_x  \geq 1$ for $x \in Z_s$, $p_x > 0$,  and since
+$w$ is valid.
+\end{proof}
+
+We now show that Lemma~\ref{lem:encoding} 
+implies Theorem~\ref{thm:chernoff}. 
+For this, we interpret the sequence $X_1, \dots, X_n$
+as a bit string of length $n$. This induces a probability distribution 
+$\mathcal{D}$ that assigns to each $x \in \{0, 1\}^n$ the 
+probability 
+$p_x = p^{k_x} (1-p)^{n-k_x}$, where $k_x$ denotes the number of
+$1$-bits in $x$.
+We define a weight function $w : \{0,1\}^n \rightarrow [0,1]$ by
+$w(x) = (p+t)^{k_x}(1-p-t)^{n-k_x}$, for 
+$x \in \{0,1\}^n$.
+Then $w$ is valid, since $w(x)$ is the
+probability that $x$ is generated by setting each bit 
+to $1$ independently with probability $p+t$.
+For $x \in \{0,1\}^n$, 
+we have
+\[
+\frac{w(x)}{p_x}
+=
+\left(\frac{p+t}{p}\right)^{k_x}
+\left(\frac{1-p-t}{1-p}\right)^{n - k_x}. 
+\]
+Since $((p+t)/p)((1-p)/(1-p-t)) \geq 1$, it follows
+that $w(x)/p_x$ is an increasing function of $k_x$.
+Hence, if $k_x \geq (p + t)n$, we have
+\[
+\frac{w(x)}{p_x}
+\geq
+\left[\left(\frac{p+t}{p}\right)^{p+t}
+\left(\frac{1-p-t}{1-p}\right)^{1 - p-t}\right]^n
+= e^{\DKL(p+t \| p)n}.
+\]
+We now apply Lemma~\ref{lem:encoding} to $\mathcal{D}$ and $w$ to get
+\[
+\Pr[X \geq (p+t)n] = \Pr_{x\sim \mathcal{D}} [ k(x) \geq (p+t)n]
+\leq \Pr_{x \sim \mathcal{D}} \left[ w(x) \geq 
+p_xe^{\DKL(p+t \| p)n}\right]
+    \leq e^{-\DKL(p+t \| p)n},
+\]
+as claimed in Theorem~\ref{thm:chernoff}.
+
+\subparagraph*{Acknowledgements.}
+The proof in this paper was derived 
+from arguments discussed with Luc Devroye and
+G\'abor Lugosi at the
+Ninth Annual Probability, Combinatorics
+and Geometry Workshop, held April 4--11, 2014, at McGill University's
+Bellairs Institute. The authors would like to thank them and
+all the other participants of the workshop for inspiring discussions
+and for providing a great research atmosphere.
+
+%% Bibliography
+%%
+
+%% Either use bibtex (recommended), 
+
+\bibliography{chernoff}
+
+%% .. or use the thebibliography environment explicitely
+\end{document}
